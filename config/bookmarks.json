@@ -1,0 +1,12 @@
+[
+  {
+    "Title": "Bitwarden Web Vault",
+    "URL": "https://vault.bitwarden.com",
+    "Placement": "toolbar"
+  },
+  {
+    "Title": "GitHub",
+    "URL": "https://github.com",
+    "Placement": "toolbar"
+  }
+]

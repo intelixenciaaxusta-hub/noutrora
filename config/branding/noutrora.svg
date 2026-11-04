@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b192c"/>
+      <stop offset="100%" stop-color="#1e3e62"/>
+    </linearGradient>
+    <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c45e"/>
+      <stop offset="50%" stop-color="#e78b48"/>
+      <stop offset="100%" stop-color="#be5b50"/>
+    </linearGradient>
+    <linearGradient id="hubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3d1"/>
+      <stop offset="100%" stop-color="#f5c45e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo circular marino profundo -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGrad)" stroke="#f5c45e" stroke-width="10"/>
+  <circle cx="256" cy="256" r="222" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+
+  <!-- 8 Radios y cabillas (manijas) del timón -->
+  <g stroke="url(#wheelGrad)" stroke-linecap="round">
+    <line x1="256" y1="36" x2="256" y2="476" stroke-width="22"/>
+    <line x1="36" y1="256" x2="476" y2="256" stroke-width="22"/>
+    <line x1="100.4" y1="100.4" x2="411.6" y2="411.6" stroke-width="22"/>
+    <line x1="411.6" y1="100.4" x2="100.4" y2="411.6" stroke-width="22"/>
+  </g>
+
+  <!-- Puntas redondeadas de las 8 cabillas exteriores -->
+  <g fill="url(#hubGrad)">
+    <circle cx="256" cy="34" r="15"/>
+    <circle cx="256" cy="478" r="15"/>
+    <circle cx="34" cy="256" r="15"/>
+    <circle cx="478" cy="256" r="15"/>
+    <circle cx="99" cy="99" r="15"/>
+    <circle cx="413" cy="413" r="15"/>
+    <circle cx="413" cy="99" r="15"/>
+    <circle cx="99" cy="413" r="15"/>
+  </g>
+
+  <!-- Aro principal del timón -->
+  <circle cx="256" cy="256" r="152" fill="none" stroke="#0b192c" stroke-width="42"/>
+  <circle cx="256" cy="256" r="152" fill="none" stroke="url(#wheelGrad)" stroke-width="32"/>
+  <circle cx="256" cy="256" r="152" fill="none" stroke="#fff3d1" stroke-opacity="0.45" stroke-width="4"/>
+
+  <!-- Aro interior de refuerzo -->
+  <circle cx="256" cy="256" r="88" fill="none" stroke="url(#hubGrad)" stroke-width="10"/>
+
+  <!-- Núcleo / Eje central del timón -->
+  <circle cx="256" cy="256" r="46" fill="#0b192c" stroke="url(#wheelGrad)" stroke-width="14"/>
+  <circle cx="256" cy="256" r="18" fill="url(#hubGrad)"/>
+</svg>

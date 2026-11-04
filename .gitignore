@@ -1,0 +1,9 @@
+base/
+dist/
+profile-test/
+profile-lab/
+upstream/
+*.tar.xz
+*.dmg
+*.zip
+*.exe
