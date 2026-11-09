@@ -63,7 +63,7 @@ def setup_external_branding_overlay() -> None:
         exploracion_json = (
             exploracion_path.read_text(encoding="utf-8").strip()
             if exploracion_path.exists()
-            else '{"perder_o_norte":[],"terra_a_vista":[]}'
+            else '{"perder_o_norte":[],"terra_a_vista":[],"mergullar":[],"libros":[],"portos":[]}'
         )
         home_text = home_src.read_text(encoding="utf-8")
         home_text = home_text.replace("__NOUTRORA_SVG_BASE64__", b64_file(BRAND_DIR / "noutrora.svg"))

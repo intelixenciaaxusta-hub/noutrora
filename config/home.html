@@ -67,6 +67,7 @@
 
     .brand-wordmark {
       width: 310px;
+      max-width: 100%;
       height: 66px;
       background-image: url("data:image/svg+xml;base64,__NOUTRORA_WORDMARK_BASE64__");
       background-repeat: no-repeat;
@@ -154,6 +155,12 @@
       color: inherit;
       overflow: hidden;
       text-align: center;
+      outline: none;
+    }
+
+    .dial-card:focus-visible {
+      outline: 2px solid var(--bruma);
+      outline-offset: 2px;
     }
 
     .card-slot-num {
@@ -309,38 +316,6 @@
       font-weight: 500;
     }
 
-    /* Contenedor partido 1/2 cuando existe Patrocinio Ético en el slot 06 */
-    .slot6-split {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      gap: 8px;
-      height: 100%;
-      width: 100%;
-    }
-
-    .slot6-half {
-      padding: 8px 12px !important;
-      flex-direction: row !important;
-      justify-content: flex-start !important;
-      gap: 10px;
-      text-align: left !important;
-    }
-
-    .slot6-half .card-badge {
-      width: 30px;
-      height: 30px;
-      margin-bottom: 0;
-      font-size: 14px;
-    }
-
-    .sponsor-tag {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      display: block;
-    }
-
     /* Icono e información interna de tarjeta */
     .card-badge {
       width: 40px;
@@ -392,7 +367,8 @@
       z-index: 3;
     }
 
-    .dial-card:hover .card-actions {
+    .dial-card:hover .card-actions,
+    .dial-card:focus-within .card-actions {
       opacity: 1;
     }
 
@@ -778,42 +754,75 @@
       return dayOfYear % length;
     }
 
-    function initDailyIndices() {
-      const movies = catalog.zambullirse || [];
-      const books = catalog.libros || [];
-      const ports = catalog.puertos || [];
-      currentMovieIndex = getDayOfYearIndex(movies.length);
-      currentBookIndex = getDayOfYearIndex(books.length);
-      currentPortIndex = getDayOfYearIndex(ports.length);
+    function getCatalogList(key) {
+      if (!catalog) return [];
+      switch (key) {
+        case "perder_o_norte":
+        case "perder_el_rumbo":
+          return catalog.perder_o_norte || catalog.perder_el_rumbo || [];
+        case "terra_a_vista":
+        case "mundo_nuevo":
+          return catalog.terra_a_vista || catalog.mundo_nuevo || [];
+        case "mergullar":
+        case "zambullirse":
+          return catalog.mergullar || catalog.zambullirse || [];
+        case "libros":
+          return catalog.libros || [];
+        case "portos":
+        case "puertos":
+          return catalog.portos || catalog.puertos || [];
+        default:
+          return catalog[key] || [];
+      }
     }
 
-    // Sincronización silenciosa: só substitúe se a versión remota é en galego
+    function initDailyIndices() {
+      const movies = getCatalogList("mergullar");
+      const books = getCatalogList("libros");
+      const ports = getCatalogList("portos");
+      currentMovieIndex = movies.length ? getDayOfYearIndex(movies.length) : 0;
+      currentBookIndex = books.length ? getDayOfYearIndex(books.length) : 0;
+      currentPortIndex = ports.length ? getDayOfYearIndex(ports.length) : 0;
+    }
+
+    // Sincronización silenciosa con caché intelixente de 24h
     async function syncLiveCatalog() {
+      let cachedTs = 0;
       try {
         const cachedRaw = localStorage.getItem(LIVE_CATALOG_CACHE_KEY);
         if (cachedRaw) {
           const cached = JSON.parse(cachedRaw);
-          if (cached && cached.data && cached.data.lang === "gl" && cached.data.zambullirse) {
+          if (cached && cached.data) {
             catalog = cached.data;
+            cachedTs = cached.ts || 0;
             initDailyIndices();
             renderGrid();
           }
         }
       } catch (e) {}
 
+      // Só consultar a rede se pasaron máis de 24 horas dende a última sincronización
+      if (Date.now() - cachedTs < 24 * 60 * 60 * 1000) {
+        return;
+      }
+
       try {
-        const resp = await fetch(LIVE_CATALOG_URL, { cache: "no-cache" });
+        const resp = await fetch(LIVE_CATALOG_URL, { cache: "default" });
         if (resp.ok) {
           const remoteData = await resp.json();
-          // Só actualizar se a versión do servidor xa está traducida a galego
-          if (remoteData && remoteData.lang === "gl" && Array.isArray(remoteData.puertos)) {
-            catalog = remoteData;
+          const remotePorts = remoteData.portos || remoteData.puertos;
+          if (remoteData && (remoteData.lang === "gl" || !remoteData.lang) && Array.isArray(remotePorts)) {
+            const currentStr = JSON.stringify(catalog);
+            const remoteStr = JSON.stringify(remoteData);
+            if (currentStr !== remoteStr) {
+              catalog = remoteData;
+              initDailyIndices();
+              renderGrid();
+            }
             localStorage.setItem(
               LIVE_CATALOG_CACHE_KEY,
               JSON.stringify({ ts: Date.now(), data: remoteData })
             );
-            initDailyIndices();
-            renderGrid();
           }
         }
       } catch (e) {}
@@ -827,7 +836,7 @@
           if (parsed && typeof parsed === "object") return parsed;
         }
       } catch (e) {}
-      return { perder_el_rumbo: [], mundo_nuevo: [] };
+      return { perder_o_norte: [], perder_el_rumbo: [], terra_a_vista: [], mundo_nuevo: [] };
     }
 
     function saveCustomExplore(data) {
@@ -837,9 +846,16 @@
     }
 
     function getExplorePool(category) {
-      const baseList = Array.isArray(catalog[category]) ? catalog[category] : [];
+      const baseList = getCatalogList(category);
       const custom = loadCustomExplore();
-      const extraList = Array.isArray(custom[category]) ? custom[category] : [];
+      let extraList = [];
+      if (Array.isArray(custom[category])) {
+        extraList = custom[category];
+      } else if (category === "perder_o_norte" && Array.isArray(custom.perder_el_rumbo)) {
+        extraList = custom.perder_el_rumbo;
+      } else if (category === "terra_a_vista" && Array.isArray(custom.mundo_nuevo)) {
+        extraList = custom.mundo_nuevo;
+      }
       return [...baseList, ...extraList];
     }
 
@@ -903,7 +919,7 @@
 
     // --- FICHAS CULTURAIS E MARIÑEIRAS PROPIAS DE NOUTRORA ---
     function openMovieFicha(index) {
-      const list = catalog.zambullirse || [];
+      const list = getCatalogList("mergullar");
       if (!list.length) return;
       currentMovieIndex = ((index % list.length) + list.length) % list.length;
       const item = list[currentMovieIndex];
@@ -935,7 +951,7 @@
     }
 
     function openBookFicha(index) {
-      const list = catalog.libros || [];
+      const list = getCatalogList("libros");
       if (!list.length) return;
       currentBookIndex = ((index % list.length) + list.length) % list.length;
       const item = list[currentBookIndex];
@@ -944,7 +960,7 @@
       hero.className = "ficha-hero compact";
       hero.style.backgroundImage = item.image ? `url("${item.image}")` : "none";
 
-      document.getElementById("fichaKicker").textContent = `04 · LIBRO DE A BORDO · ${item.genre || "Literatura"}`;
+      document.getElementById("fichaKicker").textContent = `04 · O LIBRO DO DÍA · ${item.genre || "Literatura"}`;
       document.getElementById("fichaTitle").textContent = item.title;
       document.getElementById("fichaSubtitle").textContent = `${item.author || ""} · ${item.year || ""}`;
       document.getElementById("fichaSummary").textContent = item.summary || "";
@@ -967,7 +983,7 @@
     }
 
     function openPortFicha(index) {
-      const list = catalog.puertos || [];
+      const list = getCatalogList("portos");
       if (!list.length) return;
       currentPortIndex = ((index % list.length) + list.length) % list.length;
       const port = list[currentPortIndex];
@@ -1025,6 +1041,18 @@
       activeEditMode = null;
     }
 
+    function makeCardAccessible(card, label) {
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      if (label) card.setAttribute("aria-label", label);
+      card.addEventListener("keydown", (e) => {
+        if (e.target === card && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    }
+
     function buildPersonalCardElement() {
       const item = loadPersonalCard();
 
@@ -1036,6 +1064,7 @@
           <div class="empty-plus">+</div>
           <span class="empty-label">Fondear</span>
         `;
+        makeCardAccessible(emptyCard, "06 · Fondear: Configurar porto persoal");
         emptyCard.addEventListener("click", () =>
           openEditModal("fondeadero", "Configurar Fondear (Carta 06)")
         );
@@ -1090,7 +1119,7 @@
       `;
 
       // --- 01 · PERDER O NORTE ---
-      const rumboCount = getExplorePool("perder_el_rumbo").length;
+      const rumboCount = getExplorePool("perder_o_norte").length;
       const card01 = document.createElement("div");
       card01.className = "dial-card explorer";
       card01.title = "Preme para perder o norte cara a un recanto interactivo ou creativo";
@@ -1110,16 +1139,17 @@
         <div class="card-title">Perder o norte</div>
         <div class="card-host">Inspiración sen mapa (${rumboCount} destinos)</div>
       `;
-      card01.addEventListener("click", () => launchRandomDestination("perder_el_rumbo"));
+      makeCardAccessible(card01, "01 · Perder o norte: Inspiración sen mapa");
+      card01.addEventListener("click", () => launchRandomDestination("perder_o_norte"));
       card01.querySelector(".add-rumbo-btn").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openEditModal("perder_el_rumbo", "Engadir destino a «Perder o norte»");
+        openEditModal("perder_o_norte", "Engadir destino a «Perder o norte»");
       });
       grid.appendChild(card01);
 
       // --- 02 · TERRA Á VISTA ---
-      const mundoCount = getExplorePool("mundo_nuevo").length;
+      const mundoCount = getExplorePool("terra_a_vista").length;
       const card02 = document.createElement("div");
       card02.className = "dial-card explorer-dark";
       card02.title = "Preme para albiscar un ensaio, arquivo cultural, cinema ou música inesperada";
@@ -1137,16 +1167,17 @@
         <div class="card-title">Terra á vista</div>
         <div class="card-host">Cultura, Beat, Punk e Cinema (${mundoCount} rutas)</div>
       `;
-      card02.addEventListener("click", () => launchRandomDestination("mundo_nuevo"));
+      makeCardAccessible(card02, "02 · Terra á vista: Cultura, Beat, Punk e Cinema");
+      card02.addEventListener("click", () => launchRandomDestination("terra_a_vista"));
       card02.querySelector(".add-mundo-btn").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openEditModal("mundo_nuevo", "Engadir destino a «Terra á vista»");
+        openEditModal("terra_a_vista", "Engadir destino a «Terra á vista»");
       });
       grid.appendChild(card02);
 
       // --- 03 · MERGULLAR (Filme ou Serie do día + Mudar punto cardinal) ---
-      const movies = catalog.zambullirse || [];
+      const movies = getCatalogList("mergullar");
       const todayMovie = movies[currentMovieIndex] || { title: "Halt and Catch Fire", year: "2014", kind: "Serie" };
       const card03 = document.createElement("div");
       card03.className = "dial-card cultural";
@@ -1167,26 +1198,29 @@
       `;
       card03.querySelector(".card-title").textContent = todayMovie.title;
       card03.querySelector(".card-host").textContent = `${todayMovie.kind || "Recomendación"} (${todayMovie.year || "Hoxe"})`;
+      makeCardAccessible(card03, `03 · Mergullar: ${todayMovie.title}`);
       card03.addEventListener("click", () => openMovieFicha(currentMovieIndex));
       card03.querySelector(".random-movie-btn").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        let next = Math.floor(Math.random() * movies.length);
-        if (movies.length > 1 && next === currentMovieIndex) next = (next + 1) % movies.length;
-        currentMovieIndex = next;
-        renderGrid();
-        openMovieFicha(currentMovieIndex);
+        if (movies.length > 0) {
+          let next = Math.floor(Math.random() * movies.length);
+          if (movies.length > 1 && next === currentMovieIndex) next = (next + 1) % movies.length;
+          currentMovieIndex = next;
+          renderGrid();
+          openMovieFicha(currentMovieIndex);
+        }
       });
       grid.appendChild(card03);
 
-      // --- 04 · LIBRO DE A BORDO ---
-      const books = catalog.libros || [];
+      // --- 04 · O LIBRO DO DÍA ---
+      const books = getCatalogList("libros");
       const todayBook = books[currentBookIndex] || { title: "No camiño", author: "Jack Kerouac" };
       const card04 = document.createElement("div");
       card04.className = "dial-card cultural";
-      card04.title = "Preme para abrir a ficha do Libro de a bordo";
+      card04.title = "Preme para abrir a ficha do Libro do día";
       card04.innerHTML = `
-        <span class="card-slot-num">04 · LIBRO DE A BORDO</span>
+        <span class="card-slot-num">04 · O LIBRO DO DÍA</span>
         <div class="card-actions">
           <button type="button" class="card-action-btn random-book-btn" title="Mudar punto cardinal">${cardinalSvgIcon}</button>
         </div>
@@ -1201,20 +1235,23 @@
       `;
       card04.querySelector(".card-title").textContent = todayBook.title;
       card04.querySelector(".card-host").textContent = `${todayBook.author || ""}`;
+      makeCardAccessible(card04, `04 · O Libro do día: ${todayBook.title}`);
       card04.addEventListener("click", () => openBookFicha(currentBookIndex));
       card04.querySelector(".random-book-btn").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        let next = Math.floor(Math.random() * books.length);
-        if (books.length > 1 && next === currentBookIndex) next = (next + 1) % books.length;
-        currentBookIndex = next;
-        renderGrid();
-        openBookFicha(currentBookIndex);
+        if (books.length > 0) {
+          let next = Math.floor(Math.random() * books.length);
+          if (books.length > 1 && next === currentBookIndex) next = (next + 1) % books.length;
+          currentBookIndex = next;
+          renderGrid();
+          openBookFicha(currentBookIndex);
+        }
       });
       grid.appendChild(card04);
 
       // --- 05 · ATRACAR (Porto do día comezando pola Costa da Morte) ---
-      const ports = catalog.puertos || [];
+      const ports = getCatalogList("portos");
       const todayPort = ports[currentPortIndex] || {
         day_order: 1,
         name: "Porto de Caión",
@@ -1241,13 +1278,16 @@
       }
       card05.querySelector(".port-card-title").textContent = todayPort.name;
       card05.querySelector(".port-card-meta").textContent = `⚓ ${todayPort.locality} (${todayPort.province})`;
+      makeCardAccessible(card05, `05 · Atracar: ${todayPort.name}`);
       card05.addEventListener("click", () => openPortFicha(currentPortIndex));
       card05.querySelector(".next-port-card-btn").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        currentPortIndex = (currentPortIndex + 1) % ports.length;
-        renderGrid();
-        openPortFicha(currentPortIndex);
+        if (ports.length > 0) {
+          currentPortIndex = (currentPortIndex + 1) % ports.length;
+          renderGrid();
+          openPortFicha(currentPortIndex);
+        }
       });
       grid.appendChild(card05);
 
@@ -1256,11 +1296,15 @@
     }
 
     // Modal Doar a Noutrora
+    function closeDonateModal() {
+      document.getElementById("donateModal").classList.remove("open");
+    }
     document.getElementById("donateBtn").addEventListener("click", () => {
       document.getElementById("donateModal").classList.add("open");
     });
-    document.getElementById("closeDonateBtn").addEventListener("click", () => {
-      document.getElementById("donateModal").classList.remove("open");
+    document.getElementById("closeDonateBtn").addEventListener("click", closeDonateModal);
+    document.getElementById("donateModal").addEventListener("click", (e) => {
+      if (e.target.id === "donateModal") closeDonateModal();
     });
 
     // Guardar desde el modal de edición
@@ -1270,7 +1314,12 @@
       const url = normalizeUrl(document.getElementById("cardUrlInput").value);
       if (!title || !url) return;
 
-      if (activeEditMode === "perder_el_rumbo" || activeEditMode === "mundo_nuevo") {
+      if (
+        activeEditMode === "perder_o_norte" ||
+        activeEditMode === "perder_el_rumbo" ||
+        activeEditMode === "terra_a_vista" ||
+        activeEditMode === "mundo_nuevo"
+      ) {
         const custom = loadCustomExplore();
         if (!Array.isArray(custom[activeEditMode])) custom[activeEditMode] = [];
         custom[activeEditMode].push({ title, url });
@@ -1296,6 +1345,7 @@
       if (e.key === "Escape") {
         closeEditModal();
         closeFichaModal();
+        closeDonateModal();
       }
     });
 
