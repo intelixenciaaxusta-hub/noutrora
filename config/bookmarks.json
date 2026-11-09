@@ -1,7 +1,7 @@
 [
   {
     "Title": "Porto Base",
-    "URL": "about:home",
+    "URL": "chrome://noutrora-branding/content/home.html",
     "Placement": "toolbar"
   },
   {

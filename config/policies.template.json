@@ -10,7 +10,12 @@
     "DisableFormHistory": true,
     "AutofillAddressEnabled": false,
     "AutofillCreditCardEnabled": false,
-    "OfferToSaveLoginsDefault": false,
+    "OfferToSaveLogins": false,
+    "Homepage": {
+      "URL": "chrome://noutrora-branding/content/home.html",
+      "Locked": true,
+      "StartPage": "homepage"
+    },
     "OverrideFirstRunPage": "",
     "OverridePostUpdatePage": "",
     "DisableProfileImport": true,
