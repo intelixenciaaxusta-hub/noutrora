@@ -1,0 +1,50 @@
+<svg width="204" height="182" viewBox="0 0 204 182" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sombra suave na base -->
+  <ellipse cx="102" cy="165" rx="76" ry="12" fill="#1B3644" fill-opacity="0.12"/>
+  
+  <!-- Corpo do cofre náutico / Baúl marítimo -->
+  <rect x="34" y="70" width="136" height="85" rx="14" fill="#1B3644"/>
+  <rect x="37" y="73" width="130" height="79" rx="11" stroke="#7A9E9F" stroke-width="2" stroke-opacity="0.4"/>
+  
+  <!-- Franxas reforzadas de latón / ferro mariñeiro -->
+  <rect x="58" y="70" width="16" height="85" fill="#0F232E"/>
+  <rect x="130" y="70" width="16" height="85" fill="#0F232E"/>
+  <!-- Rebites mariñeiros -->
+  <circle cx="66" cy="82" r="2.5" fill="#D6D3C9"/>
+  <circle cx="66" cy="112" r="2.5" fill="#D6D3C9"/>
+  <circle cx="66" cy="142" r="2.5" fill="#D6D3C9"/>
+  <circle cx="138" cy="82" r="2.5" fill="#D6D3C9"/>
+  <circle cx="138" cy="112" r="2.5" fill="#D6D3C9"/>
+  <circle cx="138" cy="142" r="2.5" fill="#D6D3C9"/>
+
+  <!-- Tampa curvada do cofre -->
+  <path d="M30 70C30 42 62 25 102 25C142 25 174 42 174 70H30Z" fill="#244455"/>
+  <path d="M34 68C34 44 64 29 102 29C140 29 170 44 170 68" stroke="#7A9E9F" stroke-width="2" stroke-opacity="0.4"/>
+  
+  <!-- Franxas da tampa -->
+  <path d="M58 29.5C60.6 28.5 63.3 27.5 66 26.8V68H58V29.5Z" fill="#0F232E"/>
+  <path d="M138 26.8C140.7 27.5 143.4 28.5 146 29.5V68H138V26.8Z" fill="#0F232E"/>
+  <circle cx="62" cy="48" r="2.5" fill="#D6D3C9"/>
+  <circle cx="142" cy="48" r="2.5" fill="#D6D3C9"/>
+
+  <!-- Moldura central e Pechadura de seguranza -->
+  <rect x="84" y="60" width="36" height="42" rx="8" fill="#FAF9F5" stroke="#7A9E9F" stroke-width="2"/>
+  <rect x="88" y="64" width="28" height="34" rx="6" fill="#D6D3C9" fill-opacity="0.4"/>
+  
+  <!-- Oco da chave / Cadeado de latón -->
+  <circle cx="102" cy="77" r="4.5" fill="#1B3644"/>
+  <path d="M100.5 78.5L99 87H105L103.5 78.5H100.5Z" fill="#1B3644"/>
+
+  <!-- Rosa dos ventos de Noutrora gravada no cofre -->
+  <g transform="translate(102, 126) scale(0.65)">
+    <circle cx="0" cy="0" r="24" fill="#0F232E" stroke="#7A9E9F" stroke-width="2"/>
+    <circle cx="0" cy="0" r="19" stroke="#D6D3C9" stroke-width="1" stroke-dasharray="2 3"/>
+    <!-- Raios norte-sur-leste-oeste -->
+    <path d="M0 -18L4 -4L0 0L-4 -4Z" fill="#FAF9F5"/>
+    <path d="M0 18L4 4L0 0L-4 4Z" fill="#7A9E9F"/>
+    <path d="M18 0L4 4L0 0L4 -4Z" fill="#FAF9F5"/>
+    <path d="M-18 0L-4 4L0 0L-4 -4Z" fill="#7A9E9F"/>
+    <circle cx="0" cy="0" r="2.5" fill="#1B3644"/>
+  </g>
+</svg>
+

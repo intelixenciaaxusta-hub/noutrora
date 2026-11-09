@@ -21,4 +21,5 @@ StartupWMClass=Noutrora
 EOF
 
 chmod +x "$APPS_DIR/noutrora.desktop"
-echo "✅ Acceso directo de Noutrora instalado en el menú de aplicaciones ($APPS_DIR/noutrora.desktop)"
+update-desktop-database "$APPS_DIR" 2>/dev/null || true
+echo "✅ Acceso directo e icono v2.0 de Noutrora actualizados ($APPS_DIR/noutrora.desktop)"

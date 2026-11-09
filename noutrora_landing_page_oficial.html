@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="gl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noutrora v1.0 «Atlántico» — Navega en calma | Baseado en Firefox</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans, Newsreader & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        foam: '#F6F5F0',
+                        sand: '#ECEAE2',
+                        warmSand: '#C9BFA9',
+                        atlantic: '#1E3240',
+                        deepAtlantic: '#0F232E',
+                        nightSky: '#09161E',
+                        mist: '#7FA1A3',
+                        tide: '#5B7E82',
+                        slateText: '#496372',
+                        coralAlert: '#B85D53'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        serif: ['"Newsreader"', 'Georgia', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    },
+                    boxShadow: {
+                        'calm': '0 20px 50px -15px rgba(30, 50, 64, 0.08)',
+                        'browser': '0 25px 60px -12px rgba(15, 35, 46, 0.16)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Variables y transiciones suaves para el cambio Calma Diurna / Noche Cometa '94 */
+        body {
+            background-color: #F6F5F0;
+            color: #1E3240;
+            transition: background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1), color 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+        html.dark body {
+            background-color: #09161E;
+            color: #F6F5F0;
+        }
+
+        /* Fondo de constelación sutil para el modo Noche Cometa '94 (Guiño Netscape) */
+        .constellation-bg {
+            background-image: radial-gradient(rgba(127, 161, 163, 0.22) 1px, transparent 1px),
+                              radial-gradient(rgba(246, 245, 240, 0.12) 1px, transparent 1px);
+            background-size: 48px 48px;
+            background-position: 0 0, 24px 24px;
+        }
+
+        /* Animación de rotación suave para la Marea (Recargar) y la aguja de la brújula */
+        @keyframes waveReload {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(3px); }
+            100% { transform: translateX(0); }
+        }
+        .animate-marea {
+            animation: waveReload 0.6s ease-in-out 2;
+        }
+
+        @keyframes cometShoot {
+            0% { transform: translate(-20px, 20px) scale(0.8); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translate(120px, -60px) scale(1.1); opacity: 0; }
+        }
+        .comet-trail {
+            animation: cometShoot 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Scrollbar minimalista */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ECEAE2;
+        }
+        html.dark ::-webkit-scrollbar-track {
+            background: #0F232E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7FA1A3;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-mist/30 selection:text-atlantic dark:selection:text-foam">
+
+    <!-- ==========================================
+         PLANTILLA SVG OCULTA PARA REUTILIZAR EL LOGO Y LOS ICONOS DE MARCA
+         ========================================== -->
+    <svg class="hidden" aria-hidden="true">
+        <defs>
+            <!-- Logotipo Vectorial Noutrora: Primera 'o' limpia, Segunda 'o' con Brújula/Timón Atlántico -->
+            <g id="noutrora-wordmark">
+                <!-- N -->
+                <path d="M 20 112 L 20 34 L 71 112 L 71 34" fill="none" stroke="currentColor" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- 1.ª o (Completamente limpia y humanista) -->
+                <circle cx="127" cy="83" r="29" fill="none" stroke="currentColor" stroke-width="6"/>
+                <!-- u -->
+                <path d="M 183 54 L 183 88 A 24 24 0 0 0 231 88 L 231 54 M 231 82 L 231 112" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- t -->
+                <path d="M 271 36 L 271 99 A 13 13 0 0 0 284 112 L 293 112 M 257 56 L 289 56" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- r -->
+                <path d="M 319 112 L 319 56 M 319 76 A 24 24 0 0 1 343 54 L 349 54" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <!-- 2.ª O: NÚCLEO NÁUTICO (Alberga el Timón / Brújula / Eje Norte) -->
+                <g>
+                    <circle cx="403" cy="83" r="29" fill="none" stroke="currentColor" stroke-width="6"/>
+                    <!-- Muesca Eje Norte (cabilla superior del timón) -->
+                    <line x1="403" y1="42" x2="403" y2="59" stroke="currentColor" stroke-width="5.2" stroke-linecap="round"/>
+                    <!-- Muescas cardinales internas sutiles (Sur, Oeste, Este) -->
+                    <line x1="403" y1="105" x2="403" y2="117" stroke="#7FA1A3" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="368" y1="83" x2="380" y2="83" stroke="#7FA1A3" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="426" y1="83" x2="438" y2="83" stroke="#7FA1A3" stroke-width="4" stroke-linecap="round"/>
+                    <!-- Aguja Atlántica inclinada a 24° -->
+                    <polygon points="403,60 409.5,83 403,78 396.5,83" fill="currentColor" transform="rotate(24 403 83)"/>
+                    <polygon points="403,106 408.5,83 403,87 397.5,83" fill="#7FA1A3" transform="rotate(24 403 83)"/>
+                    <circle cx="403" cy="83" r="2.8" fill="#F6F5F0" stroke="currentColor" stroke-width="2.2"/>
+                </g>
+
+                <!-- 2.ª r -->
+                <path d="M 465 112 L 465 56 M 465 76 A 24 24 0 0 1 489 54 L 495 54" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- a -->
+                <circle cx="537" cy="83" r="28" fill="none" stroke="currentColor" stroke-width="6"/>
+                <path d="M 565 54 L 565 112" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+            </g>
+
+            <!-- Isotipo aislado (La 2.ª "o" náutica) -->
+            <g id="icon-puerto-base">
+                <circle cx="12" cy="12.5" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <line x1="12" y1="1.8" x2="12" y2="5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="12" y1="19.5" x2="12" y2="22" stroke="#7FA1A3" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="2.5" y1="12.5" x2="5" y2="12.5" stroke="#7FA1A3" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="19" y1="12.5" x2="21.5" y2="12.5" stroke="#7FA1A3" stroke-width="1.5" stroke-linecap="round"/>
+                <polygon points="12,6.2 14,12.5 12,11 10,12.5" fill="currentColor" transform="rotate(24 12 12.5)"/>
+                <polygon points="12,18.8 13.8,12.5 12,14 10.2,12.5" fill="#7FA1A3" transform="rotate(24 12 12.5)"/>
+            </g>
+
+            <!-- Icono 2: Marea (Recargar) -->
+            <g id="icon-marea">
+                <path d="M 3 9.5 C 6.5 6, 9.5 6, 12 9.5 C 14.5 13, 17.5 13, 21 9.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 3 15.5 C 6.5 12, 9.5 12, 12 15.5 C 14.5 19, 17.5 19, 21 15.5" fill="none" stroke="#7FA1A3" stroke-width="1.8" stroke-linecap="round"/>
+                <polyline points="18,6 21.5,9.5 17.5,12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+
+            <!-- Icono 3: Estrella Polar (Marcadores/Favoritos) -->
+            <g id="icon-estrella-polar">
+                <path d="M 12 2.5 L 14.4 9.6 L 21.5 12 L 14.4 14.4 L 12 21.5 L 9.6 14.4 L 2.5 12 L 9.6 9.6 Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+                <circle cx="18.5" cy="5.5" r="1.2" fill="#7FA1A3"/>
+            </g>
+
+            <!-- Icono 4: Fondear (Descargas) -->
+            <g id="icon-fondear">
+                <circle cx="12" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+                <line x1="12" y1="7.2" x2="12" y2="21" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                <line x1="7.5" y1="11" x2="16.5" y2="11" stroke="#7FA1A3" stroke-width="1.75" stroke-linecap="round"/>
+                <path d="M 5 15.5 A 7.5 7.5 0 0 0 19 15.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            </g>
+
+            <!-- Icono 5: Horizonte (Modo Lectura / Calma) -->
+            <g id="icon-horizonte">
+                <line x1="2.5" y1="14.5" x2="21.5" y2="14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 6.5 14.5 A 5.5 5.5 0 0 1 17.5 14.5" fill="none" stroke="#7FA1A3" stroke-width="1.8"/>
+                <line x1="6" y1="18.5" x2="18" y2="18.5" stroke="#7FA1A3" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+
+            <!-- Icono 6: Quilla (Escudo Antirrastreo) -->
+            <g id="icon-quilla">
+                <path d="M 12 2.5 L 20 6 C 20 13.5, 16.5 18.5, 12 21.5 C 7.5 18.5, 4 13.5, 4 6 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                <line x1="12" y1="5" x2="12" y2="19.5" stroke="#7FA1A3" stroke-width="1.5"/>
+            </g>
+
+            <!-- Icono 7: Cometa '94 (Guiño a Netscape Navigator) -->
+            <g id="icon-cometa94">
+                <path d="M 3 19 Q 12 12 21 19" fill="none" stroke="#7FA1A3" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M 5 14 Q 11 7 18.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 2" stroke-linecap="round"/>
+                <circle cx="18.5" cy="5.5" r="2.2" fill="currentColor"/>
+                <circle cx="10.5" cy="9.5" r="1.2" fill="#7FA1A3"/>
+                <circle cx="5.5" cy="14" r="1" fill="#7FA1A3"/>
+            </g>
+
+            <!-- Icono 8: Camarotes (Contenedores Multi-Cuenta) -->
+            <g id="icon-camarotes">
+                <rect x="3.5" y="3.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="13.5" y="3.5" width="7" height="7" rx="2" fill="none" stroke="#7FA1A3" stroke-width="1.75"/>
+                <rect x="3.5" y="13.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+                <circle cx="17" cy="17" r="3.5" fill="none" stroke="currentColor" stroke-width="1.75"/>
+            </g>
+        </defs>
+    </svg>
+
+    <!-- ==========================================
+         BARRA DE ANUNCIO SUPERIOR SUTIL (ESTILO FIREFOX / NETSCAPE '94)
+         ========================================== -->
+    <div class="bg-atlantic dark:bg-deepAtlantic text-foam text-xs py-2 px-4 border-b border-mist/20">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono bg-mist/20 text-mist border border-mist/30">
+                    Gecko Engine v134.0
+                </span>
+                <span class="text-foam/85">
+                    Baseado na arquitectura aberta de <strong>Firefox</strong> · Cero telemetría comercial · Inspirado no Atlántico Norte.
+                </span>
+            </div>
+            <button onclick="triggerCometEasterEgg()" class="hidden sm:inline-flex items-center gap-1.5 text-mist hover:text-foam transition font-mono">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
+                <span>Espírito Netscape ’94</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         HEADER DE NAVEGACIÓN FIJO
+         ========================================== -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-foam/85 dark:bg-nightSky/85 border-b border-warmSand/40 dark:border-mist/20 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo Noutrora Vectorial -->
+            <a href="#" class="flex items-center gap-3 group focus:outline-none" aria-label="Noutrora Inicio">
+                <svg class="h-9 w-auto text-atlantic dark:text-foam transition-transform duration-300 group-hover:scale-[1.02]" viewBox="0 0 585 130">
+                    <use href="#noutrora-wordmark"></use>
+                </svg>
+            </a>
+
+            <!-- Enlaces de navegación inspirados en Firefox.com -->
+            <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slateText dark:text-foam/80">
+                <a href="#mockup-interactivo" class="hover:text-atlantic dark:hover:text-white transition">Navegador en directo</a>
+                <a href="#funciones-firefox" class="hover:text-atlantic dark:hover:text-white transition">Funcións</a>
+                <a href="#privacidad-quilla" class="hover:text-atlantic dark:hover:text-white transition">Intimidade (Quilla)</a>
+                <a href="#comparativa" class="hover:text-atlantic dark:hover:text-white transition">Comparativa</a>
+                <a href="#sincronizacion" class="hover:text-atlantic dark:hover:text-white transition">Sincronización</a>
+            </nav>
+
+            <!-- Controles: Conmutador Noche Cometa '94 + Botón Descargar -->
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" onclick="toggleTheme()" class="flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-medium bg-sand dark:bg-deepAtlantic text-atlantic dark:text-foam border border-warmSand/60 dark:border-mist/30 hover:border-mist transition" title="Alternar entre Calma Diúrna e Noite Cometa '94">
+                    <svg class="w-4 h-4 text-tide dark:text-mist" viewBox="0 0 24 24">
+                        <use href="#icon-cometa94"></use>
+                    </svg>
+                    <span id="theme-label" class="hidden sm:inline">Modo Cometa ’94</span>
+                </button>
+
+                <a href="#descargar" onclick="openDownloadModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold bg-atlantic dark:bg-mist text-foam dark:text-nightSky hover:bg-tide dark:hover:bg-foam transition shadow-sm">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-fondear"></use></svg>
+                    <span>Descargar Noutrora</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         HERO SECTION + MOCKUP INTERACTIVO DEL NAVEGADOR
+         ========================================== -->
+    <section class="relative pt-12 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
+        <!-- Destello de cometa animado oculto hasta activar easter egg -->
+        <div id="comet-effect" class="pointer-events-none fixed top-24 left-1/4 z-50 hidden">
+            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-deepAtlantic text-foam border border-mist shadow-lg">
+                <svg class="w-5 h-5 text-mist" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
+                <span class="text-xs font-mono">Rumbo 1994 fixado · O océano web é libre para todos.</span>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Encabezado Hero -->
+            <div class="max-w-3xl mx-auto text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sand dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/30 text-xs font-medium text-tide dark:text-mist mb-6">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+                    <span>Construído sobre a tecnoloxía de Firefox · Sen ruído nin rastrexadores</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-atlantic dark:text-foam leading-[1.12] mb-6">
+                    Navega en calma polo <span class="font-serif italic font-normal text-tide dark:text-mist">océano dixital</span>.
+                </h1>
+
+                <p class="text-lg sm:text-xl text-slateText dark:text-foam/75 leading-relaxed mb-8">
+                    Toda a potencia e intimidade de Firefox nunha interface serena inspirada no Atlántico Norte. Bloqueo de rastrexadores por defecto, editor de PDF integrado e tradución privada no teu equipo.
+                </p>
+
+                <!-- Botones de Descarga con detección de SO -->
+                <div id="descargar" class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="openDownloadModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-base hover:bg-tide dark:hover:bg-foam transition shadow-calm">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><use href="#icon-fondear"></use></svg>
+                        <span id="os-download-text">Descargar Noutrora en Galego</span>
+                    </button>
+                    <a href="#funciones-firefox" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-sand/80 dark:bg-deepAtlantic text-atlantic dark:text-foam font-medium text-sm border border-warmSand dark:border-mist/30 hover:border-atlantic dark:hover:border-mist transition">
+                        <span>Explorar funcións de Firefox</span>
+                        <span aria-hidden="true">↓</span>
+                    </a>
+                </div>
+
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slateText dark:text-mist">
+                    <span>✓ De balde e de código aberto (MPL 2.0)</span>
+                    <span>✓ 100% en Galego</span>
+                    <span>✓ Importa os teus marcadores en 1 clic</span>
+                    <button onclick="openDownloadModal()" class="underline hover:text-atlantic dark:hover:text-foam">Linux · Windows · macOS</button>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 MOCKUP INTERACTIVO DE LA TABLET / NAVEGADOR NOUTRORA
+                 (Fiel a la imagen de referencia + funciones reales de Firefox)
+                 ========================================== -->
+            <div id="mockup-interactivo" class="relative max-w-5xl mx-auto">
+                <!-- Marco tipo Tablet de bordes redondeados como en la foto de estudio -->
+                <div class="rounded-[28px] p-3 sm:p-4 bg-[#222930] shadow-browser border-2 border-[#3A4652]">
+                    <!-- Ventana del navegador Noutrora -->
+                    <div class="rounded-[18px] overflow-hidden bg-foam dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 transition-colors">
+                        
+                        <!-- 1. BARRA DE PESTAÑAS (ESTILO FIREFOX + NOUTRORA) -->
+                        <div class="bg-[#DCE3E6] dark:bg-[#0B1A22] px-3 pt-2.5 pb-1.5 flex items-center justify-between gap-2 select-none border-b border-warmSand/40 dark:border-mist/15">
+                            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                                <!-- Controles de ventana suaves -->
+                                <div class="flex items-center gap-1.5 px-2">
+                                    <span class="w-3 h-3 rounded-full bg-[#B5C2C7] dark:bg-slateText"></span>
+                                    <span class="w-3 h-3 rounded-full bg-[#9BB0B8] dark:bg-tide"></span>
+                                    <span class="w-3 h-3 rounded-full bg-tide dark:bg-mist"></span>
+                                </div>
+
+                                <!-- Pestaña 1: Nueva travesía (Como en la imagen) -->
+                                <button onclick="switchBrowserTab('travesia')" id="tab-btn-travesia" class="browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium bg-foam dark:bg-deepAtlantic text-atlantic dark:text-foam shadow-sm transition">
+                                    <svg class="w-3.5 h-3.5 text-tide dark:text-mist shrink-0" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+                                    <span class="truncate max-w-[120px]">Noutrora</span>
+                                    <span class="text-slateText/60 hover:text-atlantic ml-1">×</span>
+                                </button>
+
+                                <!-- Pestaña 2: Editor de PDF integrado de Firefox -->
+                                <button onclick="switchBrowserTab('pdf')" id="tab-btn-pdf" class="browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium text-slateText dark:text-foam/70 hover:bg-foam/60 dark:hover:bg-deepAtlantic/50 transition">
+                                    <svg class="w-3.5 h-3.5 text-tide dark:text-mist shrink-0" viewBox="0 0 24 24"><use href="#icon-horizonte"></use></svg>
+                                    <span class="truncate max-w-[140px]">Carta_Nautica.pdf</span>
+                                    <span class="text-[10px] px-1.5 py-0.2 rounded bg-mist/20 text-tide dark:text-mist font-mono">PDF</span>
+                                </button>
+
+                                <!-- Pestaña 3: Traducción Local + Modo Lectura -->
+                                <button onclick="switchBrowserTab('lectura')" id="tab-btn-lectura" class="browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium text-slateText dark:text-foam/70 hover:bg-foam/60 dark:hover:bg-deepAtlantic/50 transition">
+                                    <svg class="w-3.5 h-3.5 text-tide dark:text-mist shrink-0" viewBox="0 0 24 24"><use href="#icon-marea"></use></svg>
+                                    <span class="truncate max-w-[150px]">Crónica del Atlántico</span>
+                                </button>
+
+                                <!-- Pestaña 4: Camarotes (Contenedores Multi-Cuenta) -->
+                                <button onclick="switchBrowserTab('camarotes')" id="tab-btn-camarotes" class="browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium text-slateText dark:text-foam/70 hover:bg-foam/60 dark:hover:bg-deepAtlantic/50 transition border-t-2 border-mist">
+                                    <svg class="w-3.5 h-3.5 text-tide dark:text-mist shrink-0" viewBox="0 0 24 24"><use href="#icon-camarotes"></use></svg>
+                                    <span class="truncate max-w-[130px]">Camarote: Trabajo</span>
+                                </button>
+                            </div>
+
+                            <!-- Indicador derecho: Guiño sutil a Netscape '94 -->
+                            <div class="hidden sm:flex items-center gap-2 pr-1">
+                                <button onclick="triggerCometEasterEgg()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-deepAtlantic text-foam text-[11px] font-mono hover:bg-atlantic transition" title="Homenaje a Netscape Navigator 1994">
+                                    <svg class="w-3.5 h-3.5 text-mist" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
+                                    <span>N’94</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. BARRA DE DIRECCIONES Y CONTROLES SVG -->
+                        <div class="relative bg-[#EBF0F2] dark:bg-[#132835] px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 border-b border-warmSand/50 dark:border-mist/20">
+                            <!-- Botones Atrás / Adelante / Recargar (Marea) -->
+                            <div class="flex items-center gap-1 text-slateText dark:text-foam/80">
+                                <button onclick="cycleTabs(-1)" class="p-1.5 rounded-lg hover:bg-foam/70 dark:hover:bg-deepAtlantic transition" title="Atrás">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                                </button>
+                                <button onclick="cycleTabs(1)" class="p-1.5 rounded-lg hover:bg-foam/70 dark:hover:bg-deepAtlantic transition" title="Adelante">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                </button>
+                                <button id="reload-marea-btn" onclick="animateReloadMarea()" class="p-1.5 rounded-lg hover:bg-foam/70 dark:hover:bg-deepAtlantic transition" title="Marea (Recargar en calma)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-marea"></use></svg>
+                                </button>
+                            </div>
+
+                            <!-- Barra URL central con Escudo Quilla (Protección contra el rastreo mejorada) -->
+                            <div class="flex-1 flex items-center bg-foam dark:bg-nightSky rounded-full px-3 py-1.5 border border-warmSand/60 dark:border-mist/30 shadow-inner">
+                                <!-- Botón Escudo Quilla interactivo -->
+                                <button onclick="toggleShieldPopup()" class="flex items-center gap-1.5 pr-2.5 mr-2 border-r border-warmSand/60 dark:border-mist/30 text-xs font-medium text-tide dark:text-mist hover:text-atlantic dark:hover:text-foam transition" title="Ver Protección contra el rastreo mejorada (Escudo Quilla)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-quilla"></use></svg>
+                                    <span id="shield-counter" class="font-mono text-[11px] bg-mist/20 px-1.5 py-0.2 rounded-full">14 bloqueados</span>
+                                </button>
+
+                                <!-- Dirección actual dinámica -->
+                                <span id="browser-url-bar" class="text-xs font-mono text-slateText dark:text-foam/80 truncate flex-1">
+                                    about:ocean — Rumbo despejado · Protección Quilla Estricta activa
+                                </span>
+
+                                <!-- Acciones rápidas dentro de la barra URL: Traducción Local y Favorito (Estrella Polar) -->
+                                <div class="flex items-center gap-1.5 ml-2">
+                                    <button onclick="switchBrowserTab('lectura')" class="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-sand dark:bg-deepAtlantic text-slateText dark:text-mist hover:text-atlantic transition" title="Traducción local privada de Firefox">
+                                        <span>文A</span>
+                                        <span class="hidden md:inline">Local</span>
+                                    </button>
+                                    <button id="bookmark-star-btn" onclick="toggleStarBookmark()" class="p-1 text-slateText dark:text-mist hover:text-atlantic transition" title="Añadir a favoritos (Estrella Polar)">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-estrella-polar"></use></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Iconos de herramientas a la derecha: Camarotes, Descargas, PiP -->
+                            <div class="flex items-center gap-1 text-slateText dark:text-foam/80">
+                                <button onclick="togglePipPlayer()" class="p-1.5 rounded-lg hover:bg-foam/70 dark:hover:bg-deepAtlantic transition text-xs font-medium flex items-center gap-1" title="Activar vídeo flotante Picture-in-Picture">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                        <rect x="12" y="11" width="7" height="6" rx="1" fill="#7FA1A3" stroke="none"/>
+                                    </svg>
+                                    <span class="hidden md:inline text-[11px]">PiP</span>
+                                </button>
+                                <button onclick="switchBrowserTab('camarotes')" class="p-1.5 rounded-lg hover:bg-foam/70 dark:hover:bg-deepAtlantic transition" title="Camarotes (Contenedores Multi-Cuenta)">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-camarotes"></use></svg>
+                                </button>
+                            </div>
+
+                            <!-- POPUP INTERACTIVO DEL ESCUDO QUILLA (Protección contra el rastreo de Firefox) -->
+                            <div id="shield-popup" class="hidden absolute top-12 left-4 sm:left-24 z-30 w-80 rounded-2xl bg-foam dark:bg-nightSky p-4 shadow-xl border border-warmSand dark:border-mist/40 text-left">
+                                <div class="flex items-center justify-between pb-3 mb-3 border-b border-warmSand/50 dark:border-mist/20">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-quilla"></use></svg>
+                                        <div>
+                                            <h4 class="text-xs font-semibold text-atlantic dark:text-foam">Protección Quilla Activa</h4>
+                                            <p class="text-[11px] text-slateText dark:text-mist">Motor Enhanced Tracking Protection</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="toggleShieldPopup()" class="text-slateText hover:text-atlantic text-sm">✕</button>
+                                </div>
+                                <ul class="space-y-2 text-xs text-slateText dark:text-foam/80 mb-3">
+                                    <li class="flex justify-between items-center bg-sand/60 dark:bg-deepAtlantic px-2.5 py-1.5 rounded-lg">
+                                        <span>Rastreadores de redes sociales</span>
+                                        <span class="font-mono font-semibold text-tide dark:text-mist">6 bloqueados</span>
+                                    </li>
+                                    <li class="flex justify-between items-center bg-sand/60 dark:bg-deepAtlantic px-2.5 py-1.5 rounded-lg">
+                                        <span>Cookies de seguimiento entre sitios</span>
+                                        <span class="font-mono font-semibold text-tide dark:text-mist">5 aisladas</span>
+                                    </li>
+                                    <li class="flex justify-between items-center bg-sand/60 dark:bg-deepAtlantic px-2.5 py-1.5 rounded-lg">
+                                        <span>Huellas digitales (Fingerprinters)</span>
+                                        <span class="font-mono font-semibold text-tide dark:text-mist">2 bloqueados</span>
+                                    </li>
+                                    <li class="flex justify-between items-center bg-sand/60 dark:bg-deepAtlantic px-2.5 py-1.5 rounded-lg">
+                                        <span>Criptomineros silenciosos</span>
+                                        <span class="font-mono font-semibold text-tide dark:text-mist">1 bloqueado</span>
+                                    </li>
+                                </ul>
+                                <div class="text-[11px] text-center text-slateText dark:text-mist font-mono">
+                                    Total Cookie Protection · Cada sitio en su propia jarra estanca
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. LIENZO CENTRAL DEL NAVEGADOR (CAMBIA SEGÚN LA PESTAÑA ACTIVA) -->
+                        <div class="relative min-h-[380px] sm:min-h-[420px] bg-[#DCE4E7] dark:bg-[#0D1E28] flex flex-col justify-between p-6 sm:p-10 transition-colors">
+
+                            <!-- VISTA 1: NUEVA TRAVESÍA (Idéntica al diseño minimalista de la tablet en la imagen) -->
+                            <div id="tab-content-travesia" class="tab-pane flex-1 flex flex-col items-center justify-center text-center my-auto">
+                                <!-- Logo Noutrora grande con la brújula en la segunda 'o' -->
+                                <svg class="h-14 sm:h-20 w-auto text-atlantic dark:text-foam mb-8" viewBox="0 0 585 130">
+                                    <use href="#noutrora-wordmark"></use>
+                                </svg>
+
+                                <!-- Barra de búsqueda tranquila con sombra suave como en el mockup de referencia -->
+                                <form onsubmit="handleCalmSearch(event)" class="w-full max-w-lg relative mb-6">
+                                    <input id="calm-search-input" type="text" placeholder="Búsqueda tranquila o dirección web..." class="w-full pl-11 pr-28 py-3.5 rounded-full bg-foam dark:bg-nightSky text-atlantic dark:text-foam placeholder-slateText/70 dark:placeholder-mist/70 text-sm shadow-md border border-warmSand/50 dark:border-mist/30 focus:outline-none focus:ring-2 focus:ring-mist">
+                                    <svg class="w-4 h-4 text-slateText dark:text-mist absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3.5-3.5"/>
+                                    </svg>
+                                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs font-medium hover:bg-tide transition">
+                                        Zarpar
+                                    </button>
+                                </form>
+
+                                <!-- Respuesta interactiva de búsqueda serena -->
+                                <div id="calm-search-result" class="hidden max-w-md mb-5 px-4 py-2.5 rounded-xl bg-foam/90 dark:bg-nightSky/90 border border-mist/40 text-xs text-atlantic dark:text-foam shadow-sm"></div>
+
+                                <!-- Cuadrícula 3x2 del Puerto Base dentro del Mockup -->
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full max-w-xl mb-5 text-left">
+                                    <div class="p-3 rounded-xl bg-foam dark:bg-nightSky border border-mist/50 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-tide dark:text-mist uppercase">01 · Perder el norte</span>
+                                        <span class="font-semibold text-xs text-atlantic dark:text-foam">Inspiración sin mapa</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-deepAtlantic text-foam border border-mist/60 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-mist uppercase">02 · Tierra a la vista</span>
+                                        <span class="font-semibold text-xs">Cultura, Beat, Punk y Cine</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-foam dark:bg-nightSky border border-warmSand/70 dark:border-mist/30 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-tide dark:text-mist uppercase">03 · Mergullar</span>
+                                        <span class="font-semibold text-xs text-atlantic dark:text-foam">Halt and Catch Fire</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-foam dark:bg-nightSky border border-warmSand/70 dark:border-mist/30 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-tide dark:text-mist uppercase">04 · Libro de Abordo</span>
+                                        <span class="font-semibold text-xs text-atlantic dark:text-foam">En el camino · Kerouac</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-atlantic text-foam border border-mist/50 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-mist uppercase">05 · Atracar · Día 1</span>
+                                        <span class="font-semibold text-xs">Puerto de Caión (A Coruña)</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-foam/70 dark:bg-nightSky/70 border border-dashed border-mist/60 shadow-sm">
+                                        <span class="block text-[10px] font-mono text-tide dark:text-mist uppercase">06 · Fondear</span>
+                                        <span class="font-semibold text-xs text-atlantic dark:text-foam">+ Tu puerto personal</span>
+                                    </div>
+                                </div>
+
+                                <!-- Accesos rápidos serenos (Prueban las funciones de Firefox dentro del mockup) -->
+                                <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs">
+                                    <button onclick="switchBrowserTab('pdf')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foam/85 dark:bg-nightSky/80 text-atlantic dark:text-foam hover:bg-foam transition shadow-sm">
+                                        <svg class="w-3.5 h-3.5 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-horizonte"></use></svg>
+                                        <span>Probar Editor PDF</span>
+                                    </button>
+                                    <button onclick="switchBrowserTab('lectura')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foam/85 dark:bg-nightSky/80 text-atlantic dark:text-foam hover:bg-foam transition shadow-sm">
+                                        <span>文A</span>
+                                        <span>Traducción Privada Local</span>
+                                    </button>
+                                    <button onclick="switchBrowserTab('camarotes')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foam/85 dark:bg-nightSky/80 text-atlantic dark:text-foam hover:bg-foam transition shadow-sm">
+                                        <svg class="w-3.5 h-3.5 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-camarotes"></use></svg>
+                                        <span>Contenedores Multi-Cuenta</span>
+                                    </button>
+                                    <button onclick="togglePipPlayer()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-foam/85 dark:bg-nightSky/80 text-atlantic dark:text-foam hover:bg-foam transition shadow-sm">
+                                        <span>▣</span>
+                                        <span>Vídeo Flotante (PiP)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- VISTA 2: EDITOR DE PDF INTEGRADO DE FIREFOX -->
+                            <div id="tab-content-pdf" class="tab-pane hidden flex-1 flex flex-col justify-between">
+                                <!-- Barra de herramientas del visor PDF nativo -->
+                                <div class="flex flex-wrap items-center justify-between gap-2 bg-foam dark:bg-nightSky px-4 py-2.5 rounded-xl border border-warmSand/60 dark:border-mist/30 mb-4">
+                                    <div class="flex items-center gap-2 text-xs font-medium text-atlantic dark:text-foam">
+                                        <span class="font-mono bg-mist/20 text-tide dark:text-mist px-2 py-0.5 rounded">PDF.js Nativo</span>
+                                        <span>Carta_Nautica_Finisterre.pdf (Página 1 de 1)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="highlightPdfSample()" class="px-3 py-1 rounded-lg text-xs font-medium bg-sand dark:bg-deepAtlantic text-atlantic dark:text-foam hover:bg-mist/30 transition">
+                                            ✎ Subrayar rumbo
+                                        </button>
+                                        <button onclick="signPdfSample()" class="px-3 py-1 rounded-lg text-xs font-medium bg-atlantic dark:bg-mist text-foam dark:text-nightSky hover:opacity-90 transition">
+                                            ✒ Añadir firma digital
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Documento PDF editable en vivo -->
+                                <div class="flex-1 bg-foam dark:bg-nightSky rounded-xl p-6 border border-warmSand/60 dark:border-mist/30 shadow-inner text-left flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex justify-between items-start border-b border-warmSand/50 pb-3 mb-4">
+                                            <div>
+                                                <p class="text-[11px] font-mono uppercase tracking-wider text-tide dark:text-mist">Cuaderno de Bitácora · Editor PDF sin salir del navegador</p>
+                                                <h3 class="text-lg font-serif font-medium text-atlantic dark:text-foam">Expedición Atlántico Norte — Paralelo 43° N</h3>
+                                            </div>
+                                            <svg class="w-7 h-7 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+                                        </div>
+                                        <p class="text-sm text-slateText dark:text-foam/80 leading-relaxed mb-3">
+                                            Al igual que en Firefox, en Noutrora puedes rellenar formularios, añadir notas de texto, <span id="pdf-highlight-target" class="transition-colors px-1 rounded">subrayar pasajes importantes con color bruma</span> y firmar contratos directamente sin subir tus documentos confidenciales a servicios externos.
+                                        </p>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                                            <label class="block text-xs text-slateText dark:text-mist">
+                                                Nombre del Capitán / Usuario (Editable en vivo):
+                                                <input type="text" value="A. Breogán — Puerto de Vigo" class="mt-1 w-full px-3 py-1.5 rounded-lg bg-sand/70 dark:bg-deepAtlantic text-atlantic dark:text-foam text-xs border border-warmSand/60 focus:outline-none">
+                                            </label>
+                                            <div class="flex flex-col justify-end">
+                                                <span class="text-xs text-slateText dark:text-mist mb-1">Firma autógrafa incrustada:</span>
+                                                <div id="pdf-signature-box" class="h-8 px-3 rounded-lg border border-dashed border-mist flex items-center text-xs italic font-serif text-tide dark:text-mist">
+                                                    Pulsa «Añadir firma digital» arriba para firmar...
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] font-mono text-slateText/70 dark:text-mist/70 mt-4">
+                                        ✓ Procesado 100 % en memoria local mediante el motor PDF de Firefox.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- VISTA 3: TRADUCCIÓN PRIVADA EN EL DISPOSITIVO + MODO LECTURA HORIZONTE -->
+                            <div id="tab-content-lectura" class="tab-pane hidden flex-1 flex flex-col justify-between">
+                                <div class="flex flex-wrap items-center justify-between gap-2 bg-foam dark:bg-nightSky px-4 py-2.5 rounded-xl border border-warmSand/60 dark:border-mist/30 mb-4">
+                                    <div class="flex items-center gap-2 text-xs font-medium text-atlantic dark:text-foam">
+                                        <svg class="w-4 h-4 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-horizonte"></use></svg>
+                                        <span>Traductor Privado Local (Sin nube) · Idioma detectado:</span>
+                                        <span id="lang-badge" class="font-mono px-2 py-0.5 rounded bg-mist/20 text-tide dark:text-mist">Inglés (EN)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="translateLocalArticle('es')" class="px-3 py-1 rounded-lg text-xs font-medium bg-atlantic dark:bg-mist text-foam dark:text-nightSky transition">
+                                            Traducir al Español (Local)
+                                        </button>
+                                        <button onclick="translateLocalArticle('gl')" class="px-3 py-1 rounded-lg text-xs font-medium bg-sand dark:bg-deepAtlantic text-atlantic dark:text-foam transition">
+                                            Galego
+                                        </button>
+                                        <button onclick="translateLocalArticle('en')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slateText dark:text-mist hover:underline">
+                                            Original
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex-1 bg-foam dark:bg-nightSky rounded-xl p-6 border border-warmSand/60 dark:border-mist/30 text-left flex flex-col justify-between">
+                                    <div class="max-w-2xl mx-auto">
+                                        <p class="text-xs font-mono uppercase tracking-widest text-tide dark:text-mist mb-1">Modo Lectura «Horizonte» · Tipografía Newsreader</p>
+                                        <h3 id="article-title" class="text-xl sm:text-2xl font-serif text-atlantic dark:text-foam mb-3">
+                                            The Quiet Architecture of the North Atlantic Web
+                                        </h3>
+                                        <p id="article-body" class="text-sm sm:text-base font-serif text-slateText dark:text-foam/85 leading-relaxed">
+                                            "True calm on the internet requires a browser that respects human attention. By translating articles directly inside your device's processor—just like Firefox Translations—not a single word you read is ever sent to third-party cloud servers."
+                                        </p>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-t border-warmSand/40 dark:border-mist/20 flex items-center justify-between text-[11px] font-mono text-tide dark:text-mist">
+                                        <span>🔒 Traducción ejecutada en tu CPU local (0 bytes enviados a servidores externos)</span>
+                                        <span>Tiempo de lectura: 2 min</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VISTA 4: CAMAROTES (CONTENEDORES MULTI-CUENTA DE FIREFOX) -->
+                            <div id="tab-content-camarotes" class="tab-pane hidden flex-1 flex flex-col justify-between">
+                                <div class="bg-foam dark:bg-nightSky rounded-xl p-6 border border-warmSand/60 dark:border-mist/30 text-left flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div>
+                                                <span class="text-xs font-mono uppercase text-tide dark:text-mist">Firefox Multi-Account Containers</span>
+                                                <h3 class="text-lg font-semibold text-atlantic dark:text-foam">Camarotes Estancos: Aísla tus sesiones</h3>
+                                            </div>
+                                            <svg class="w-6 h-6 text-tide dark:text-mist" viewBox="0 0 24 24"><use href="#icon-camarotes"></use></svg>
+                                        </div>
+                                        <p class="text-xs sm:text-sm text-slateText dark:text-foam/80 mb-5">
+                                            Separa tu correo del trabajo, tu banca online y tus compras en pestañas codificadas por colores atlánticos. Las cookies de un camarote jamás pueden espiar lo que haces en otro.
+                                        </p>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                            <div class="p-3.5 rounded-xl bg-sand/70 dark:bg-deepAtlantic border-t-4 border-atlantic dark:border-foam">
+                                                <div class="text-xs font-semibold text-atlantic dark:text-foam mb-1">⚓ Camarote Trabajo</div>
+                                                <p class="text-[11px] text-slateText dark:text-mist">Sesión activa de estudio, documentos y repositorio de código.</p>
+                                            </div>
+                                            <div class="p-3.5 rounded-xl bg-sand/70 dark:bg-deepAtlantic border-t-4 border-mist">
+                                                <div class="text-xs font-semibold text-atlantic dark:text-foam mb-1">🌊 Camarote Personal</div>
+                                                <p class="text-[11px] text-slateText dark:text-mist">Lectura tranquila, música y redes sociales confinadas sin rastreo.</p>
+                                            </div>
+                                            <div class="p-3.5 rounded-xl bg-sand/70 dark:bg-deepAtlantic border-t-4 border-warmSand">
+                                                <div class="text-xs font-semibold text-atlantic dark:text-foam mb-1">🧭 Camarote Banca</div>
+                                                <p class="text-[11px] text-slateText dark:text-mist">Cifrado aislado con limpieza automática al cerrar la pestaña.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] font-mono text-tide dark:text-mist mt-4">
+                                        ✓ Puedes iniciar sesión con 3 cuentas distintas en el mismo sitio web simultáneamente.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- VENTANA FLOTANTE PICTURE-IN-PICTURE (PiP) DENTRO DEL MOCKUP -->
+                            <div id="pip-floating-window" class="hidden absolute bottom-4 right-4 z-20 w-64 rounded-xl overflow-hidden bg-deepAtlantic text-foam shadow-2xl border border-mist/50">
+                                <div class="px-3 py-1.5 bg-nightSky flex items-center justify-between text-[11px] font-mono">
+                                    <span class="flex items-center gap-1.5 text-mist">
+                                        <span class="w-2 h-2 rounded-full bg-mist animate-pulse"></span>
+                                        Picture-in-Picture
+                                    </span>
+                                    <button onclick="togglePipPlayer()" class="hover:text-mist">✕</button>
+                                </div>
+                                <div class="p-4 bg-gradient-to-br from-deepAtlantic to-atlantic text-center relative">
+                                    <svg class="w-12 h-12 mx-auto text-mist/80 mb-2 animate-marea" viewBox="0 0 24 24">
+                                        <use href="#icon-marea"></use>
+                                    </svg>
+                                    <p class="text-xs font-serif italic">Sonido de oleaje · Costa da Morte (4K)</p>
+                                    <p class="text-[10px] text-mist mt-0.5">Siempre visible mientras cambias de pestaña</p>
+                                </div>
+                            </div>
+
+                            <!-- Pie discreto del lienzo del navegador -->
+                            <div class="mt-4 flex flex-wrap items-center justify-between text-[11px] text-slateText/80 dark:text-mist/80 px-1">
+                                <span>Haz clic en las pestañas superiores o en el escudo <strong>Quilla</strong> para probar el navegador.</span>
+                                <span class="font-mono">Basado en Firefox · Motor Gecko</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECCIÓN INTERACTIVA: ESCUDO QUILLA (PROTECCIÓN CONTRA EL RASTREO DE FIREFOX)
+         Comparador en tiempo real "Web con Ruido" vs "Navegación Noutrora"
+         ========================================== -->
+    <section id="privacidad-quilla" class="py-20 bg-sand/70 dark:bg-deepAtlantic/60 border-y border-warmSand/50 dark:border-mist/15">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-foam dark:bg-nightSky text-xs font-mono text-tide dark:text-mist mb-4 border border-warmSand/50 dark:border-mist/30">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-quilla"></use></svg>
+                        <span>Protección contra o rastrexo mellorada</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-semibold text-atlantic dark:text-foam tracking-tight mb-4">
+                        Navega sen que te persigan por todo o océano.
+                    </h2>
+                    <p class="text-slateText dark:text-foam/75 leading-relaxed mb-6">
+                        Herdamos a <strong>Protección Total contra Cookies</strong> de Firefox e levámola aínda máis lonxe: bloqueamos por defecto máis de 2.000 rastrexadores invisibles, colleitadores de pegadas dixitais (<em>fingerprinters</em>) e anuncios invasivos que ralentizan o teu equipo.
+                    </p>
+
+                    <!-- Conmutador interactivo de comparación -->
+                    <div class="p-4 rounded-2xl bg-foam dark:bg-nightSky border border-warmSand/60 dark:border-mist/30">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slateText dark:text-mist mb-3">
+                            Simulador de travesía en directo:
+                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="btn-sim-calm" onclick="setPrivacySimulation('calm')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-atlantic dark:bg-mist text-foam dark:text-nightSky transition">
+                                🛡️ Con Noutrora (Calma)
+                            </button>
+                            <button id="btn-sim-noisy" onclick="setPrivacySimulation('noisy')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-sand dark:bg-deepAtlantic text-slateText dark:text-foam/80 hover:text-atlantic transition">
+                                ⚠️ Navegador comercial
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel visual de resultados del simulador -->
+                <div class="lg:col-span-7">
+                    <div class="rounded-3xl bg-foam dark:bg-nightSky p-6 sm:p-8 border border-warmSand/60 dark:border-mist/30 shadow-calm">
+                        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-warmSand/40 dark:border-mist/20">
+                            <div>
+                                <span id="sim-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-mono bg-mist/20 text-tide dark:text-mist mb-1">
+                                    Escudo Quilla: ACTIVO
+                                </span>
+                                <h3 id="sim-title" class="text-xl font-semibold text-atlantic dark:text-foam">
+                                    Augas tranquilas e lectura despexada
+                                </h3>
+                            </div>
+                            <div class="text-right font-mono">
+                                <div id="sim-speed" class="text-2xl font-bold text-tide dark:text-mist">0.8 s</div>
+                                <div class="text-xs text-slateText dark:text-foam/60">Tempo de carga</div>
+                            </div>
+                        </div>
+
+                        <!-- Métricas comparativas dinámicas -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <div class="p-4 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20">
+                                <div class="text-xs text-slateText dark:text-mist mb-1">Rastrexadores cruzados</div>
+                                <div id="sim-trackers" class="text-xl font-mono font-semibold text-atlantic dark:text-foam">0 permitidos</div>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20">
+                                <div class="text-xs text-slateText dark:text-mist mb-1">Consumo de memoria</div>
+                                <div id="sim-ram" class="text-xl font-mono font-semibold text-atlantic dark:text-foam">-38 % RAM</div>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20">
+                                <div class="text-xs text-slateText dark:text-mist mb-1">Pegada dixital</div>
+                                <div id="sim-fingerprint" class="text-xl font-mono font-semibold text-tide dark:text-mist">Camuflada</div>
+                            </div>
+                        </div>
+
+                        <p id="sim-description" class="text-xs sm:text-sm text-slateText dark:text-foam/80 leading-relaxed">
+                            Os scripts de vixilancia de terceiros fican bloqueados antes de descargarse. A batería do teu portátil dura máis e as páxinas móstranse limpas coma as follas dun libro.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECCIÓN DE FUNCIONES DE FIREFOX ADAPTADAS A NOUTRORA + CATÁLOGO DE ICONOS SVG
+         ========================================== -->
+    <section id="funciones-firefox" class="py-20 lg:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto text-center mb-16">
+                <span class="text-xs font-mono uppercase tracking-widest text-tide dark:text-mist">Ferramentas de a bordo</span>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-atlantic dark:text-foam mt-2 mb-4">
+                    Todo o que che gusta de Firefox, vestido de calma atlántica
+                </h2>
+                <p class="text-slateText dark:text-foam/75">
+                    Cada función foi deseñada coa nosa iconografía vectorial propia de trazo continuo (1.75 px) para ofrecerte potencia sen saturación visual.
+                </p>
+            </div>
+
+            <!-- Grid de 6 tarjetas de funciones principales de Firefox.com -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- 1. Editor de PDF integrado -->
+                <div class="group rounded-3xl p-7 bg-sand/50 dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/20 hover:border-mist transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-foam dark:bg-nightSky flex items-center justify-center text-atlantic dark:text-mist mb-5 border border-warmSand/50 dark:border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-horizonte"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-atlantic dark:text-foam mb-2">Editor de PDF integrado e Modo Horizonte</h3>
+                        <p class="text-sm text-slateText dark:text-foam/75 leading-relaxed mb-4">
+                            Visualiza, subliña, engade texto e asina os teus documentos PDF directamente nunha pestana de Noutrora sen instalar programas pesados nin subir ficheiros á nube.
+                        </p>
+                    </div>
+                    <a href="#mockup-interactivo" onclick="switchBrowserTab('pdf')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-tide dark:text-mist group-hover:underline">
+                        <span>Probar no navegador interactivo</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- 2. Traducción privada en tu dispositivo -->
+                <div class="group rounded-3xl p-7 bg-sand/50 dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/20 hover:border-mist transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-foam dark:bg-nightSky flex items-center justify-center text-atlantic dark:text-mist mb-5 border border-warmSand/50 dark:border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-marea"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-atlantic dark:text-foam mb-2">Tradución privada no teu dispositivo</h3>
+                        <p class="text-sm text-slateText dark:text-foam/75 leading-relaxed mb-4">
+                            Traduce páxinas en máis de 100 idiomas usando o motor local de Firefox Translations. A diferenza doutros navegadores, os teus textos nunca se envían a servidores externos.
+                        </p>
+                    </div>
+                    <a href="#mockup-interactivo" onclick="switchBrowserTab('lectura')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-tide dark:text-mist group-hover:underline">
+                        <span>Probar tradución local</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- 3. Camarotes (Contenedores Multi-Cuenta) -->
+                <div class="group rounded-3xl p-7 bg-sand/50 dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/20 hover:border-mist transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-foam dark:bg-nightSky flex items-center justify-center text-atlantic dark:text-mist mb-5 border border-warmSand/50 dark:border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-camarotes"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-atlantic dark:text-foam mb-2">Camarotes (Contedores e Pestanas)</h3>
+                        <p class="text-sm text-slateText dark:text-foam/75 leading-relaxed mb-4">
+                            Divide a túa navegación en espazos illados (Traballo, Persoal, Banca) e organiza as túas pestanas en horizontal ou en barra lateral vertical sen perder nunca o norte.
+                        </p>
+                    </div>
+                    <a href="#mockup-interactivo" onclick="switchBrowserTab('camarotes')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-tide dark:text-mist group-hover:underline">
+                        <span>Ver camarotes illados</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- 4. Picture-in-Picture (Vídeo flotante) -->
+                <div class="group rounded-3xl p-7 bg-sand/50 dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/20 hover:border-mist transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-foam dark:bg-nightSky flex items-center justify-center text-atlantic dark:text-mist mb-5 border border-warmSand/50 dark:border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-estrella-polar"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-atlantic dark:text-foam mb-2">Picture-in-Picture Múltiple</h3>
+                        <p class="text-sm text-slateText dark:text-foam/75 leading-relaxed mb-4">
+                            Extrae calquera vídeo ou conferencia a unha ventá flotante minimalista con subtítulos integrados mentres tomas notas ou navegas noutras pestanas.
+                        </p>
+                    </div>
+                    <a href="#mockup-interactivo" onclick="togglePipPlayer()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-tide dark:text-mist group-hover:underline">
+                        <span>Desacoplar reprodutor PiP</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- 5. Asistente de IA Opcional en Barra Lateral (Firefox Orbit / Local AI) -->
+                <div class="group rounded-3xl p-7 bg-sand/50 dark:bg-deepAtlantic border border-warmSand/60 dark:border-mist/20 hover:border-mist transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-foam dark:bg-nightSky flex items-center justify-center text-atlantic dark:text-mist mb-5 border border-warmSand/50 dark:border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-atlantic dark:text-foam mb-2">IA á túa elección (100 % Opcional)</h3>
+                        <p class="text-sm text-slateText dark:text-foam/75 leading-relaxed mb-4">
+                            Seguindo a filosofía de Noutrora, nunca te impoñemos funcións intrusivas. A IA é unha aliada para aprender e crear se ti o decides, apagada por defecto para máxima calma.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono text-tide dark:text-mist">Desactivado por defecto para máxima calma</span>
+                </div>
+
+                <!-- 6. Herencia Pionera: Espírito Netscape '94 -->
+                <div class="group rounded-3xl p-7 bg-atlantic text-foam border border-mist/30 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-deepAtlantic flex items-center justify-center text-mist mb-5 border border-mist/30">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-foam mb-2">Tributo Sutil a Netscape ’94</h3>
+                        <p class="text-sm text-foam/80 leading-relaxed mb-4">
+                            En 1994 un temón e un ceo estrelado abriron a web ao mundo. Noutrora recupera esa emoción serena de explorar o océano dixital sen algoritmos que manipulen a túa atención.
+                        </p>
+                    </div>
+                    <button onclick="toggleTheme()" class="inline-flex items-center gap-1.5 text-xs font-mono text-mist hover:text-foam text-left">
+                        <span>✦ Activar ceo estelar Cometa ’94</span>
+                        <span>→</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         TABLA COMPARATIVA: NOUTRORA (FIREFOX) VS CHROME VS EDGE
+         ========================================== -->
+    <section id="comparativa" class="py-20 bg-sand/70 dark:bg-deepAtlantic/50 border-y border-warmSand/50 dark:border-mist/15">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-xs font-mono uppercase tracking-widest text-tide dark:text-mist">Transparencia en alta mar</span>
+                <h2 class="text-3xl sm:text-4xl font-semibold text-atlantic dark:text-foam mt-2 mb-3">
+                    Por que navegar con Noutrora marca a diferenza
+                </h2>
+                <p class="text-sm sm:text-base text-slateText dark:text-foam/75">
+                    Comparativa directa fronte aos navegadores propiedade de xigantes publicitarios.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto rounded-3xl bg-foam dark:bg-nightSky border border-warmSand/60 dark:border-mist/30 shadow-calm">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-warmSand/60 dark:border-mist/25 bg-sand/50 dark:bg-deepAtlantic">
+                            <th class="p-4 sm:p-5 text-xs sm:text-sm font-semibold text-atlantic dark:text-foam">Característica de Privacidade e Calma</th>
+                            <th class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10">
+                                <div class="inline-flex items-center gap-1.5 font-bold text-sm text-atlantic dark:text-mist">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+                                    <span>Noutrora (Firefox)</span>
+                                </div>
+                            </th>
+                            <th class="p-4 sm:p-5 text-center text-xs sm:text-sm font-medium text-slateText dark:text-foam/70">Google Chrome</th>
+                            <th class="p-4 sm:p-5 text-center text-xs sm:text-sm font-medium text-slateText dark:text-foam/70">Microsoft Edge</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-warmSand/40 dark:divide-mist/15 text-xs sm:text-sm">
+                        <tr>
+                            <td class="p-4 sm:p-5 font-medium text-atlantic dark:text-foam">Bloquea cookies de rastrexo entre sitios por defecto</td>
+                            <td class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10 font-semibold text-tide dark:text-mist">✓ Si (Total Cookie Protection)</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Non</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">Parcial</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 sm:p-5 font-medium text-atlantic dark:text-foam">Tradución de páxinas 100 % local (sen subir datos á nube)</td>
+                            <td class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10 font-semibold text-tide dark:text-mist">✓ Si</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Envía a servidores</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Envía a servidores</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 sm:p-5 font-medium text-atlantic dark:text-foam">Bloqueo nativo de colleitadores de pegada dixital (Fingerprinters)</td>
+                            <td class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10 font-semibold text-tide dark:text-mist">✓ Si</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Non</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Non</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 sm:p-5 font-medium text-atlantic dark:text-foam">Editor de PDF completo con sinatura e subliñado</td>
+                            <td class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10 font-semibold text-tide dark:text-mist">✓ Si</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">Básico</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✓ Si</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 sm:p-5 font-medium text-atlantic dark:text-foam">Motor independente (Non baseado no monopolio Chromium)</td>
+                            <td class="p-4 sm:p-5 text-center bg-atlantic/5 dark:bg-mist/10 font-semibold text-tide dark:text-mist">✓ Motor Gecko libre</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Chromium</td>
+                            <td class="p-4 sm:p-5 text-center text-slateText dark:text-foam/60">✕ Chromium</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECCIÓN DE SINCRONIZACIÓN ENTRE DISPOSITIVOS (FIREFOX SYNC)
+         ========================================== -->
+    <section id="sincronizacion" class="py-20 lg:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="rounded-[32px] bg-atlantic dark:bg-deepAtlantic text-foam p-8 sm:p-12 lg:p-16 border border-mist/30 shadow-browser relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                    <div class="lg:col-span-7">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mist/20 text-mist text-xs font-mono mb-4">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-estrella-polar"></use></svg>
+                            <span>Compatible con Mozilla Sync · Cifrado de extremo a extremo</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
+                            Continúa a túa travesía no teu ordenador, tablet ou móbil.
+                        </h2>
+                        <p class="text-foam/80 leading-relaxed mb-8">
+                            Envía pestanas ao instante do teu portátil á túa tablet ou teléfono sen crear contas publicitarias. Os teus marcadores (<em>Estrela Polar</em>), historial e contrasinais cífranse no teu dispositivo antes de viaxar pola rede.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="openDownloadModal()" class="px-6 py-3 rounded-full bg-foam text-atlantic font-semibold text-sm hover:bg-mist hover:text-nightSky transition">
+                                Descargar para Linux, Windows e Mac
+                            </button>
+                            <button onclick="sendTabSimulation()" class="px-5 py-3 rounded-full bg-deepAtlantic text-foam border border-mist/40 text-sm font-medium hover:border-foam transition">
+                                📲 Simular «Enviar pestana á miña Tablet»
+                            </button>
+                        </div>
+                        <p id="sync-toast" class="hidden mt-3 text-xs font-mono text-mist">
+                            ✓ Pestana «Crónica do Atlántico» enviada con cifrado E2EE á túa Tablet Noutrora.
+                        </p>
+                    </div>
+
+                    <!-- Ilustración vectorial de Escritorio + Tablet + Móvil sincronizados -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="w-full max-w-sm rounded-2xl bg-nightSky/80 p-6 border border-mist/30 text-center">
+                            <div class="flex items-center justify-around mb-4">
+                                <div class="text-center">
+                                    <div class="w-12 h-12 rounded-xl bg-deepAtlantic border border-mist/40 flex items-center justify-center mx-auto mb-1">💻</div>
+                                    <span class="text-[11px] font-mono text-mist">Escritorio</span>
+                                </div>
+                                <div class="text-mist font-mono text-xs">⇄ E2EE ⇄</div>
+                                <div class="text-center">
+                                    <div class="w-12 h-12 rounded-xl bg-deepAtlantic border border-mist/40 flex items-center justify-center mx-auto mb-1">📱</div>
+                                    <span class="text-[11px] font-mono text-mist">Tablet & Móvil</span>
+                                </div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-deepAtlantic/90 border border-mist/20 text-xs text-foam/85 font-mono">
+                                Estrella Polar sincronizada · 0 claves en claro en el servidor
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         FOOTER OFICIAL CON SELECTOR DE IDIOMA Y GUIÑO NETSCAPE '94
+         ========================================== -->
+    <section id="instalar" class="py-20 lg:py-28">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-2xl font-semibold text-atlantic dark:text-foam mb-2 text-center">Como instalar Noutrora</h2>
+            <p class="text-sm text-slateText dark:text-foam/80 mb-6 text-center">Paso a paso, sen saber de informática. Aínda sen sinatura dixital: por iso o teu sistema pide un clic extra.</p>
+            <div class="flex justify-center gap-2 mb-6">
+<button data-tab="mac" onclick="showInstallTab('mac')" class="install-tab px-4 py-2 rounded-full text-sm font-semibold border border-warmSand/70 dark:border-mist/30 text-atlantic dark:text-foam">🍎 macOS</button>
+<button data-tab="win" onclick="showInstallTab('win')" class="install-tab px-4 py-2 rounded-full text-sm font-semibold border border-warmSand/70 dark:border-mist/30 text-atlantic dark:text-foam">🪟 Windows</button>
+<button data-tab="linux" onclick="showInstallTab('linux')" class="install-tab px-4 py-2 rounded-full text-sm font-semibold border border-warmSand/70 dark:border-mist/30 text-atlantic dark:text-foam">🐧 Linux</button>
+            </div>
+<ol id="install-mac" class="install-panel space-y-3 hidden">
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1">
+<p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">1</span>Copia o comando de instalación en 1 clic</p>
+<p class="text-sm text-slateText dark:text-foam/80 mb-3">Preme o botón para copiar o comando (así evitamos o erro de permisos e desenvolvedor de macOS):</p>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-foam dark:bg-deepAtlantic p-2.5 rounded-xl border border-warmSand dark:border-mist/30">
+<code id="mac-install-cmd" class="flex-1 text-xs font-mono text-atlantic dark:text-foam select-all overflow-x-auto">curl -fsSL https://noutrora.es/downloads/Noutrora-Mac.command | bash</code>
+<button type="button" onclick="copyMacInstallCmd(this)" class="px-3.5 py-1.5 rounded-lg bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs font-semibold hover:opacity-90 transition shrink-0">Copiar comando</button>
+</div>
+</div>
+<img src="pasos/mac-1.png" alt="🍎 macOS: Copia o comando" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">2</span>Abre o Terminal no teu Mac</p>
+<p class="text-sm text-slateText dark:text-foam/80">Preme <b>⌘ Cmd + Espazo</b>, escribe <b>Terminal</b> e preme <b>Intro</b>.</p></div>
+<img src="pasos/mac-2.png" alt="🍎 macOS: Abre o Terminal" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">3</span>Pega e preme Intro</p>
+<p class="text-sm text-slateText dark:text-foam/80">Preme <b>⌘ Cmd + V</b> dentro do Terminal e logo <b>Intro</b>. En menos dun minuto descargará o motor oficial en galego, aplicará Noutrora e abrirase na túa carpeta Aplicacións.</p></div>
+<img src="pasos/mac-3.png" alt="🍎 macOS: Pega e preme Intro" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+</ol>
+<ol id="install-win" class="install-panel space-y-3 hidden">
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">1</span>Descarga o instalador</p>
+<p class="text-sm text-slateText dark:text-foam/80">Preme «Descargar Noutrora para Windows». Gárdase <code>Noutrora-Setup-Windows.cmd</code>.</p></div>
+<img src="pasos/win-1.png" alt="🪟 Windows: Descarga o instalador" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">2</span>Ábreo</p>
+<p class="text-sm text-slateText dark:text-foam/80">Dobre clic sobre o arquivo. Se sae «Windows protexeu o seu PC»: <b>Máis información</b> → <b>Executar de todas formas</b>.</p></div>
+<img src="pasos/win-2.png" alt="🪟 Windows: Ábreo" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">3</span>Agarda</p>
+<p class="text-sm text-slateText dark:text-foam/80">Descárgase Firefox oficial en galego e aplícase Noutrora. Non peches a ventá negra.</p></div>
+<img src="pasos/win-3.png" alt="🪟 Windows: Agarda" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">4</span>Listo!</p>
+<p class="text-sm text-slateText dark:text-foam/80">Ábrese Noutrora e tes un acceso directo no Escritorio.</p></div>
+<img src="pasos/win-4.png" alt="🪟 Windows: Listo!" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+</ol>
+<ol id="install-linux" class="install-panel space-y-3 hidden">
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">1</span>Descarga o instalador</p>
+<p class="text-sm text-slateText dark:text-foam/80">Preme «Descargar Noutrora para Linux». Gárdase <code>noutrora_2.0_amd64.deb</code>.</p></div>
+<img src="pasos/linux-1.png" alt="🐧 Linux: Descarga o instalador" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">2</span>Dobre clic</p>
+<p class="text-sm text-slateText dark:text-foam/80">Ábreo co instalador de software (Ubuntu / Mint / Debian) e preme <b>Instalar</b>.</p></div>
+<img src="pasos/linux-2.png" alt="🐧 Linux: Dobre clic" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+<li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
+<div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">3</span>Abre Noutrora</p>
+<p class="text-sm text-slateText dark:text-foam/80">Búscao no menú de aplicacións.</p></div>
+<img src="pasos/linux-3.png" alt="🐧 Linux: Abre Noutrora" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
+</li>
+</ol>
+        </div>
+    </section>
+    <script>
+        function showInstallTab(k) {
+            document.querySelectorAll('.install-panel').forEach(e => e.classList.add('hidden'));
+            document.getElementById('install-' + k).classList.remove('hidden');
+            document.querySelectorAll('.install-tab').forEach(b => b.classList.toggle('bg-sand', b.dataset.tab === k));
+        }
+        function copyMacInstallCmd(btn) {
+            const cmd = 'curl -fsSL https://noutrora.es/downloads/Noutrora-Mac.command | bash';
+            navigator.clipboard.writeText(cmd).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                setTimeout(() => { btn.textContent = orig; }, 2200);
+            });
+        }
+        (function () { const ua = navigator.userAgent; showInstallTab(ua.includes('Mac') ? 'mac' : ua.includes('Win') ? 'win' : 'linux'); })();
+    </script>
+
+    <footer class="bg-sand dark:bg-nightSky border-t border-warmSand/60 dark:border-mist/20 pt-16 pb-12 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-warmSand/50 dark:border-mist/20">
+                
+                <!-- Columna 1: Logo + Manifiesto -->
+                <div class="lg:col-span-2">
+                    <svg class="h-8 w-auto text-atlantic dark:text-foam mb-4" viewBox="0 0 585 130">
+                        <use href="#noutrora-wordmark"></use>
+                    </svg>
+                    <p class="text-xs sm:text-sm text-slateText dark:text-foam/70 max-w-sm leading-relaxed mb-4">
+                        Navegador web limpo, minimalista e sereno inspirado no Océano Atlántico. Impulsado polo motor de código aberto de Firefox e unha homenaxe silenciosa aos pioneiros de 1994.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-mono text-slateText dark:text-mist">Idioma:</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-foam dark:bg-deepAtlantic text-xs font-semibold text-atlantic dark:text-foam border border-warmSand dark:border-mist/30">Galego (gl)</span>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Descargas -->
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam mb-3">Navegadores</h4>
+                    <ul class="space-y-2 text-xs text-slateText dark:text-foam/75">
+                        <li><a href="#descargar" onclick="openDownloadModal()" class="hover:text-atlantic dark:hover:text-white">Escritorio (Linux / Windows / Mac)</a></li>
+                        <li><a href="#mockup-interactivo" class="hover:text-atlantic dark:hover:text-white">Notas da versión v1.0 «Atlántico»</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Funciones Firefox -->
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam mb-3">Tecnoloxía Firefox</h4>
+                    <ul class="space-y-2 text-xs text-slateText dark:text-foam/75">
+                        <li><a href="#privacidad-quilla" class="hover:text-atlantic dark:hover:text-white">Escudo Quilla Antirrastrexo</a></li>
+                        <li><a href="#mockup-interactivo" onclick="switchBrowserTab('pdf')" class="hover:text-atlantic dark:hover:text-white">Editor de PDF integrado</a></li>
+                        <li><a href="#mockup-interactivo" onclick="switchBrowserTab('lectura')" class="hover:text-atlantic dark:hover:text-white">Tradución local privada</a></li>
+                        <li><a href="#mockup-interactivo" onclick="switchBrowserTab('camarotes')" class="hover:text-atlantic dark:hover:text-white">Contedores Multi-Conta</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Identidad de Marca -->
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam mb-3">Cultura Náutica</h4>
+                    <ul class="space-y-2 text-xs text-slateText dark:text-foam/75">
+                        <li><button onclick="triggerCometEasterEgg()" class="hover:text-atlantic dark:hover:text-white text-left">Homenaxe a Netscape ’94</button></li>
+                        <li><a href="#funciones-firefox" class="hover:text-atlantic dark:hover:text-white">Sistema de Iconas SVG</a></li>
+                        <li><a href="#comparativa" class="hover:text-atlantic dark:hover:text-white">Manifiesto por unha Web Tranquila</a></li>
+                        <li><a href="https://www.firefox.com/gl/" target="_blank" rel="noopener noreferrer" class="hover:text-atlantic dark:hover:text-white">Proxecto Mozilla Firefox ↗</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText dark:text-mist">
+                <p>© 2026 Proxecto Noutrora · Baseado en código aberto de Firefox · Deseñado fronte ao Océano Atlántico.</p>
+                <button onclick="triggerCometEasterEgg()" class="inline-flex items-center gap-1.5 font-mono hover:text-atlantic dark:hover:text-foam transition">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
+                    <span>43° 21′ N, 8° 24′ O · Cometa ’94</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         MODAL DE DESCARGA PERSONALIZADO (SIN USAR ALERT)
+         ========================================== -->
+    <div id="download-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-nightSky/70 backdrop-blur-sm p-4">
+        <div class="relative w-full max-w-md rounded-3xl bg-foam dark:bg-deepAtlantic p-6 sm:p-8 border border-warmSand dark:border-mist/40 shadow-2xl text-center">
+            <button onclick="closeDownloadModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-sand dark:bg-nightSky text-slateText dark:text-foam flex items-center justify-center hover:opacity-80">✕</button>
+            
+            <div class="w-14 h-14 rounded-2xl bg-sand dark:bg-nightSky flex items-center justify-center mx-auto mb-4 border border-warmSand/60 dark:border-mist/30">
+                <svg class="w-8 h-8 text-atlantic dark:text-mist" viewBox="0 0 24 24"><use href="#icon-puerto-base"></use></svg>
+            </div>
+
+            <h3 class="text-xl font-semibold text-atlantic dark:text-foam mb-2">Levar áncoras con Noutrora v2.0</h3>
+            <p class="text-xs sm:text-sm text-slateText dark:text-foam/80 mb-4 italic">
+                «Ser sinceros, non roubar ningún dato, non recoller información, non nos vendemos. Navegación tranquila sen roubar RAM nin CPU innecesarias.»
+            </p>
+
+            <a id="primary-download-link" href="downloads/noutrora_2.0_amd64.deb" download class="block w-full py-3.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-sm hover:opacity-95 transition mb-4 shadow-md">
+                <span id="modal-os-download-label">Descargar Instalador Completo para Linux (.deb) — En Galego</span>
+            </a>
+
+            <div class="space-y-2 text-left mb-3">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-slateText dark:text-mist text-center mb-2">
+                    Sistemas dispoñibles (En Galego):
+                </p>
+                <a href="downloads/noutrora_2.0_amd64.deb" download class="p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition">
+                    <span class="font-medium text-atlantic dark:text-foam">🐧 Linux Completo (Ubuntu / Mint / Debian)</span>
+                    <span class="font-mono text-tide dark:text-mist">noutrora_2.0_amd64.deb</span>
+                </a>
+                <a href="downloads/Noutrora-Setup-Windows.cmd" download class="p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition">
+                    <span class="font-medium text-atlantic dark:text-foam">🪟 Windows 10 / 11 (64-bit)</span>
+                    <span class="font-mono text-tide dark:text-mist">Noutrora-Setup-Windows.cmd</span>
+                </a>
+                <button type="button" onclick="closeDownloadModal(); showInstallTab('mac'); document.getElementById('instalar').scrollIntoView({behavior:'smooth'});" class="w-full p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition text-left">
+                    <span class="font-medium text-atlantic dark:text-foam">🍎 macOS (Apple Silicon & Intel)</span>
+                    <span class="font-mono text-tide dark:text-mist">Instalar en 1 clic →</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         LÓGICA INTERACTIVA DE LA LANDING PAGE
+         ========================================== -->
+    <script>
+        // 1. Detección del Sistema Operativo para personalizar el botón de descarga como en Firefox.com
+        (function detectOS() {
+            const ua = navigator.userAgent || '';
+            const btnText = document.getElementById('os-download-text');
+            const modalLink = document.getElementById('primary-download-link');
+            const modalLabel = document.getElementById('modal-os-download-label');
+            if (!btnText) return;
+            if (ua.indexOf('Mac') !== -1) {
+                btnText.textContent = 'Instalar Noutrora en macOS (En Galego)';
+                if (modalLink) {
+                    modalLink.removeAttribute('download');
+                    modalLink.href = '#instalar';
+                    modalLink.onclick = function() { closeDownloadModal(); showInstallTab('mac'); };
+                }
+                if (modalLabel) modalLabel.textContent = 'Ver comando de 1 clic para macOS →';
+            } else if (ua.indexOf('Win') !== -1) {
+                btnText.textContent = 'Descargar Noutrora para Windows (En Galego)';
+                if (modalLink) modalLink.href = 'downloads/Noutrora-Setup-Windows.cmd';
+                if (modalLabel) modalLabel.textContent = 'Descargar Instalador para Windows (En Galego)';
+            } else if (ua.indexOf('Linux') !== -1) {
+                btnText.textContent = 'Descargar Noutrora para Linux (.deb) — En Galego';
+                if (modalLink) modalLink.href = 'downloads/noutrora_2.0_amd64.deb';
+                if (modalLabel) modalLabel.textContent = 'Descargar Instalador Completo para Linux (.deb) — En Galego';
+            } else {
+                btnText.textContent = 'Descargar Noutrora de Balde (En Galego)';
+            }
+        })();
+
+        // 2. Cambio de pestañas interactivas dentro del Mockup del Navegador
+        const tabOrder = ['travesia', 'pdf', 'lectura', 'camarotes'];
+        let currentTabIndex = 0;
+
+        const urlMap = {
+            travesia: 'about:ocean — Rumbo despexado · Protección Quilla Estrita activa',
+            pdf: 'file:///caderno-bitacora/Carta_Nautica_Fisterra.pdf — Editor PDF Nativo',
+            lectura: 'reader://atlantic-chronicle.org/quiet-web — Tradución Local Privada',
+            camarotes: 'about:containers — Camarotes Multi-Conta illados (Traballo · Persoal · Banca)'
+        };
+
+        function switchBrowserTab(tabId) {
+            currentTabIndex = tabOrder.indexOf(tabId);
+            // Ocultar todos los paneles
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            const activePane = document.getElementById('tab-content-' + tabId);
+            if (activePane) activePane.classList.remove('hidden');
+
+            // Actualizar estilo de las pestañas superiores
+            tabOrder.forEach(id => {
+                const btn = document.getElementById('tab-btn-' + id);
+                if (!btn) return;
+                if (id === tabId) {
+                    btn.className = 'browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium bg-foam dark:bg-deepAtlantic text-atlantic dark:text-foam shadow-sm transition';
+                } else {
+                    btn.className = 'browser-tab group flex items-center gap-2 px-3.5 py-1.5 rounded-t-xl rounded-b-md text-xs font-medium text-slateText dark:text-foam/70 hover:bg-foam/60 dark:hover:bg-deepAtlantic/50 transition';
+                }
+            });
+
+            // Actualizar barra de direcciones
+            const urlBar = document.getElementById('browser-url-bar');
+            if (urlBar && urlMap[tabId]) {
+                urlBar.textContent = urlMap[tabId];
+            }
+        }
+
+        function cycleTabs(direction) {
+            currentTabIndex = (currentTabIndex + direction + tabOrder.length) % tabOrder.length;
+            switchBrowserTab(tabOrder[currentTabIndex]);
+        }
+
+        // 3. Animación del icono Marea (Recargar)
+        function animateReloadMarea() {
+            const btn = document.getElementById('reload-marea-btn');
+            if (!btn) return;
+            btn.classList.remove('animate-marea');
+            void btn.offsetWidth; // reflow
+            btn.classList.add('animate-marea');
+        }
+
+        // 4. Popup del Escudo Quilla (Protección contra el rastreo mejorada)
+        function toggleShieldPopup() {
+            const popup = document.getElementById('shield-popup');
+            if (popup) popup.classList.toggle('hidden');
+        }
+
+        // 5. Marcar favorito con Estrella Polar
+        let isBookmarked = false;
+        function toggleStarBookmark() {
+            isBookmarked = !isBookmarked;
+            const btn = document.getElementById('bookmark-star-btn');
+            if (btn) {
+                btn.classList.toggle('text-tide', isBookmarked);
+                btn.classList.toggle('scale-110', isBookmarked);
+            }
+        }
+
+        // 6. Búsqueda tranquila dentro del Mockup
+        function handleCalmSearch(e) {
+            e.preventDefault();
+            const input = document.getElementById('calm-search-input');
+            const resultBox = document.getElementById('calm-search-result');
+            if (!input || !resultBox) return;
+            const query = input.value.trim() || 'Faros del Atlántico Norte';
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = `🧭 Rumbo fijado hacia <strong>«${query}»</strong> — Búsqueda privada sin anuncios patrocinados ni rastreadores de perfilado.`;
+        }
+
+        // 7. Funciones interactivas del Editor de PDF integrado
+        function highlightPdfSample() {
+            const target = document.getElementById('pdf-highlight-target');
+            if (target) {
+                target.classList.toggle('bg-mist/40');
+                target.classList.toggle('font-medium');
+            }
+        }
+
+        function signPdfSample() {
+            const box = document.getElementById('pdf-signature-box');
+            if (box) {
+                box.innerHTML = `<span class="text-atlantic dark:text-foam font-semibold not-italic">✓ Firmado: Cap. Breogán (43°21'N)</span>`;
+                box.classList.add('bg-mist/15', 'border-solid');
+            }
+        }
+
+        // 8. Traducción privada local en el dispositivo (Firefox Translations)
+        const translations = {
+            en: {
+                badge: 'Inglés (EN)',
+                title: 'The Quiet Architecture of the North Atlantic Web',
+                body: '"True calm on the internet requires a browser that respects human attention. By translating articles directly inside your device\'s processor—just like Firefox Translations—not a single word you read is ever sent to third-party cloud servers."'
+            },
+            es: {
+                badge: 'Español (Traducido localmente)',
+                title: 'La arquitectura silenciosa de la web del Atlántico Norte',
+                body: '«La verdadera calma en internet exige un navegador que respete la atención humana. Al traducir los artículos directamente en el procesador de tu dispositivo —igual que Firefox Translations—, ni una sola palabra de lo que lees se envía jamás a servidores en la nube.»'
+            },
+            gl: {
+                badge: 'Galego (Traducido localmente)',
+                title: 'A arquitectura silenciosa da web do Atlántico Norte',
+                body: '«A verdadeira calma na rede esixe un navegador que respecte a atención humana. Ao traducir os artigos directamente no procesador do teu dispositivo —igual ca Firefox Translations—, nin unha soa palabra do que les se envía xamais a servidores externos.»'
+            }
+        };
+
+        function translateLocalArticle(lang) {
+            const data = translations[lang];
+            if (!data) return;
+            document.getElementById('lang-badge').textContent = data.badge;
+            document.getElementById('article-title').textContent = data.title;
+            document.getElementById('article-body').textContent = data.body;
+        }
+
+        // 9. Ventana flotante Picture-in-Picture (PiP)
+        function togglePipPlayer() {
+            const pip = document.getElementById('pip-floating-window');
+            if (pip) pip.classList.toggle('hidden');
+        }
+
+        // 10. Simulador de Privacidad Quilla (Calma vs Navegador con ruido)
+        function setPrivacySimulation(mode) {
+            const btnCalm = document.getElementById('btn-sim-calm');
+            const btnNoisy = document.getElementById('btn-sim-noisy');
+            const badge = document.getElementById('sim-status-badge');
+            const title = document.getElementById('sim-title');
+            const speed = document.getElementById('sim-speed');
+            const trackers = document.getElementById('sim-trackers');
+            const ram = document.getElementById('sim-ram');
+            const fingerprint = document.getElementById('sim-fingerprint');
+            const desc = document.getElementById('sim-description');
+
+            if (mode === 'calm') {
+                btnCalm.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold bg-atlantic dark:bg-mist text-foam dark:text-nightSky transition';
+                btnNoisy.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold bg-sand dark:bg-deepAtlantic text-slateText dark:text-foam/80 hover:text-atlantic transition';
+                badge.textContent = 'Escudo Quilla: ACTIVO';
+                badge.className = 'inline-block px-3 py-1 rounded-full text-xs font-mono bg-mist/20 text-tide dark:text-mist mb-1';
+                title.textContent = 'Aguas tranquilas y lectura despejada';
+                speed.textContent = '0.8 s';
+                trackers.textContent = '0 permitidos';
+                ram.textContent = '-38 % RAM';
+                fingerprint.textContent = 'Camuflada';
+                desc.textContent = 'Los scripts de vigilancia de terceros quedan bloqueados antes de descargarse. La batería de tu portátil dura más y las páginas se muestran limpias como las hojas de un libro.';
+            } else {
+                btnNoisy.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold bg-coralAlert text-foam transition';
+                btnCalm.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold bg-sand dark:bg-deepAtlantic text-slateText dark:text-foam/80 hover:text-atlantic transition';
+                badge.textContent = 'Sin Protección Quilla';
+                badge.className = 'inline-block px-3 py-1 rounded-full text-xs font-mono bg-coralAlert/20 text-coralAlert mb-1';
+                title.textContent = 'Navegación saturada de rastreadores comerciales';
+                speed.textContent = '3.4 s';
+                trackers.textContent = '27 activos';
+                ram.textContent = '1.9 GB RAM';
+                fingerprint.textContent = 'Expuesta';
+                desc.textContent = 'Sin el bloqueo por defecto de Firefox/Noutrora, decenas de redes publicitarias crean un perfil oculto con tu historial de lectura y ralentizan la carga de cada página.';
+            }
+        }
+
+        // 11. Conmutador de Tema: Calma Diurna vs Noche Cometa '94 (Guiño Netscape)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            document.body.classList.toggle('constellation-bg', isDark);
+            const label = document.getElementById('theme-label');
+            if (label) {
+                label.textContent = isDark ? 'Calma Diurna' : 'Modo Cometa ’94';
+            }
+        }
+
+        // 12. Easter Egg Cometa '94 (Netscape Navigator)
+        function triggerCometEasterEgg() {
+            const comet = document.getElementById('comet-effect');
+            if (!comet) return;
+            comet.classList.remove('hidden', 'comet-trail');
+            void comet.offsetWidth;
+            comet.classList.add('comet-trail');
+            setTimeout(() => {
+                comet.classList.add('hidden');
+            }, 2500);
+        }
+
+        // 13. Simulación de envío de pestaña (Mozilla Sync)
+        function sendTabSimulation() {
+            const toast = document.getElementById('sync-toast');
+            if (toast) toast.classList.remove('hidden');
+        }
+
+        // 14. Modal de descarga
+        function openDownloadModal() {
+            const modal = document.getElementById('download-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+        function closeDownloadModal() {
+            const modal = document.getElementById('download-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+    </script>
+</body>
+</html>

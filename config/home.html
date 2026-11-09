@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Porto Base — Noutrora</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,__NOUTRORA_SVG_BASE64__">
+  <style>
+    :root {
+      --abismo: #1B3644;
+      --bruma: #7A9E9F;
+      --arena: #D6D3C9;
+      --espuma: #FAF9F5;
+      --horizonte94: #0F232E;
+      --card-bg: #FFFFFF;
+      --card-empty-bg: rgba(214, 211, 201, 0.18);
+      --text-main: #1B3644;
+      --text-muted: #5E7E80;
+      --border-color: #D6D3C9;
+      --modal-backdrop: rgba(15, 35, 46, 0.62);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --espuma: #0F232E;
+        --card-bg: #1B3644;
+        --card-empty-bg: rgba(27, 54, 68, 0.48);
+        --text-main: #FAF9F5;
+        --text-muted: #9AB8B9;
+        --border-color: rgba(122, 158, 159, 0.38);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--espuma);
+      color: var(--text-main);
+      font-family: "Inter", "Fira Sans", system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      user-select: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 1. Logotipo Principal Noutrora (con brújula en la 2.ª «o») */
+    .brand-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .brand-wordmark {
+      width: 310px;
+      height: 66px;
+      background-image: url("data:image/svg+xml;base64,__NOUTRORA_WORDMARK_BASE64__");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .brand-wordmark {
+        background-image: url("data:image/svg+xml;base64,__NOUTRORA_WORDMARK_DARK_BASE64__");
+      }
+    }
+
+    /* 2. Barra de Búsqueda Atlántica */
+    .search-form {
+      width: 100%;
+      max-width: 640px;
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 18px 0 48px;
+      font-size: 15px;
+      color: var(--text-main);
+      background-color: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 2px 8px rgba(27, 54, 68, 0.04);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+
+    .search-input:focus {
+      border-color: var(--bruma);
+      box-shadow: 0 0 0 3px rgba(122, 158, 159, 0.22);
+    }
+
+    /* 3. Cuadrícula 3x2 (Las 6 Cartas del Puerto Base) */
+    .speed-dial-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 144px);
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 680px) {
+      .speed-dial-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 140px);
+      }
+    }
+
+    .dial-card {
+      position: relative;
+      border-radius: 10px;
+      padding: 18px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .card-slot-num {
+      position: absolute;
+      top: 9px;
+      left: 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      opacity: 0.85;
+      z-index: 2;
+      text-transform: uppercase;
+    }
+
+    /* Tarjetas llenas y culturales */
+    .dial-card.filled,
+    .dial-card.explorer,
+    .dial-card.cultural {
+      background-color: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 2px 10px rgba(27, 54, 68, 0.05);
+    }
+
+    .dial-card.explorer {
+      border-color: var(--bruma);
+    }
+
+    .dial-card.filled:hover,
+    .dial-card.explorer:hover,
+    .dial-card.cultural:hover {
+      border-color: var(--abismo);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(27, 54, 68, 0.11);
+    }
+
+    .dial-card.explorer-dark {
+      background-color: var(--horizonte94);
+      border: 1.5px solid var(--bruma);
+      color: #FAF9F5;
+      box-shadow: 0 2px 10px rgba(15, 35, 46, 0.14);
+    }
+
+    .dial-card.explorer-dark:hover {
+      border-color: #FAF9F5;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(15, 35, 46, 0.25);
+    }
+
+    .dial-card.explorer-dark .card-title {
+      color: #FAF9F5;
+    }
+
+    .dial-card.explorer-dark .card-host,
+    .dial-card.explorer-dark .card-slot-num {
+      color: #9CC0C1;
+    }
+
+    /* Tarjeta 05 · Atracar con fotografía de puerto */
+    .dial-card.port-card {
+      background-color: var(--abismo);
+      border: 1.5px solid var(--bruma);
+      color: #FAF9F5;
+      justify-content: flex-end;
+      align-items: flex-start;
+      text-align: left;
+      padding: 14px;
+    }
+
+    .port-bg-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.42;
+      transition: transform 0.35s ease, opacity 0.25s ease;
+      z-index: 0;
+    }
+
+    .port-gradient-layer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 35, 46, 0.35) 0%, rgba(15, 35, 46, 0.88) 100%);
+      z-index: 1;
+    }
+
+    .dial-card.port-card:hover .port-bg-layer {
+      transform: scale(1.05);
+      opacity: 0.52;
+    }
+
+    .dial-card.port-card .card-slot-num {
+      color: #FAF9F5;
+      opacity: 0.92;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .port-card-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .port-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FAF9F5;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .port-card-meta {
+      font-size: 11.5px;
+      color: #D6D3C9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Tarjeta 06 Vacía */
+    .dial-card.empty {
+      background-color: var(--card-empty-bg);
+      border: 1.5px dashed var(--border-color);
+    }
+
+    .dial-card.empty:hover {
+      border-color: var(--bruma);
+      border-style: solid;
+      background-color: var(--card-bg);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(27, 54, 68, 0.06);
+    }
+
+    .empty-plus {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .empty-label {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Contenedor partido 1/2 cuando existe Patrocinio Ético en el slot 06 */
+    .slot6-split {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      height: 100%;
+      width: 100%;
+    }
+
+    .slot6-half {
+      padding: 8px 12px !important;
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      gap: 10px;
+      text-align: left !important;
+    }
+
+    .slot6-half .card-badge {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .sponsor-tag {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    /* Icono e información interna de tarjeta */
+    .card-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: var(--abismo);
+      color: #FAF9F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .card-host {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Botones superiores de tarjeta (+, dado aleatorio, editar) */
+    .card-actions {
+      position: absolute;
+      top: 7px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 3;
+    }
+
+    .dial-card:hover .card-actions {
+      opacity: 1;
+    }
+
+    .card-action-btn {
+      width: 25px;
+      height: 25px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--espuma);
+      color: var(--text-main);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .card-action-btn:hover {
+      background-color: var(--bruma);
+      border-color: var(--bruma);
+      color: #FAF9F5;
+    }
+
+    /* 4. Pie sutil */
+    .ocean-footer {
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer-donate-btn {
+      background: none;
+      border: none;
+      color: var(--bruma);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0 4px;
+      transition: color 0.15s ease;
+    }
+
+    .footer-donate-btn:hover {
+      color: var(--abismo);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .footer-donate-btn:hover {
+        color: var(--espuma);
+      }
+    }
+
+    /* 5. Modales (Edición y Ficha Cultural/Marinera Noutrora) */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: var(--modal-backdrop);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 18px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--card-bg);
+      border: 1.5px solid var(--bruma);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 18px 44px rgba(15, 35, 46, 0.32);
+    }
+
+    /* Ficha Cultural / Marinera de Noutrora */
+    .ficha-box {
+      width: 100%;
+      max-width: 580px;
+      background-color: var(--card-bg);
+      border: 1.5px solid var(--bruma);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(15, 35, 46, 0.38);
+    }
+
+    .ficha-hero {
+      width: 100%;
+      height: 210px;
+      background-color: var(--horizonte94);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 18px 22px;
+    }
+
+    .ficha-hero.compact {
+      height: 115px;
+    }
+
+    .ficha-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 35, 46, 0.25) 0%, rgba(15, 35, 46, 0.9) 100%);
+    }
+
+    .ficha-hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .ficha-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9CC0C1;
+      margin-bottom: 4px;
+    }
+
+    .ficha-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FAF9F5;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .ficha-subtitle {
+      font-size: 13px;
+      color: #D6D3C9;
+    }
+
+    .ficha-body {
+      padding: 20px 22px 22px;
+    }
+
+    .ficha-summary {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      user-select: text;
+    }
+
+    .ficha-captain-note {
+      background-color: var(--card-empty-bg);
+      border-left: 3px solid var(--bruma);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-bottom: 18px;
+      user-select: text;
+    }
+
+    .ficha-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ficha-nav-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      font-size: 14px;
+      color: var(--text-main);
+      background-color: var(--espuma);
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .field-input:focus {
+      border-color: var(--bruma);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--bruma);
+    }
+
+    .btn-primary {
+      background-color: var(--abismo);
+      color: #FAF9F5;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--bruma);
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <!-- Cabecera con el Logotipo Oficial Noutrora -->
+    <header class="brand-header">
+      <div class="brand-wordmark" role="img" aria-label="Noutrora"></div>
+    </header>
+
+    <!-- Buscador o entrada de URL -->
+    <form class="search-form" id="searchForm">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12.5" r="8.5" stroke="#1B3644" stroke-width="1.8"/>
+        <line x1="12" y1="1.8" x2="12" y2="5.5" stroke="#1B3644" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="12" y1="19.5" x2="12" y2="22" stroke="#7A9E9F" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.5" y1="12.5" x2="5" y2="12.5" stroke="#7A9E9F" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="19" y1="12.5" x2="21.5" y2="12.5" stroke="#7A9E9F" stroke-width="1.5" stroke-linecap="round"/>
+        <polygon points="12,6.2 14,12.5 12,11 10,12.5" fill="#1B3644" transform="rotate(24 12 12.5)"/>
+        <polygon points="12,18.8 13.8,12.5 12,14 10.2,12.5" fill="#7A9E9F" transform="rotate(24 12 12.5)"/>
+      </svg>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Introduce un rumbo ou busca con calma..."
+        autocomplete="off"
+        autofocus
+      >
+    </form>
+
+    <!-- Cuadrícula 3x2 (As 6 Cartas do Porto Base) -->
+    <section class="speed-dial-grid" id="dialGrid" aria-label="Porto Base"></section>
+
+    <!-- Rodapé -->
+    <footer class="ocean-footer">
+      Motor Gecko · Sen historial nin rastrexo · Inspirado no Atlántico Norte e no espírito libre de 1994 · <button type="button" class="footer-donate-btn" id="donateBtn">Doar a Noutrora</button>
+    </footer>
+  </main>
+
+  <!-- Modal para configurar Fondeadoiro persoal (Carta 06) ou engadir destino propio -->
+  <div class="modal-overlay" id="editModal">
+    <form class="modal-box" id="editForm">
+      <h2 class="modal-title" id="modalHeading">Configurar Fondeadoiro persoal</h2>
+      <div class="field-group">
+        <label class="field-label" for="cardTitleInput">Nome da páxina</label>
+        <input type="text" id="cardTitleInput" class="field-input" placeholder="Ex. O meu Correo, Servidor, Prensa..." required>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="cardUrlInput">Enderezo web (URL)</label>
+        <input type="text" id="cardUrlInput" class="field-input" placeholder="Ex. https://proton.me ou 192.168.1.10" required>
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Gardar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal Ficha Cultural e Mariñeira de Noutrora (Mergullar, Libro de a bordo e Atracar) -->
+  <div class="modal-overlay" id="fichaModal">
+    <div class="ficha-box">
+      <div class="ficha-hero" id="fichaHero">
+        <div class="ficha-hero-overlay"></div>
+        <div class="ficha-hero-content">
+          <div class="ficha-kicker" id="fichaKicker"></div>
+          <h2 class="ficha-title" id="fichaTitle"></h2>
+          <div class="ficha-subtitle" id="fichaSubtitle"></div>
+        </div>
+      </div>
+      <div class="ficha-body">
+        <p class="ficha-summary" id="fichaSummary"></p>
+        <div class="ficha-captain-note" id="fichaCaptainNote"></div>
+        <div class="ficha-footer">
+          <div class="ficha-nav-group" id="fichaNavGroup"></div>
+          <div class="ficha-nav-group">
+            <button type="button" class="btn btn-secondary" id="closeFichaBtn">Pechar</button>
+            <a href="#" class="btn btn-primary" id="fichaActionLink">Explorar a fondo ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Doar a Noutrora (Modelo Wikipedia a futuro, cero anuncios) -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal-box">
+      <h2 class="modal-title">Apoiar a Noutrora</h2>
+      <p style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-bottom: 16px;">
+        Noutrora non ten publicidade, non vende os teus datos nin ten investidores que esixan beneficios.
+        Ao igual que a Wikipedia, o proxecto sostense grazas ao tempo e ás achegas voluntarias de quen cre nunha rede libre e en galego.
+      </p>
+      <div style="background-color: var(--card-empty-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+        🧭 <strong>Compromiso ético:</strong> Cero anuncios agora e sempre. As doazóns comunitarias activaranse nas vindeiras fases do proxecto. Grazas por navegar connosco.
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-primary" id="closeDonateBtn">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PERSONAL_STORAGE_KEY = "noutrora_fondeadero_v2";
+    const EXPLORE_CUSTOM_KEY = "noutrora_explore_custom_v1";
+    const LIVE_CATALOG_CACHE_KEY = "noutrora_live_catalog_v3_gl";
+    const LIVE_CATALOG_URL = "https://noutrora.es/exploracion.json";
+    const BASE_EXPLORACION = __NOUTRORA_EXPLORACION_JSON__;
+
+    // Limpar cachés antigas en castelán
+    try {
+      localStorage.removeItem("noutrora_live_catalog_v2");
+    } catch (e) {}
+
+    let catalog = BASE_EXPLORACION;
+    let activeEditMode = null; // "fondeadero" | "perder_el_rumbo" | "mundo_nuevo"
+    let lastVisitedUrl = { perder_el_rumbo: "", mundo_nuevo: "" };
+
+    // Índices activos del día (y modificables al pulsar el botón aleatorio/navegación)
+    let currentMovieIndex = 0;
+    let currentBookIndex = 0;
+    let currentPortIndex = 0;
+
+    function getDayOfYearIndex(length) {
+      if (!length) return 0;
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      return dayOfYear % length;
+    }
+
+    function initDailyIndices() {
+      const movies = catalog.zambullirse || [];
+      const books = catalog.libros || [];
+      const ports = catalog.puertos || [];
+      currentMovieIndex = getDayOfYearIndex(movies.length);
+      currentBookIndex = getDayOfYearIndex(books.length);
+      currentPortIndex = getDayOfYearIndex(ports.length);
+    }
+
+    // Sincronización silenciosa: só substitúe se a versión remota é en galego
+    async function syncLiveCatalog() {
+      try {
+        const cachedRaw = localStorage.getItem(LIVE_CATALOG_CACHE_KEY);
+        if (cachedRaw) {
+          const cached = JSON.parse(cachedRaw);
+          if (cached && cached.data && cached.data.lang === "gl" && cached.data.zambullirse) {
+            catalog = cached.data;
+            initDailyIndices();
+            renderGrid();
+          }
+        }
+      } catch (e) {}
+
+      try {
+        const resp = await fetch(LIVE_CATALOG_URL, { cache: "no-cache" });
+        if (resp.ok) {
+          const remoteData = await resp.json();
+          // Só actualizar se a versión do servidor xa está traducida a galego
+          if (remoteData && remoteData.lang === "gl" && Array.isArray(remoteData.puertos)) {
+            catalog = remoteData;
+            localStorage.setItem(
+              LIVE_CATALOG_CACHE_KEY,
+              JSON.stringify({ ts: Date.now(), data: remoteData })
+            );
+            initDailyIndices();
+            renderGrid();
+          }
+        }
+      } catch (e) {}
+    }
+
+    function loadCustomExplore() {
+      try {
+        const raw = localStorage.getItem(EXPLORE_CUSTOM_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (e) {}
+      return { perder_el_rumbo: [], mundo_nuevo: [] };
+    }
+
+    function saveCustomExplore(data) {
+      try {
+        localStorage.setItem(EXPLORE_CUSTOM_KEY, JSON.stringify(data));
+      } catch (e) {}
+    }
+
+    function getExplorePool(category) {
+      const baseList = Array.isArray(catalog[category]) ? catalog[category] : [];
+      const custom = loadCustomExplore();
+      const extraList = Array.isArray(custom[category]) ? custom[category] : [];
+      return [...baseList, ...extraList];
+    }
+
+    function launchRandomDestination(category) {
+      const pool = getExplorePool(category);
+      if (!pool.length) return;
+      let candidates = pool.filter((item) => item && item.url && item.url !== lastVisitedUrl[category]);
+      if (!candidates.length) candidates = pool;
+      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+      if (chosen && chosen.url) {
+        lastVisitedUrl[category] = chosen.url;
+        window.location.href = chosen.url;
+      }
+    }
+
+    function loadPersonalCard() {
+      try {
+        const raw = localStorage.getItem(PERSONAL_STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+        // Compatibilidad con tarjeta guardada en v1.0
+        const legacyRaw = localStorage.getItem("noutrora_speed_dial_v1");
+        if (legacyRaw) {
+          const arr = JSON.parse(legacyRaw);
+          if (Array.isArray(arr)) {
+            const firstValid = arr.find((c) => c && c.url);
+            if (firstValid) return firstValid;
+          }
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function savePersonalCard(cardObj) {
+      try {
+        if (!cardObj) {
+          localStorage.removeItem(PERSONAL_STORAGE_KEY);
+        } else {
+          localStorage.setItem(PERSONAL_STORAGE_KEY, JSON.stringify(cardObj));
+        }
+      } catch (e) {}
+    }
+
+    function normalizeUrl(raw) {
+      const trimmed = raw.trim();
+      if (!trimmed) return "";
+      if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(trimmed)) return trimmed;
+      if (/^\d{1,3}(\.\d{1,3}){3}(:\d+)?(\/.*)?$/.test(trimmed) || /^localhost(:\d+)?/.test(trimmed)) {
+        return "http://" + trimmed;
+      }
+      return "https://" + trimmed;
+    }
+
+    function extractHost(urlStr) {
+      try {
+        const u = new URL(urlStr);
+        return u.host.replace(/^www\./, "");
+      } catch (e) {
+        return urlStr;
+      }
+    }
+
+    // --- FICHAS CULTURAIS E MARIÑEIRAS PROPIAS DE NOUTRORA ---
+    function openMovieFicha(index) {
+      const list = catalog.zambullirse || [];
+      if (!list.length) return;
+      currentMovieIndex = ((index % list.length) + list.length) % list.length;
+      const item = list[currentMovieIndex];
+
+      const hero = document.getElementById("fichaHero");
+      hero.className = "ficha-hero compact";
+      hero.style.backgroundImage = item.image ? `url("${item.image}")` : "none";
+
+      document.getElementById("fichaKicker").textContent = `03 · MERGULLAR · ${item.kind || "Cinema e Series"}`;
+      document.getElementById("fichaTitle").textContent = `${item.title} (${item.year || ""})`;
+      document.getElementById("fichaSubtitle").textContent = item.creator || "";
+      document.getElementById("fichaSummary").textContent = item.summary || "";
+      document.getElementById("fichaCaptainNote").textContent = `🧭 Nota de Bitácora: ${item.captain_note || ""}`;
+
+      const link = document.getElementById("fichaActionLink");
+      link.textContent = item.article_title || "Ler análise a fondo ↗";
+      link.href = item.article_url || "#";
+
+      const navGroup = document.getElementById("fichaNavGroup");
+      navGroup.innerHTML = `<button type="button" class="btn btn-secondary" id="randomMovieFichaBtn">🧭 Mudar punto cardinal</button>`;
+      document.getElementById("randomMovieFichaBtn").addEventListener("click", () => {
+        let next = Math.floor(Math.random() * list.length);
+        if (list.length > 1 && next === currentMovieIndex) next = (next + 1) % list.length;
+        openMovieFicha(next);
+        renderGrid();
+      });
+
+      document.getElementById("fichaModal").classList.add("open");
+    }
+
+    function openBookFicha(index) {
+      const list = catalog.libros || [];
+      if (!list.length) return;
+      currentBookIndex = ((index % list.length) + list.length) % list.length;
+      const item = list[currentBookIndex];
+
+      const hero = document.getElementById("fichaHero");
+      hero.className = "ficha-hero compact";
+      hero.style.backgroundImage = item.image ? `url("${item.image}")` : "none";
+
+      document.getElementById("fichaKicker").textContent = `04 · LIBRO DE A BORDO · ${item.genre || "Literatura"}`;
+      document.getElementById("fichaTitle").textContent = item.title;
+      document.getElementById("fichaSubtitle").textContent = `${item.author || ""} · ${item.year || ""}`;
+      document.getElementById("fichaSummary").textContent = item.summary || "";
+      document.getElementById("fichaCaptainNote").textContent = `📖 Nota de Bitácora: ${item.captain_note || ""}`;
+
+      const link = document.getElementById("fichaActionLink");
+      link.textContent = item.article_title || "Explorar recensión e contexto ↗";
+      link.href = item.article_url || "#";
+
+      const navGroup = document.getElementById("fichaNavGroup");
+      navGroup.innerHTML = `<button type="button" class="btn btn-secondary" id="randomBookFichaBtn">🧭 Mudar punto cardinal</button>`;
+      document.getElementById("randomBookFichaBtn").addEventListener("click", () => {
+        let next = Math.floor(Math.random() * list.length);
+        if (list.length > 1 && next === currentBookIndex) next = (next + 1) % list.length;
+        openBookFicha(next);
+        renderGrid();
+      });
+
+      document.getElementById("fichaModal").classList.add("open");
+    }
+
+    function openPortFicha(index) {
+      const list = catalog.puertos || [];
+      if (!list.length) return;
+      currentPortIndex = ((index % list.length) + list.length) % list.length;
+      const port = list[currentPortIndex];
+
+      const hero = document.getElementById("fichaHero");
+      hero.className = "ficha-hero";
+      hero.style.backgroundImage = port.image ? `url("${port.image}")` : "none";
+
+      document.getElementById("fichaKicker").textContent =
+        `05 · ATRACAR · ESCALA #${port.day_order || currentPortIndex + 1} (${port.region || "Costa Atlántica"})`;
+      document.getElementById("fichaTitle").textContent = port.name;
+      document.getElementById("fichaSubtitle").textContent =
+        `📍 ${port.locality} (${port.province}) · Coordenadas: ${port.coords || ""}`;
+      document.getElementById("fichaSummary").textContent = port.history || "";
+      document.getElementById("fichaCaptainNote").textContent =
+        `⚓ Caderno de Cabotaxe: Cada día Noutrora atraca nun porto distinto seguindo a liña de costa dende a Costa da Morte.`;
+
+      const link = document.getElementById("fichaActionLink");
+      link.textContent = "Coñecer máis sobre este porto ↗";
+      link.href = port.more_url || "#";
+
+      const navGroup = document.getElementById("fichaNavGroup");
+      navGroup.innerHTML = `
+        <button type="button" class="btn btn-secondary" id="prevPortBtn">← Porto anterior</button>
+        <button type="button" class="btn btn-secondary" id="nextPortBtn">Seguinte porto →</button>
+      `;
+      document.getElementById("prevPortBtn").addEventListener("click", () => {
+        openPortFicha(currentPortIndex - 1);
+        renderGrid();
+      });
+      document.getElementById("nextPortBtn").addEventListener("click", () => {
+        openPortFicha(currentPortIndex + 1);
+        renderGrid();
+      });
+
+      document.getElementById("fichaModal").classList.add("open");
+    }
+
+    function closeFichaModal() {
+      document.getElementById("fichaModal").classList.remove("open");
+    }
+
+    function openEditModal(mode, labelText) {
+      activeEditMode = mode;
+      const current = mode === "fondeadero" ? loadPersonalCard() : null;
+      document.getElementById("modalHeading").textContent = labelText;
+      document.getElementById("cardTitleInput").value = current ? current.title : "";
+      document.getElementById("cardUrlInput").value = current ? current.url : "";
+      document.getElementById("editModal").classList.add("open");
+      setTimeout(() => document.getElementById("cardTitleInput").focus(), 20);
+    }
+
+    function closeEditModal() {
+      document.getElementById("editModal").classList.remove("open");
+      activeEditMode = null;
+    }
+
+    function buildPersonalCardElement() {
+      const item = loadPersonalCard();
+
+      if (!item || !item.url) {
+        const emptyCard = document.createElement("div");
+        emptyCard.className = "dial-card empty";
+        emptyCard.innerHTML = `
+          <span class="card-slot-num">06 · FONDEAR</span>
+          <div class="empty-plus">+</div>
+          <span class="empty-label">Fondear</span>
+        `;
+        emptyCard.addEventListener("click", () =>
+          openEditModal("fondeadero", "Configurar Fondear (Carta 06)")
+        );
+        return emptyCard;
+      }
+
+      const filledCard = document.createElement("a");
+      filledCard.className = "dial-card filled";
+      filledCard.href = item.url;
+      const host = extractHost(item.url);
+      const initial = (item.title || host || "N").trim().charAt(0).toUpperCase();
+
+      filledCard.innerHTML = `
+        <span class="card-slot-num">06 · FONDEAR</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn edit-btn" title="Editar Fondear">✎</button>
+          <button type="button" class="card-action-btn clear-btn" title="Levar áncoras (baleirar)">×</button>
+        </div>
+        <div class="card-badge">${initial}</div>
+        <div>
+          <div class="card-title"></div>
+          <div class="card-host"></div>
+        </div>
+      `;
+      filledCard.querySelector(".card-title").textContent = item.title;
+      filledCard.querySelector(".card-host").textContent = host;
+
+      filledCard.querySelector(".edit-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openEditModal("fondeadero", "Editar Fondear (Carta 06)");
+      });
+      filledCard.querySelector(".clear-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        savePersonalCard(null);
+        renderGrid();
+      });
+      return filledCard;
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("dialGrid");
+      grid.innerHTML = "";
+
+      const cardinalSvgIcon = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/>
+          <polygon points="12,5.5 14,12 12,10.5 10,12" fill="currentColor" transform="rotate(24 12 12)"/>
+          <polygon points="12,18.5 13.8,12 12,13.5 10.2,12" fill="currentColor" opacity="0.6" transform="rotate(24 12 12)"/>
+        </svg>
+      `;
+
+      // --- 01 · PERDER O NORTE ---
+      const rumboCount = getExplorePool("perder_el_rumbo").length;
+      const card01 = document.createElement("div");
+      card01.className = "dial-card explorer";
+      card01.title = "Preme para perder o norte cara a un recanto interactivo ou creativo";
+      card01.innerHTML = `
+        <span class="card-slot-num">01 · PERDER O NORTE</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn add-rumbo-btn" title="Engadir destino a Perder o norte">+</button>
+        </div>
+        <div class="card-badge" style="background-color: #1B3644;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12.5" r="8.5" stroke="#FAF9F5" stroke-width="1.8"/>
+            <line x1="12" y1="1.8" x2="12" y2="5.5" stroke="#FAF9F5" stroke-width="1.8" stroke-linecap="round"/>
+            <polygon points="12,6.2 14,12.5 12,11 10,12.5" fill="#FAF9F5" transform="rotate(24 12 12.5)"/>
+            <polygon points="12,18.8 13.8,12.5 12,14 10.2,12.5" fill="#7A9E9F" transform="rotate(24 12 12.5)"/>
+          </svg>
+        </div>
+        <div class="card-title">Perder o norte</div>
+        <div class="card-host">Inspiración sen mapa (${rumboCount} destinos)</div>
+      `;
+      card01.addEventListener("click", () => launchRandomDestination("perder_el_rumbo"));
+      card01.querySelector(".add-rumbo-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openEditModal("perder_el_rumbo", "Engadir destino a «Perder o norte»");
+      });
+      grid.appendChild(card01);
+
+      // --- 02 · TERRA Á VISTA ---
+      const mundoCount = getExplorePool("mundo_nuevo").length;
+      const card02 = document.createElement("div");
+      card02.className = "dial-card explorer-dark";
+      card02.title = "Preme para albiscar un ensaio, arquivo cultural, cinema ou música inesperada";
+      card02.innerHTML = `
+        <span class="card-slot-num">02 · TERRA Á VISTA</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn add-mundo-btn" title="Engadir destino a Terra á vista">+</button>
+        </div>
+        <div class="card-badge" style="background-color: #1B3644; border: 1px solid #7A9E9F;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2.5 14.3,9.2 21.2,9.2 15.6,13.3 17.8,20.1 12,15.9 6.2,20.1 8.4,13.3 2.8,9.2 9.7,9.2" stroke="#FAF9F5" stroke-width="1.7" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="2" fill="#7A9E9F"/>
+          </svg>
+        </div>
+        <div class="card-title">Terra á vista</div>
+        <div class="card-host">Cultura, Beat, Punk e Cinema (${mundoCount} rutas)</div>
+      `;
+      card02.addEventListener("click", () => launchRandomDestination("mundo_nuevo"));
+      card02.querySelector(".add-mundo-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openEditModal("mundo_nuevo", "Engadir destino a «Terra á vista»");
+      });
+      grid.appendChild(card02);
+
+      // --- 03 · MERGULLAR (Filme ou Serie do día + Mudar punto cardinal) ---
+      const movies = catalog.zambullirse || [];
+      const todayMovie = movies[currentMovieIndex] || { title: "Halt and Catch Fire", year: "2014", kind: "Serie" };
+      const card03 = document.createElement("div");
+      card03.className = "dial-card cultural";
+      card03.title = "Preme para abrir a ficha de Mergullar (Cinema e Series)";
+      card03.innerHTML = `
+        <span class="card-slot-num">03 · MERGULLAR</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn random-movie-btn" title="Mudar punto cardinal">${cardinalSvgIcon}</button>
+        </div>
+        <div class="card-badge" style="background-color: #1B3644;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#FAF9F5" stroke-width="1.8"/>
+            <polygon points="10,9.5 15.5,12 10,14.5" fill="#7A9E9F"/>
+          </svg>
+        </div>
+        <div class="card-title"></div>
+        <div class="card-host"></div>
+      `;
+      card03.querySelector(".card-title").textContent = todayMovie.title;
+      card03.querySelector(".card-host").textContent = `${todayMovie.kind || "Recomendación"} (${todayMovie.year || "Hoxe"})`;
+      card03.addEventListener("click", () => openMovieFicha(currentMovieIndex));
+      card03.querySelector(".random-movie-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let next = Math.floor(Math.random() * movies.length);
+        if (movies.length > 1 && next === currentMovieIndex) next = (next + 1) % movies.length;
+        currentMovieIndex = next;
+        renderGrid();
+        openMovieFicha(currentMovieIndex);
+      });
+      grid.appendChild(card03);
+
+      // --- 04 · LIBRO DE A BORDO ---
+      const books = catalog.libros || [];
+      const todayBook = books[currentBookIndex] || { title: "No camiño", author: "Jack Kerouac" };
+      const card04 = document.createElement("div");
+      card04.className = "dial-card cultural";
+      card04.title = "Preme para abrir a ficha do Libro de a bordo";
+      card04.innerHTML = `
+        <span class="card-slot-num">04 · LIBRO DE A BORDO</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn random-book-btn" title="Mudar punto cardinal">${cardinalSvgIcon}</button>
+        </div>
+        <div class="card-badge" style="background-color: #1B3644;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 5.5C4 4.4 4.9 3.5 6 3.5H11.5V19.5H6C4.9 19.5 4 20.4 4 21.5V5.5Z" stroke="#FAF9F5" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M20 5.5C20 4.4 19.1 3.5 18 3.5H12.5V19.5H18C19.1 19.5 20 20.4 20 21.5V5.5Z" stroke="#7A9E9F" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="card-title"></div>
+        <div class="card-host"></div>
+      `;
+      card04.querySelector(".card-title").textContent = todayBook.title;
+      card04.querySelector(".card-host").textContent = `${todayBook.author || ""}`;
+      card04.addEventListener("click", () => openBookFicha(currentBookIndex));
+      card04.querySelector(".random-book-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let next = Math.floor(Math.random() * books.length);
+        if (books.length > 1 && next === currentBookIndex) next = (next + 1) % books.length;
+        currentBookIndex = next;
+        renderGrid();
+        openBookFicha(currentBookIndex);
+      });
+      grid.appendChild(card04);
+
+      // --- 05 · ATRACAR (Porto do día comezando pola Costa da Morte) ---
+      const ports = catalog.puertos || [];
+      const todayPort = ports[currentPortIndex] || {
+        day_order: 1,
+        name: "Porto de Caión",
+        locality: "A Laracha",
+        province: "A Coruña"
+      };
+      const card05 = document.createElement("div");
+      card05.className = "dial-card port-card";
+      card05.title = "Preme para ver a fotografía e historia mariñeira do porto de hoxe";
+      card05.innerHTML = `
+        <div class="port-bg-layer"></div>
+        <div class="port-gradient-layer"></div>
+        <span class="card-slot-num">05 · ATRACAR · DÍA ${todayPort.day_order || currentPortIndex + 1}</span>
+        <div class="card-actions">
+          <button type="button" class="card-action-btn next-port-card-btn" title="Avanzar ao seguinte porto da costa">→</button>
+        </div>
+        <div class="port-card-content">
+          <div class="port-card-title"></div>
+          <div class="port-card-meta"></div>
+        </div>
+      `;
+      if (todayPort.image) {
+        card05.querySelector(".port-bg-layer").style.backgroundImage = `url("${todayPort.image}")`;
+      }
+      card05.querySelector(".port-card-title").textContent = todayPort.name;
+      card05.querySelector(".port-card-meta").textContent = `⚓ ${todayPort.locality} (${todayPort.province})`;
+      card05.addEventListener("click", () => openPortFicha(currentPortIndex));
+      card05.querySelector(".next-port-card-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        currentPortIndex = (currentPortIndex + 1) % ports.length;
+        renderGrid();
+        openPortFicha(currentPortIndex);
+      });
+      grid.appendChild(card05);
+
+      // --- 06 · FONDEAR (Carta persoal única e limpa, sen publicidade) ---
+      grid.appendChild(buildPersonalCardElement());
+    }
+
+    // Modal Doar a Noutrora
+    document.getElementById("donateBtn").addEventListener("click", () => {
+      document.getElementById("donateModal").classList.add("open");
+    });
+    document.getElementById("closeDonateBtn").addEventListener("click", () => {
+      document.getElementById("donateModal").classList.remove("open");
+    });
+
+    // Guardar desde el modal de edición
+    document.getElementById("editForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = document.getElementById("cardTitleInput").value.trim();
+      const url = normalizeUrl(document.getElementById("cardUrlInput").value);
+      if (!title || !url) return;
+
+      if (activeEditMode === "perder_el_rumbo" || activeEditMode === "mundo_nuevo") {
+        const custom = loadCustomExplore();
+        if (!Array.isArray(custom[activeEditMode])) custom[activeEditMode] = [];
+        custom[activeEditMode].push({ title, url });
+        saveCustomExplore(custom);
+      } else if (activeEditMode === "fondeadero") {
+        savePersonalCard({ title, url });
+      }
+      closeEditModal();
+      renderGrid();
+    });
+
+    document.getElementById("cancelBtn").addEventListener("click", closeEditModal);
+    document.getElementById("closeFichaBtn").addEventListener("click", closeFichaModal);
+
+    document.getElementById("editModal").addEventListener("click", (e) => {
+      if (e.target.id === "editModal") closeEditModal();
+    });
+    document.getElementById("fichaModal").addEventListener("click", (e) => {
+      if (e.target.id === "fichaModal") closeFichaModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeEditModal();
+        closeFichaModal();
+      }
+    });
+
+    // Barra de búsqueda superior
+    document.getElementById("searchForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = document.getElementById("searchInput").value.trim();
+      if (!q) return;
+      const isUrl =
+        /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(q) ||
+        (/^[^\s]+\.[^\s]{2,}$/.test(q) && !q.includes(" ")) ||
+        /^\d{1,3}(\.\d{1,3}){3}(:\d+)?(\/.*)?$/.test(q);
+      if (isUrl) {
+        window.location.href = normalizeUrl(q);
+      } else {
+        window.location.href = "https://duckduckgo.com/?q=" + encodeURIComponent(q);
+      }
+    });
+
+    // Inicializar Puerto Base
+    initDailyIndices();
+    renderGrid();
+    syncLiveCatalog();
+  </script>
+</body>
+</html>

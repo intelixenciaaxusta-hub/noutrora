@@ -1,0 +1,52 @@
+<svg width="262" height="218" viewBox="0 0 262 218" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sombra base -->
+  <ellipse cx="131" cy="202" rx="98" ry="12" fill="#1B3644" fill-opacity="0.10"/>
+
+  <!-- Cartas de navegación mariñeira en cascada -->
+  <!-- Carta 3 (fondo) -->
+  <rect x="52" y="38" width="158" height="115" rx="12" fill="#D6D3C9" fill-opacity="0.6"/>
+  
+  <!-- Carta 2 (intermedia) -->
+  <rect x="42" y="52" width="178" height="120" rx="12" fill="#7A9E9F" fill-opacity="0.3" stroke="#7A9E9F" stroke-width="1.5"/>
+
+  <!-- Carta 1 (principal dianteira - Horizonte Atlántico) -->
+  <g filter="drop-shadow(0px 6px 12px rgba(27, 54, 68, 0.12))">
+    <rect x="32" y="66" width="198" height="125" rx="12" fill="#FAF9F5" stroke="#D6D3C9" stroke-width="1.5"/>
+    <rect x="32" y="66" width="198" height="24" rx="12" fill="#1B3644"/>
+    <!-- Detalle ventana náutica / botóns mínimos -->
+    <circle cx="45" cy="78" r="3.5" fill="#7A9E9F"/>
+    <circle cx="56" cy="78" r="3.5" fill="#D6D3C9"/>
+    <circle cx="67" cy="78" r="3.5" fill="#FAF9F5" fill-opacity="0.6"/>
+    
+    <!-- Liñas de auga e ondas serenas sen rastro -->
+    <path d="M44 145C68 139 92 149 116 145C140 141 164 147 188 144C200 142.5 212 144 218 145" stroke="#7A9E9F" stroke-width="2" stroke-linecap="round"/>
+    <path d="M44 160C74 155 104 163 134 158C164 153 194 159 218 158" stroke="#D6D3C9" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M44 172C80 169 116 174 152 171C178 169 204 173 218 172" stroke="#7A9E9F" stroke-width="1" stroke-dasharray="3 3" stroke-linecap="round"/>
+
+    <!-- Barco veleiro clásico navegando en calma sen deixar rastro -->
+    <g transform="translate(142, 116)">
+      <path d="M0 16C6 19 22 19 28 16L24 23H4L0 16Z" fill="#1B3644"/>
+      <line x1="14" y1="2" x2="14" y2="17" stroke="#0F232E" stroke-width="1.5"/>
+      <path d="M14 3L24 15H14V3Z" fill="#7A9E9F"/>
+      <path d="M12 5L3 15H12V5Z" fill="#D6D3C9"/>
+    </g>
+  </g>
+
+  <!-- Rosa dos ventos e compás emerxendo serenamente detrás das cartas -->
+  <g transform="translate(131, 46)">
+    <circle cx="0" cy="0" r="28" fill="#1B3644" stroke="#7A9E9F" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="23" stroke="#FAF9F5" stroke-width="1" stroke-dasharray="2 3"/>
+    <!-- Raios principais -->
+    <path d="M0 -21L4 -5L0 0L-4 -5Z" fill="#FAF9F5"/>
+    <path d="M0 21L4 5L0 0L-4 5Z" fill="#7A9E9F"/>
+    <path d="M21 0L5 4L0 0L5 -4Z" fill="#FAF9F5"/>
+    <path d="M-21 0L-5 4L0 0L-5 -4Z" fill="#7A9E9F"/>
+    <!-- Diagonais sutís -->
+    <path d="M12 -12L3 -2L0 0L2 -3Z" fill="#D6D3C9"/>
+    <path d="M-12 12L-3 2L0 0L-2 3Z" fill="#D6D3C9"/>
+    <path d="M12 12L3 2L0 0L2 3Z" fill="#D6D3C9"/>
+    <path d="M-12 -12L-3 -2L0 0L-2 -3Z" fill="#D6D3C9"/>
+    <circle cx="0" cy="0" r="3" fill="#FAF9F5"/>
+  </g>
+</svg>
+

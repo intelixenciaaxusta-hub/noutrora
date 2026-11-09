@@ -1,0 +1,379 @@
+{
+  "version": "2.0",
+  "lang": "gl",
+  "updated_at": "2026-11-09",
+  "perder_el_rumbo": [
+    {
+      "title": "Radio Garden — Emisoras do mundo en directo",
+      "url": "https://radio.garden"
+    },
+    {
+      "title": "WindowSwap — Unha ventá aberta noutro recanto do planeta",
+      "url": "https://www.window-swap.com"
+    },
+    {
+      "title": "Radiooooo — Máquina do tempo musical por década e país",
+      "url": "https://radiooooo.com"
+    },
+    {
+      "title": "The Pudding — Ensaios visuais e historias interactivas",
+      "url": "https://pudding.cool"
+    },
+    {
+      "title": "Earth Nullschool — Ventos e correntes do Atlántico en tempo real",
+      "url": "https://earth.nullschool.net"
+    },
+    {
+      "title": "Neal.fun Deep Sea — Descenso ás fosas abisais do océano",
+      "url": "https://neal.fun/deep-sea/"
+    },
+    {
+      "title": "Cities and Memory — Mapa sonoro de lugares do mundo",
+      "url": "https://citiesandmemory.com/sound-map/"
+    },
+    {
+      "title": "Submarine Cable Map — Cartografía dos cables submarinos",
+      "url": "https://www.submarinecablemap.com"
+    },
+    {
+      "title": "A Soft Murmur — Sons de marea, choiva e vento en calma",
+      "url": "https://asoftmurmur.com"
+    },
+    {
+      "title": "Music-Map — Constelacións de bandas e artistas",
+      "url": "https://www.music-map.com"
+    },
+    {
+      "title": "Solar System Scope — Planetario e ceo nocturno en 3D",
+      "url": "https://www.solarsystemscope.com"
+    },
+    {
+      "title": "Every Noise at Once — Atlas de todos os xéneros musicais",
+      "url": "https://everynoise.com"
+    }
+  ],
+  "mundo_nuevo": [
+    {
+      "title": "Jot Down — Ensaios de cinema, literatura, música e contracultura",
+      "url": "https://www.jotdown.es"
+    },
+    {
+      "title": "Jot Down (Halt and Catch Fire) — A estafa do transaccional",
+      "url": "https://www.jotdown.es/2026/02/la-estafa-de-lo-transaccional/"
+    },
+    {
+      "title": "The Public Domain Review — Libros raros, historia e arte esquecida",
+      "url": "https://publicdomainreview.org"
+    },
+    {
+      "title": "UbuWeb — Arquivo de vangardas, Xeración Beat e cinema underground",
+      "url": "https://www.ubu.com"
+    },
+    {
+      "title": "Please Kill Me — Crónicas dos anos do Punk e contracultura",
+      "url": "https://pleasekillme.com"
+    },
+    {
+      "title": "Beatdom — Literatura, historia e crónicas da Xeración Beat",
+      "url": "https://www.beatdom.com"
+    },
+    {
+      "title": "Dangerous Minds — Contracultura, post-punk, cinema de culto e libros",
+      "url": "https://dangerousminds.net"
+    },
+    {
+      "title": "Open Culture — Gravacións de escritores, cinema clásico e filosofía",
+      "url": "https://www.openculture.com"
+    },
+    {
+      "title": "Criterion Current — Ensaios sobre a historia do cinema de autor",
+      "url": "https://www.criterion.com/current"
+    },
+    {
+      "title": "Far Out Magazine — Historias ocultas do rock, punk e cinema",
+      "url": "https://faroutmagazine.co.uk"
+    },
+    {
+      "title": "Literary Hub — Anécdotas de escritores e crónicas literarias",
+      "url": "https://lithub.com"
+    },
+    {
+      "title": "Revista Minerva (CBA) — Pensamento, arte e literatura",
+      "url": "https://revistaminerva.com"
+    },
+    {
+      "title": "Biblioteca Digital Hispánica — Cartas náuticas e manuscritos antigos",
+      "url": "https://bdh.bne.es"
+    }
+  ],
+  "zambullirse": [
+    {
+      "id": "halt-and-catch-fire",
+      "title": "Halt and Catch Fire",
+      "year": "2014–2017",
+      "kind": "Serie · 4 tempadas",
+      "creator": "Christopher Cantwell & Christopher C. Rogers",
+      "summary": "Ambientada entre a revolución dos ordenadores persoais nos anos 80 e o nacemento dos primeiros navegadores web en 1994. Máis que unha serie sobre informática, é un retrato inesquecible sobre catro soñadores (Joe, Gordon, Cameron e Donna), o valor do fracaso e a necesidade humana de conectar.",
+      "captain_note": "A nosa serie de cabeceira en Noutrora: a súa cuarta tempada vive exactamente o nacemento da web aberta de 1994.",
+      "article_title": "Ler ensaio en Jot Down: «A estafa do transaccional»",
+      "article_url": "https://www.jotdown.es/2026/02/la-estafa-de-lo-transaccional/"
+    },
+    {
+      "id": "paris-texas",
+      "title": "Paris, Texas",
+      "year": "1984",
+      "kind": "Filme · Drama / Road Movie",
+      "creator": "Wim Wenders (Guión de Sam Shepard)",
+      "summary": "Un home camiña en silencio polo deserto de Texas sen lembrar quen foi durante os últimos catro anos. Coa guitarra slide de Ry Cooder de fondo e a fotografía de Robby Müller, é unha viaxe hipnótica sobre a memoria, a perda e a redención.",
+      "captain_note": "Cinema que respira amodo, sen présa nin ruído, onde cada plano semella un cadro.",
+      "article_title": "Explorar análise e caderno en Criterion",
+      "article_url": "https://www.criterion.com/films/1502-paris-texas"
+    },
+    {
+      "id": "24-hour-party-people",
+      "title": "24 Hour Party People",
+      "year": "2002",
+      "kind": "Filme · Música / Contracultura",
+      "creator": "Michael Winterbottom",
+      "summary": "En 1976, Tony Wilson asiste a un concerto dos Sex Pistols en Manchester diante de apenas corenta persoas e decide fundar o lendario selo Factory Records (Joy Division, New Order, Happy Mondays) sen asinar un só contrato.",
+      "captain_note": "Pura historia viva do punk e post-punk contada con retranca, caos e amor absoluto pola música.",
+      "article_title": "Ler crónicas do punk e post-punk en Far Out Magazine",
+      "article_url": "https://faroutmagazine.co.uk/24-hour-party-people-real-truth-behind-the-myths/"
+    },
+    {
+      "id": "paterson",
+      "title": "Paterson",
+      "year": "2016",
+      "kind": "Filme · Cinema de autor",
+      "creator": "Jim Jarmusch",
+      "summary": "Sete días na vida de Paterson, un condutor de autobús na cidade de Paterson (Nova Jersey) que escribe poemas nun caderno secreto antes de arrancar a súa ruta cada mañá.",
+      "captain_note": "Un manifesto silencioso a prol da vida sinxela, a observación cotiá e a calma.",
+      "article_title": "Ler sobre a poética de Jim Jarmusch en Jot Down",
+      "article_url": "https://www.jotdown.es/?s=Jim+Jarmusch"
+    },
+    {
+      "id": "the-wire",
+      "title": "The Wire",
+      "year": "2002–2008",
+      "kind": "Serie · 5 tempadas",
+      "creator": "David Simon & Ed Burns",
+      "summary": "Escrita por un ex-reporteiro de sucesos e un ex-detective de Baltimore, radiografía unha cidade enteira tempada a tempada: as esquinas, os estibadores do porto marítimo, o concello, as escolas e a redacción dun xornal.",
+      "captain_note": "Especialmente a súa segunda tempada, dedicada aos traballadores do porto de Baltimore, é televisión coa fondura dunha novela do século XIX.",
+      "article_title": "Explorar ensaios sobre The Wire en Jot Down",
+      "article_url": "https://www.jotdown.es/?s=The+Wire"
+    },
+    {
+      "id": "control",
+      "title": "Control",
+      "year": "2007",
+      "kind": "Filme · Biografía musical",
+      "creator": "Anton Corbijn",
+      "summary": "Rodada nun branco e negro conmovedor polo fotógrafo que retratou a Joy Division nos seus comezos, narra a mocidade poética e turbulenta de Ian Curtis no gris industrial de Macclesfield.",
+      "captain_note": "Cada fotograma semella unha portada de vinilo de finais dos anos setenta.",
+      "article_title": "Descubrir arquivo de Joy Division e post-punk",
+      "article_url": "https://faroutmagazine.co.uk/tags/joy-division/"
+    }
+  ],
+  "libros": [
+    {
+      "id": "en-el-camino",
+      "title": "No camiño (On the Road)",
+      "author": "Jack Kerouac",
+      "year": "1957",
+      "genre": "Novela · Xeración Beat",
+      "summary": "Escrita en abril de 1951 durante tres semanas febrís sobre un rolo continuo de papel de 36 metros para non cortar o ritmo con cambios de folla. Narra as viaxes de Sal Paradise e Dean Moriarty cruzando Norteamérica a ritmo de jazz bebop.",
+      "captain_note": "O libro que inventou o pulo de botarse á estrada a «perder o norte».",
+      "article_title": "Explorar historia e arquivo en Beatdom",
+      "article_url": "https://www.beatdom.com"
+    },
+    {
+      "id": "eramos-unos-ninos",
+      "title": "Éramos uns nenos (Just Kids)",
+      "author": "Patti Smith",
+      "year": "2010",
+      "genre": "Memorias · Nova York anos 60/70",
+      "summary": "O relato íntimo da mocidade de Patti Smith e o fotógrafo Robert Mapplethorpe no Nova York de finais dos sesenta e no Hotel Chelsea, cando non tiñan cartos pero vivían entregados por completo á poesía, á arte e ao nacemento do punk no CBGB.",
+      "captain_note": "Un dos libros máis fermosos xamais escritos sobre a amizade e a vocación artística.",
+      "article_title": "Ler sobre Patti Smith e a escena do CBGB en Please Kill Me",
+      "article_url": "https://pleasekillme.com"
+    },
+    {
+      "id": "por-favor-matame",
+      "title": "Por favor, má́tame (Please Kill Me)",
+      "author": "Legs McNeil & Gillian McCain",
+      "year": "1996",
+      "genre": "Historia oral do Punk",
+      "summary": "Construído integramente coas voces sen censura dos seus protagonistas (Lou Reed, Iggy Pop, Ramones, Blondie, Television, Richard Hell), reconstrúe como un fato de inadaptados mudou a historia da música dende os garaxes de Detroit e os tugurios do Bowery.",
+      "captain_note": "Directo, eléctrico e sen filtros: é como estar sentado na barra do local en 1975.",
+      "article_title": "Visitar arquivo crónico en PleaseKillMe.com",
+      "article_url": "https://pleasekillme.com"
+    },
+    {
+      "id": "vagabundos-del-dharma",
+      "title": "Os vagabundos do Dharma",
+      "author": "Jack Kerouac",
+      "year": "1958",
+      "genre": "Novela · Natureza e Zen",
+      "summary": "Inspirada na amizade de Kerouac co poeta e montañeiro Gary Snyder (Japhy Ryder na novela), conta como mudan o asfalto urbano polo silencio dos cumios de Serra Nevada e as cabanas de vixilancia forestal.",
+      "captain_note": "Para quen busca silencio, mochila lixeira e ollar o mundo dende o alto.",
+      "article_title": "Descubrir crónicas dos poetas da Costa Oeste",
+      "article_url": "https://www.beatdom.com"
+    },
+    {
+      "id": "walden",
+      "title": "Walden, ou a vida nos bosques",
+      "author": "Henry David Thoreau",
+      "year": "1854",
+      "genre": "Ensaio · Soberanía persoal",
+      "summary": "Dous anos, dous meses e dous días vivindo nunha cabana construída coas súas propias mans xunto á lagoa de Walden para comprobar que cousas son verdadeiramente necesarias na vida e cales son puro ruído imposto.",
+      "captain_note": "A filosofía de Walden é exactamente a alma de Noutrora levada ao mundo dixital.",
+      "article_title": "Explorar edición e ensaios en Open Culture",
+      "article_url": "https://www.openculture.com"
+    },
+    {
+      "id": "moby-dick",
+      "title": "Moby-Dick",
+      "author": "Herman Melville",
+      "year": "1851",
+      "genre": "Novela marítima · Clásico universal",
+      "summary": "«Chamádeme Ismael». Dende as pousadas baleeiras de Nantucket ata os confíns do océano a bordo do Pequod, Melville asina unha enciclopedia poética dos mares, os cetáceos e a teima humana.",
+      "captain_note": "Ningunha bitácora mariñeira está completa sen enrolarse cando menos unha vez con Ismael.",
+      "article_title": "Ver gravacións e ensaios sobre Moby-Dick en The Public Domain Review",
+      "article_url": "https://publicdomainreview.org"
+    }
+  ],
+  "puertos": [
+    {
+      "day_order": 1,
+      "name": "Porto de Caión",
+      "locality": "Caión · A Laracha",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°19′17″N 8°36′27″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Cai%C3%B3n.jpg?width=900",
+      "history": "Porta de entrada oriental á Costa da Morte. Antigo porto baleeiro documentado xa no século XVI, os seus barcos saían á caza da balea franca en augas do Atlántico Norte. Hoxe conserva a súa praza mariñeira asomada directamente ao bater do océano e a súa confraría de pescadores.",
+      "more_url": "https://gl.wikipedia.org/wiki/Cai%C3%B3n,_A_Laracha"
+    },
+    {
+      "day_order": 2,
+      "name": "Porto de Malpica",
+      "locality": "Malpica de Bergantiños",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°19′22″N 8°48′38″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Malpica_de_Berganti%C3%B1os.jpg?width=900",
+      "history": "Nacido como antigo refuxio baleeiro no século XVII baixo unha península batida polo mar por ambos os costados. Dende a súa dársena, protexida por fortes diques fronte á silueta das Illas Sisargas, parte unha das frotas de cerco e baixura máis valentes de Galicia.",
+      "more_url": "https://gl.wikipedia.org/wiki/Malpica_de_Berganti%C3%B1os"
+    },
+    {
+      "day_order": 3,
+      "name": "Porto de Barizo",
+      "locality": "Barizo · Malpica de Bergantiños",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°19′05″N 8°52′18″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Barizo,_Malpica_de_Berganti%C3%B1os.jpg?width=900",
+      "history": "Un diminuto abrigo natural encaixado entre a praia de Barizo e os cantís de granito que conducen ao faro de Punta Nariga (deseñado como a proa dun barco mirando ao Atlántico). Poucos lugares resumen mellor a escala humana dos pequenos portos da Costa da Morte.",
+      "more_url": "https://gl.wikipedia.org/wiki/Barizo,_Malpica_de_Berganti%C3%B1os"
+    },
+    {
+      "day_order": 4,
+      "name": "Porto de Corme",
+      "locality": "Corme Porto · Ponteceso",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°15′58″N 8°57′45″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Corme.jpg?width=900",
+      "history": "Situado na boca norte da ría de Corme e Laxe, ao abrigo do mítico cabo Roncudo —onde medran os percebes máis bravos do Atlántico—. Foi berce do navegante Francisco Antonio Mourelle da Rúa, quen no século XVIII explorou Alasca e as illas do Pacífico Sur.",
+      "more_url": "https://gl.wikipedia.org/wiki/Corme_Porto,_Ponteceso"
+    },
+    {
+      "day_order": 5,
+      "name": "Porto de Laxe",
+      "locality": "Laxe",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°13′14″N 9°00′12″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Laxe.jpg?width=900",
+      "history": "Fondeadoiro histórico no costado sur da ría. A súa vida mariñeira de finais do século XIX e principios do XX quedou inmortalizada para sempre no Arquivo Fotográfico Vidal, declarado Ben de Interese Cultural.",
+      "more_url": "https://gl.wikipedia.org/wiki/Laxe"
+    },
+    {
+      "day_order": 6,
+      "name": "Porto de Camelle",
+      "locality": "Camelle · Camariñas",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°11′22″N 9°05′08″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Camelle,_Camari%C3%B1as.jpg?width=900",
+      "history": "Pequena rada aberta ao norte que durante décadas acolleu unha importante estación de salvamento de náufragos. Na súa escollera viviu durante corenta anos Manfred Gnädinger («Man, o Alemán de Camelle»), esculpindo os croios e obxectos que lle achegaba a marea.",
+      "more_url": "https://gl.wikipedia.org/wiki/Camelle,_Camari%C3%B1as"
+    },
+    {
+      "day_order": 7,
+      "name": "Porto de Santa Mariña",
+      "locality": "Xaviña · Camariñas",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°10′51″N 9°09′18″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Cabo_Vil%C3%A1n_desde_o_monte_da_Insua.jpg?width=900",
+      "history": "Agochado entre os impoñentes bolos graníticos do Monte Branco e a ruta cara ao Cabo Vilán, o minúsculo porto de Santa Mariña apenas conta cun feixe de casetas mariñeiras e lanchas de baixura que desafían a diario o mar aberto.",
+      "more_url": "https://gl.wikipedia.org/wiki/Camari%C3%B1as"
+    },
+    {
+      "day_order": 8,
+      "name": "Porto de Camariñas",
+      "locality": "Camariñas",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°07′48″N 9°10′52″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Camari%C3%B1as.jpg?width=900",
+      "history": "Resgardado no interior da ría tras cruzar a punta do Castelo de Soberano. Mentres fóra ruxa a Costa da Morte vixiada polo Faro Vilán (o primeiro faro eléctrico de España, aceso en 1896), a súa dársena ofrece augas mansas e tradición de encaixe e mar.",
+      "more_url": "https://gl.wikipedia.org/wiki/Camari%C3%B1as"
+    },
+    {
+      "day_order": 9,
+      "name": "Porto de Muxía",
+      "locality": "Muxía",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "43°06′21″N 9°12′55″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Mux%C3%ADa_-_Porto.jpg?width=900",
+      "history": "Tendido no istmo que conduce ao Santuario da Virxe da Barca e ás pedras de Abalar e dos Cadrís. Muxía conserva os últimos secadoiros tradicionais de congro («cabrias») de Europa, onde o peixe se cura unicamente co vento salino do Atlántico.",
+      "more_url": "https://gl.wikipedia.org/wiki/Mux%C3%ADa"
+    },
+    {
+      "day_order": 10,
+      "name": "Porto de Fisterra",
+      "locality": "Fisterra",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "42°54′31″N 9°15′46″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Fisterra.jpg?width=900",
+      "history": "Aberto cara ao seo de Corcubión para protexerse dos temporais do oeste que baten o Cabo Fisterra. A súa lonxa —a primeira turística de Galicia— e os seus barcos de artes menores manteñen vivo o oficio no confín do mundo antigo.",
+      "more_url": "https://gl.wikipedia.org/wiki/Fisterra"
+    },
+    {
+      "day_order": 11,
+      "name": "Porto do Pindo e Ézaro",
+      "locality": "O Pindo · Carnota / Dumbría",
+      "province": "A Coruña",
+      "region": "Costa da Morte · Galicia",
+      "coords": "42°53′52″N 9°08′14″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/O_Pindo,_Carnota.jpg?width=900",
+      "history": "Custodiado pola mole de granito rosado do Monte Pindo (o «Olimpo Celta», de 627 metros sobre o mar) e a poucos metros da fervenza do Ézaro, onde o río Xallas se precipita directamente na auga salgada do Atlántico.",
+      "more_url": "https://gl.wikipedia.org/wiki/O_Pindo,_Carnota"
+    },
+    {
+      "day_order": 12,
+      "name": "Porto de Muros",
+      "locality": "Muros",
+      "province": "A Coruña",
+      "region": "Ría de Muros e Noia · Galicia",
+      "coords": "42°46′30″N 9°03′28″O",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Porto_de_Muros.jpg?width=900",
+      "history": "Fronteira natural entre a Costa da Morte e as Rías Baixas. A súa fachada marítima de casas de pedra con soportais góticos e mariñeiros, onde outrora se salgaba a sardiña e se armaban os aparellos, conforma un dos conxuntos históricos máis fermosos do Atlántico.",
+      "more_url": "https://gl.wikipedia.org/wiki/Muros"
+    }
+  ]
+}

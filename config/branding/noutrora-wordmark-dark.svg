@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 130" width="585" height="130" fill="none">
+  <!-- N -->
+  <path d="M 20 112 L 20 34 L 71 112 L 71 34" fill="none" stroke="#FAF9F5" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 1.ª o (Completamente limpia y humanista) -->
+  <circle cx="127" cy="83" r="29" fill="none" stroke="#FAF9F5" stroke-width="6"/>
+  <!-- u -->
+  <path d="M 183 54 L 183 88 A 24 24 0 0 0 231 88" fill="none" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="231" y1="54" x2="231" y2="112" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round"/>
+  <!-- t -->
+  <path d="M 271 36 L 271 99 A 13 13 0 0 0 284 112 L 293 112 M 257 56 L 289 56" fill="none" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 1.ª r -->
+  <path d="M 319 112 L 319 56 M 319 76 A 24 24 0 0 1 343 54 L 349 54" fill="none" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 2.ª O: NÚCLEO NÁUTICO (Brújula / Eje Norte / Aguja romboidal a 24°) -->
+  <g>
+    <circle cx="403" cy="83" r="29" fill="none" stroke="#FAF9F5" stroke-width="6"/>
+    <line x1="403" y1="42" x2="403" y2="59" stroke="#FAF9F5" stroke-width="5.2" stroke-linecap="round"/>
+    <line x1="403" y1="105" x2="403" y2="117" stroke="#7A9E9F" stroke-width="4" stroke-linecap="round"/>
+    <line x1="368" y1="83" x2="380" y2="83" stroke="#7A9E9F" stroke-width="4" stroke-linecap="round"/>
+    <line x1="426" y1="83" x2="438" y2="83" stroke="#7A9E9F" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="403,60 409.5,83 403,78 396.5,83" fill="#FAF9F5" transform="rotate(24 403 83)"/>
+    <polygon points="403,106 408.5,83 403,87 397.5,83" fill="#7A9E9F" transform="rotate(24 403 83)"/>
+    <circle cx="403" cy="83" r="2.8" fill="#0F232E" stroke="#FAF9F5" stroke-width="2.2"/>
+  </g>
+  <!-- 2.ª r -->
+  <path d="M 465 112 L 465 56 M 465 76 A 24 24 0 0 1 489 54 L 495 54" fill="none" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- a -->
+  <circle cx="537" cy="83" r="28" fill="none" stroke="#FAF9F5" stroke-width="6"/>
+  <path d="M 565 54 L 565 112" fill="none" stroke="#FAF9F5" stroke-width="6" stroke-linecap="round"/>
+</svg>
