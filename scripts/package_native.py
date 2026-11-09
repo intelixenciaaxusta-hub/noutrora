@@ -153,3 +153,8 @@ if __name__ == "__main__":
     deb_mb = full_deb.stat().st_size / (1024 * 1024)
     print(f"✅ Paquete Linux completo creado: dist/nas/noutrora_2.0_amd64.deb ({deb_mb:.1f} MB)")
 
+    if WEB_DOWNLOADS.exists():
+        shutil.copy2(overlay_zip, WEB_DOWNLOADS / "noutrora-overlay-ready.zip")
+        shutil.copy2(full_deb, WEB_DOWNLOADS / "noutrora_2.0_amd64.deb")
+        print(f"   ↳ Sincronizado en dist/noutrora.es/downloads/")
+

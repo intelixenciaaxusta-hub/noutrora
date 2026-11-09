@@ -71,10 +71,12 @@ echo ================================================================
 echo.
 set "NOUTRORA_DIR=%LOCALAPPDATA%\Noutrora"
 set "FF_DIR=%NOUTRORA_DIR%\firefox"
+set "PROFILE_DIR=%NOUTRORA_DIR%\profile"
 set "OVERLAY_ZIP=%TEMP%\noutrora-overlay-ready.zip"
 set "FF_SETUP=%TEMP%\FirefoxSetup.exe"
 
 if not exist "%NOUTRORA_DIR%" mkdir "%NOUTRORA_DIR%"
+if not exist "%PROFILE_DIR%" mkdir "%PROFILE_DIR%"
 
 if not exist "%FF_DIR%\firefox.exe" (
     if exist "%ProgramFiles%\Mozilla Firefox\firefox.exe" (
@@ -83,8 +85,8 @@ if not exist "%FF_DIR%\firefox.exe" (
     ) else (
         echo [1/3] Descargando motor Gecko oficial para Windows en Galego (64-bit)...
         curl -fL "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=gl" -o "%FF_SETUP%"
-        echo Instalando motor base en %FF_DIR%...
-        start /wait "" "%FF_SETUP%" /InstallDirectoryPath="%FF_DIR%"
+        echo Instalando motor base silencioso en %FF_DIR%...
+        start /wait "" "%FF_SETUP%" /S /InstallDirectoryPath="%FF_DIR%"
     )
 )
 
@@ -93,11 +95,11 @@ curl -fsSL "https://noutrora.es/downloads/noutrora-overlay-ready.zip" -o "%OVERL
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%OVERLAY_ZIP%' -DestinationPath '%FF_DIR%' -Force"
 
 echo [3/3] Creando acceso directo de Noutrora en tu Escritorio...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut([Environment]::GetFolderPath('Desktop') + '\Noutrora.lnk'); $s.TargetPath = '%FF_DIR%\firefox.exe'; $s.WorkingDirectory = '%FF_DIR%'; $s.IconLocation = '%FF_DIR%\noutrora.ico'; $s.Description = 'Noutrora Browser'; $s.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut([Environment]::GetFolderPath('Desktop') + '\Noutrora.lnk'); $s.TargetPath = '%FF_DIR%\firefox.exe'; $s.Arguments = '-profile ' + [char]34 + '%PROFILE_DIR%' + [char]34 + ' -no-remote'; $s.WorkingDirectory = '%FF_DIR%'; $s.IconLocation = '%FF_DIR%\noutrora.ico'; $s.Description = 'Noutrora Browser'; $s.Save()"
 
 echo.
-echo ✅ ¡Noutrora instalado! Abriendo navegador...
-start "" "%FF_DIR%\firefox.exe"
+echo ✅ ¡Noutrora instalado! Abriendo navegador con perfil aislado...
+start "" "%FF_DIR%\firefox.exe" -profile "%PROFILE_DIR%" -no-remote
 """
 
 MAC_INSTALLER_COMMAND = """#!/usr/bin/env bash
@@ -133,6 +135,12 @@ fi
 echo "[2/3] Inyectando configuración de Noutrora, Bitácora y Puerto Base..."
 curl -fsSL "https://noutrora.es/downloads/noutrora-overlay-ready.zip" -o "$TMP_ZIP"
 unzip -oq "$TMP_ZIP" -d "$APP_DEST/Contents/Resources"
+
+# Re-firmar la aplicación con ad-hoc codesign para que macOS / Apple Silicon respete la integridad
+if command -v codesign >/dev/null 2>&1; then
+  echo "Aplicando firma de integridad local (codesign)..."
+  codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || true
+fi
 
 echo "[3/3] Listo en $APP_DEST. Abriendo Noutrora..."
 xattr -cr "$APP_DEST" 2>/dev/null || true
@@ -215,7 +223,7 @@ def build_deb_package(dest_deb: Path) -> None:
             src = ROOT / rel
             dst = opt_dir / rel
             if src.is_dir():
-                shutil.copytree(src, dst)
+                shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
             elif src.is_file():
                 shutil.copy2(src, dst)
 
@@ -259,7 +267,11 @@ def build_web_package() -> None:
         for rel in INCLUDED_PATHS:
             p = ROOT / rel
             if p.exists():
-                tf.add(p, arcname=f"Noutrora/{rel}")
+                tf.add(
+                    p,
+                    arcname=f"Noutrora/{rel}",
+                    filter=lambda ti: None if "__pycache__" in ti.name or ti.name.endswith(".pyc") else ti,
+                )
 
     # 3. Generar instalador nativo .deb de doble clic para Linux (Ubuntu / Mint / Debian)
     deb_path = DOWNLOADS_DIR / "noutrora_2.0_all.deb"
@@ -274,6 +286,11 @@ def build_web_package() -> None:
     mac_path = DOWNLOADS_DIR / "Noutrora-Mac.command"
     mac_path.write_text(MAC_INSTALLER_COMMAND, encoding="utf-8")
     mac_path.chmod(0o755)
+
+    # Sincronizar el deb con motor amd64 de package_native si existe
+    native_deb_src = ROOT / "dist" / "nas" / "noutrora_2.0_amd64.deb"
+    if native_deb_src.exists():
+        shutil.copy2(native_deb_src, DOWNLOADS_DIR / "noutrora_2.0_amd64.deb")
 
     # 5. Calcular SHA-256
     sha256_hash = hashlib.sha256(deb_path.read_bytes()).hexdigest()
@@ -298,7 +315,7 @@ def build_web_package() -> None:
     )
 
     # 8. Generar archivo ZIP único
-    zip_path = DIST_DIR / "noutrora-web-v1.0.zip"
+    zip_path = DIST_DIR / "noutrora-web-v2.0.zip"
     if zip_path.exists():
         zip_path.unlink()
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
