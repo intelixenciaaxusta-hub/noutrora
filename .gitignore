@@ -8,3 +8,5 @@ upstream/
 *.zip
 *.exe
 Cambiospendentes/
+__pycache__/
+*.pyc
