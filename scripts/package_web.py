@@ -234,6 +234,9 @@ def build_deb_package(dest_deb: Path) -> None:
 
 
 def build_web_package() -> None:
+    # 0. Asegurar compilación previa del overlay
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py")], check=True)
+
     if WEB_DIST.exists():
         shutil.rmtree(WEB_DIST)
     DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)

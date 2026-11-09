@@ -1068,7 +1068,7 @@
 <ol id="install-linux" class="install-panel space-y-3 hidden">
 <li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
 <div class="flex-1"><p class="font-semibold text-atlantic dark:text-foam mb-1"><span class="inline-flex w-6 h-6 mr-2 items-center justify-center rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs">1</span>Descarga o instalador</p>
-<p class="text-sm text-slateText dark:text-foam/80">Preme «Descargar Noutrora para Linux». Gárdase <code>noutrora_2.0_amd64.deb</code>.</p></div>
+<p class="text-sm text-slateText dark:text-foam/80">Preme «Descargar Noutrora para Linux». Gárdase <code>noutrora_2.0_all.deb</code>.</p></div>
 <img src="pasos/linux-1.png" alt="🐧 Linux: Descarga o instalador" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
 </li>
 <li class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-sand/70 dark:bg-nightSky">
@@ -1177,7 +1177,7 @@
                 «Ser sinceros, non roubar ningún dato, non recoller información, non nos vendemos. Navegación tranquila sen roubar RAM nin CPU innecesarias.»
             </p>
 
-            <a id="primary-download-link" href="downloads/noutrora_2.0_amd64.deb" download class="block w-full py-3.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-sm hover:opacity-95 transition mb-4 shadow-md">
+            <a id="primary-download-link" href="downloads/noutrora_2.0_all.deb" download class="block w-full py-3.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-sm hover:opacity-95 transition mb-4 shadow-md">
                 <span id="modal-os-download-label">Descargar Instalador Completo para Linux (.deb) — En Galego</span>
             </a>
 
@@ -1185,9 +1185,9 @@
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slateText dark:text-mist text-center mb-2">
                     Sistemas dispoñibles (En Galego):
                 </p>
-                <a href="downloads/noutrora_2.0_amd64.deb" download class="p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition">
+                <a href="downloads/noutrora_2.0_all.deb" download class="p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition">
                     <span class="font-medium text-atlantic dark:text-foam">🐧 Linux Completo (Ubuntu / Mint / Debian)</span>
-                    <span class="font-mono text-tide dark:text-mist">noutrora_2.0_amd64.deb</span>
+                    <span class="font-mono text-tide dark:text-mist">noutrora_2.0_all.deb</span>
                 </a>
                 <a href="downloads/Noutrora-Setup-Windows.cmd" download class="p-3 rounded-xl bg-sand/70 dark:bg-nightSky hover:bg-sand flex items-center justify-between text-xs transition">
                     <span class="font-medium text-atlantic dark:text-foam">🪟 Windows 10 / 11 (64-bit)</span>
@@ -1226,7 +1226,7 @@
                 if (modalLabel) modalLabel.textContent = 'Descargar Instalador para Windows (En Galego)';
             } else if (ua.indexOf('Linux') !== -1) {
                 btnText.textContent = 'Descargar Noutrora para Linux (.deb) — En Galego';
-                if (modalLink) modalLink.href = 'downloads/noutrora_2.0_amd64.deb';
+                if (modalLink) modalLink.href = 'downloads/noutrora_2.0_all.deb';
                 if (modalLabel) modalLabel.textContent = 'Descargar Instalador Completo para Linux (.deb) — En Galego';
             } else {
                 btnText.textContent = 'Descargar Noutrora de Balde (En Galego)';
@@ -1308,7 +1308,14 @@
             if (!input || !resultBox) return;
             const query = input.value.trim() || 'Faros del Atlántico Norte';
             resultBox.classList.remove('hidden');
-            resultBox.innerHTML = `🧭 Rumbo fijado hacia <strong>«${query}»</strong> — Búsqueda privada sin anuncios patrocinados ni rastreadores de perfilado.`;
+            resultBox.textContent = '';
+            const prefix = document.createTextNode('🧭 Rumbo fijado hacia «');
+            const strong = document.createElement('strong');
+            strong.textContent = query;
+            const suffix = document.createTextNode('» — Búsqueda privada sin anuncios patrocinados ni rastreadores de perfilado.');
+            resultBox.appendChild(prefix);
+            resultBox.appendChild(strong);
+            resultBox.appendChild(suffix);
         }
 
         // 7. Funciones interactivas del Editor de PDF integrado

@@ -83,6 +83,7 @@ Version: 2.0-1
 Section: web
 Priority: optional
 Architecture: amd64
+Depends: libgtk-3-0, libasound2, libdbus-glib-1-2, libx11-xcb1
 Maintainer: Proyecto Noutrora <intelixenciaaxusta@gmail.com>
 Homepage: https://noutrora.es
 Description: Noutrora Browser - Navegacion Atlantica Silenciosa (Paquete Completo)
@@ -103,7 +104,9 @@ Description: Noutrora Browser - Navegacion Atlantica Silenciosa (Paquete Complet
 export MOZ_APP_REMOTINGNAME="Noutrora"
 export GDK_PROGRAM_CLASS="Noutrora"
 export XDG_DATA_DIRS="/opt/noutrora/xdg-data:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-exec "/opt/noutrora/firefox/firefox" --class "Noutrora" --name "noutrora" "$@"
+PROFILE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/noutrora/profile"
+mkdir -p "$PROFILE_DIR"
+exec "/opt/noutrora/firefox/firefox" --profile "$PROFILE_DIR" --class "Noutrora" --name "noutrora" "$@"
 """
         launcher = bin_dir / "noutrora"
         launcher.write_text(launcher_script, encoding="utf-8")

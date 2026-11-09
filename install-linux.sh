@@ -11,7 +11,7 @@ cat > "$APPS_DIR/noutrora.desktop" <<EOF
 Version=1.0
 Name=Noutrora
 Comment=Navegador web ligero y personal
-Exec=$DIR/run.sh %u
+Exec="$DIR/run.sh" %u
 Icon=$DIR/config/branding/noutrora-512.png
 Terminal=false
 Type=Application
