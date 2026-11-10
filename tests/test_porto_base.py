@@ -64,6 +64,21 @@ class TestPortoBaseAndCatalog(unittest.TestCase):
             "home.html debe dispor de navigateSafely para evitar bloqueos de seguridade dende chrome://",
         )
 
+    def test_security_csp_and_referrer(self):
+        """O Porto Base debe incluír CSP restritivo e política de non referente."""
+        self.assertIn("Content-Security-Policy", self.home_text, "Falta a metaetiqueta Content-Security-Policy")
+        self.assertIn("default-src 'none'", self.home_text, "CSP debe restrinxir default-src a 'none'")
+        self.assertIn('name="referrer" content="no-referrer"', self.home_text, "Falta a política no-referrer")
+
+    def test_zero_automatic_remote_image_leak(self):
+        """O Porto Base non debe asignar imaxes externas automáticas que filtren a IP do usuario."""
+        self.assertNotIn(
+            'card05.querySelector(".port-bg-layer").style.backgroundImage = `url("${todayPort.image}")`',
+            self.home_text,
+            "A carta 05 non debe cargar imaxes remotas de fondo automaticamente",
+        )
+        self.assertIn("isValidHttpUrl", self.home_text, "Falta a función de validación estrita de URLs seguras")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import base64
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -69,7 +70,9 @@ def setup_external_branding_overlay() -> None:
         home_text = home_text.replace("__NOUTRORA_SVG_BASE64__", b64_file(BRAND_DIR / "noutrora.svg"))
         home_text = home_text.replace("__NOUTRORA_WORDMARK_BASE64__", b64_file(BRAND_DIR / "noutrora-wordmark.svg"))
         home_text = home_text.replace("__NOUTRORA_WORDMARK_DARK_BASE64__", b64_file(BRAND_DIR / "noutrora-wordmark-dark.svg"))
-        home_text = home_text.replace("__NOUTRORA_EXPLORACION_JSON__", exploracion_json)
+        # Blindaxe fronte a Script Tag Breakout ao inxectar contido JSON
+        exploracion_safe = re.sub(r"<\s*/\s*script", r"<\\/script", exploracion_json, flags=re.IGNORECASE)
+        home_text = home_text.replace("__NOUTRORA_EXPLORACION_JSON__", exploracion_safe)
         (content_dir / "home.html").write_text(home_text, encoding="utf-8")
 
     (content_dir / "brand.properties").write_text(

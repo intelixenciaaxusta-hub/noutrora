@@ -104,6 +104,9 @@ class TestLandingPage(unittest.TestCase):
         self.assertIn("intelixenciaaxusta@gmail.com", self.text, "Falta o correo de contacto de titularidade (Art. 10 LSSI)")
         self.assertIn('id="privacy-modal"', self.text, "Falta o modal de privacidade e aviso legal")
         self.assertIn("openPrivacyModal", self.app_path.read_text(encoding="utf-8"), "Falta a función openPrivacyModal en app.js")
+        # Seguridade de contido e referente
+        self.assertIn("Content-Security-Policy", self.text, "Falta a metaetiqueta Content-Security-Policy en index.html")
+        self.assertIn('name="referrer" content="no-referrer"', self.text, "Falta a metaetiqueta Referrer-Policy en index.html")
 
 
 if __name__ == "__main__":

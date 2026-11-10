@@ -355,12 +355,11 @@ function selectInstallLanguage(lang) {
 }
 
 function updateDownloadCountersDisplay() {
-    if (!descargasData || !descargasData.descargas) return;
-    const d = descargasData.descargas;
-    const plats = d.plataformas;
+    const d = (descargasData && descargasData.descargas) ? descargasData.descargas : {};
+    const plats = d.plataformas || {};
 
     const totalBadge = document.getElementById('tracker-total-count');
-    if (totalBadge) {
+    if (totalBadge && typeof d.total === 'number') {
         const ver = (descargasData.version || 'v2.1.0').replace(/^v+/, 'v');
         totalBadge.textContent = d.total.toLocaleString('gl-ES') + ' travesías iniciadas no Atlántico (' + ver + ')';
     }
@@ -369,15 +368,15 @@ function updateDownloadCountersDisplay() {
     const wCount = document.getElementById('tracker-win-count');
     const mCount = document.getElementById('tracker-mac-count');
 
-    if (lCount && plats.linux) {
+    if (lCount && plats.linux && plats.linux.idiomas && langMeta[currentInstallLang]) {
         const langCount = plats.linux.idiomas[currentInstallLang] || 0;
         lCount.textContent = plats.linux.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
     }
-    if (wCount && plats.windows) {
+    if (wCount && plats.windows && plats.windows.idiomas && langMeta[currentInstallLang]) {
         const langCount = plats.windows.idiomas[currentInstallLang] || 0;
         wCount.textContent = plats.windows.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
     }
-    if (mCount && plats.mac) {
+    if (mCount && plats.mac && plats.mac.idiomas && langMeta[currentInstallLang]) {
         const langCount = plats.mac.idiomas[currentInstallLang] || 0;
         mCount.textContent = plats.mac.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
     }
@@ -385,7 +384,10 @@ function updateDownloadCountersDisplay() {
 
 // Carga anónima e lixeira de descargas.json
 fetch('descargas.json')
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+    })
     .then(data => {
         descargasData = data;
         updateDownloadCountersDisplay();
