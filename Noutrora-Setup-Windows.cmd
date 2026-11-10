@@ -66,11 +66,11 @@ if %ERRORLEVEL% EQU 0 (
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%OVERLAY_ZIP%' -DestinationPath '%FF_DIR%' -Force"
 
 echo [3/3] Creando acceso directo de Noutrora no Escritorio...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $desktop = [Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut($desktop + '\Noutrora.lnk'); $s.TargetPath = '%FF_DIR%\firefox.exe'; $s.Arguments = '-profile ""%PROFILE_DIR%"" -no-remote'; $s.WorkingDirectory = '%FF_DIR%'; if (Test-Path '%FF_DIR%\noutrora.ico') { $s.IconLocation = '%FF_DIR%\noutrora.ico' }; $s.Description = 'Noutrora Browser'; $s.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $desktop = [Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut($desktop + '\Noutrora.lnk'); $s.TargetPath = '%FF_DIR%\firefox.exe'; $s.Arguments = '-profile ""%PROFILE_DIR%"" -no-remote ""%FF_DIR%\noutrora-overlay\content\home.html""'; $s.WorkingDirectory = '%FF_DIR%'; if (Test-Path '%FF_DIR%\noutrora.ico') { $s.IconLocation = '%FF_DIR%\noutrora.ico' }; $s.Description = 'Noutrora Browser'; $s.Save()"
 
 echo.
 echo ================================================================
 echo   Instalacion completada con exito.
-echo   Abrindo Noutrora con perfil illado...
+echo   Abrindo Noutrora co Porto Base de 6 cartas...
 echo ================================================================
-start "" "%FF_DIR%\firefox.exe" -profile "%PROFILE_DIR%" -no-remote
+start "" "%FF_DIR%\firefox.exe" -profile "%PROFILE_DIR%" -no-remote "%FF_DIR%\noutrora-overlay\content\home.html"

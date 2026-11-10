@@ -12,9 +12,8 @@
     "AutofillCreditCardEnabled": false,
     "OfferToSaveLogins": false,
     "Homepage": {
-      "URL": "chrome://noutrora-branding/content/home.html",
-      "Locked": true,
-      "StartPage": "homepage"
+      "Locked": false,
+      "StartPage": "homepage-locked"
     },
     "OverrideFirstRunPage": "",
     "OverridePostUpdatePage": "",

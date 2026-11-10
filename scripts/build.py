@@ -201,10 +201,7 @@ def build():
         subprocess.run(["python3", str(ROOT / "scripts" / "generate_logo.py")], check=True)
 
     # 2. Leer plantilla de políticas y marcadores personales
-    home_uri = "chrome://noutrora-branding/content/home.html"
     policies_data = json.loads((CONFIG_DIR / "policies.template.json").read_text(encoding="utf-8"))
-    if "Homepage" in policies_data.get("policies", {}):
-        policies_data["policies"]["Homepage"]["URL"] = home_uri
     bookmarks_data = json.loads((CONFIG_DIR / "bookmarks.json").read_text(encoding="utf-8"))
     policies_data["policies"]["Bookmarks"] = bookmarks_data
 
