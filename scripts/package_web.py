@@ -335,5 +335,64 @@ def build_web_package() -> None:
     print(f"   - Catálogo Cultural Vivo incluido: exploracion.json")
 
 
+def find_nas_gvfs_path() -> Path:
+    uid = os.getuid()
+    standard = Path(f"/run/user/{uid}/gvfs/smb-share:server=noutrora.local,share=servidor")
+    if standard.exists():
+        return standard
+    for p in Path("/run/user").glob("*/gvfs/smb-share:server=noutrora.local,share=servidor"):
+        if p.exists():
+            return p
+    return standard
+
+
+def ensure_nas_mounted() -> Path:
+    nas_base = find_nas_gvfs_path()
+    if not nas_base.exists():
+        print("🧭 Montando recurso do servidor servidor (smb://noutrora.local/servidor)...")
+        try:
+            subprocess.run(["gio", "mount", "smb://noutrora.local/servidor"], check=True, timeout=10)
+        except Exception as e:
+            print(f"⚠️ Non se puido montar automaticamente con gio: {e}")
+    return find_nas_gvfs_path()
+
+
+def deploy_to_nas() -> bool:
+    nas_base = ensure_nas_mounted()
+    target_dir = nas_base / "publicaciones" / "ibm" / "noutrora.es"
+    if not nas_base.exists():
+        print(f"❌ O recurso do NAS non está accesible en {nas_base}.")
+        print("   Comproba a conexión de rede e executa: gio mount smb://noutrora.local/servidor")
+        return False
+
+    target_dir.mkdir(parents=True, exist_ok=True)
+    print("🚀 Sincronizando paquete web con produción directa en servidor:")
+    print(f"   ↳ Orixe: {WEB_DIST}")
+    print(f"   ↳ Destino: {target_dir}")
+
+    cmd = [
+        "rsync",
+        "-rv",
+        "--size-only",
+        "--delete",
+        f"{WEB_DIST}/",
+        f"{target_dir}/",
+    ]
+    res = subprocess.run(cmd)
+    if res.returncode == 0:
+        print("✅ Despregamento en produción directa en servidor completado con éxito!")
+        print("   ↳ Dispoñible en: http://noutrora.local:8080/ e https://noutrora.es/")
+        return True
+    else:
+        print(f"❌ Erro ao sincronizar con rsync (código {res.returncode})")
+        return False
+
+
 if __name__ == "__main__":
     build_web_package()
+    if any(arg in sys.argv[1:] for arg in ("--deploy", "--publicar", "-d")):
+        deploy_to_nas()
+    else:
+        print("\n💡 Para publicar directamente no servidor servidor executa:")
+        print("   python3 scripts/package_web.py --deploy")
+
