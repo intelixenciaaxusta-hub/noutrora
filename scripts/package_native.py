@@ -39,10 +39,35 @@ def create_windows_ico(png_path: Path, ico_path: Path) -> None:
     ico_path.write_bytes(header + entry + png_bytes)
 
 
+def create_apple_icns(brand_dir: Path, icns_path: Path) -> None:
+    """Crea un archivo de icono nativo de macOS (.icns) empaquetando PNGs estándar de Apple."""
+    # Etiquetas ICNS oficiales para PNG: ic11 (16), ic12 (32), ic13 (64), ic07 (128), ic09 (512)
+    icon_map = [
+        (b"ic11", brand_dir / "default16.png"),
+        (b"ic12", brand_dir / "default32.png"),
+        (b"ic13", brand_dir / "default64.png"),
+        (b"ic07", brand_dir / "default128.png"),
+        (b"ic09", brand_dir / "noutrora-512.png"),
+    ]
+    entries = []
+    for tag, path in icon_map:
+        if path.exists():
+            data = path.read_bytes()
+            entry = tag + struct.pack(">I", 8 + len(data)) + data
+            entries.append(entry)
+
+    total_size = 8 + sum(len(e) for e in entries)
+    header = b"icns" + struct.pack(">I", total_size)
+    icns_path.write_bytes(header + b"".join(entries))
+
+
 def build_precompiled_overlay_zip(dest_zip: Path) -> None:
     """Empaqueta los archivos ya compilados en base/firefox para inyección directa sin Python."""
     ico_path = ROOT / "config" / "branding" / "noutrora.ico"
     create_windows_ico(ROOT / "config" / "branding" / "default128.png", ico_path)
+
+    icns_path = ROOT / "config" / "branding" / "firefox.icns"
+    create_apple_icns(ROOT / "config" / "branding", icns_path)
 
     dest_zip.parent.mkdir(parents=True, exist_ok=True)
     if dest_zip.exists():
@@ -53,6 +78,8 @@ def build_precompiled_overlay_zip(dest_zip: Path) -> None:
         zf.write(BASE_FIREFOX / "defaults" / "pref" / "autoconfig.js", arcname="defaults/pref/autoconfig.js")
         zf.write(BASE_FIREFOX / "distribution" / "policies.json", arcname="distribution/policies.json")
         zf.write(ico_path, arcname="noutrora.ico")
+        zf.write(icns_path, arcname="firefox.icns")
+        zf.write(icns_path, arcname="noutrora.icns")
         zf.write(ROOT / "config" / "branding" / "noutrora-512.png", arcname="noutrora-512.png")
 
         overlay_dir = BASE_FIREFOX / "noutrora-overlay"
