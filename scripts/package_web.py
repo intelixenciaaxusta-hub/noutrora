@@ -297,7 +297,13 @@ def build_deb_package(dest_deb: Path) -> None:
 
 
 def build_web_package() -> None:
-    # 0. Asegurar compilación previa del overlay
+    # 0. Asegurar paso obrigatorio de probas técnicas
+    from run_tests import run_all_tests
+
+    if not run_all_tests():
+        raise SystemExit("❌ Probas técnicas erradas. Cancélase a empaquetación e o despregamento.")
+
+    # 1. Asegurar compilación previa do overlay
     subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py")], check=True)
 
     if WEB_DIST.exists():
