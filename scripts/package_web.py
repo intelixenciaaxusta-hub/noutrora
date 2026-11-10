@@ -331,6 +331,10 @@ def build_web_package() -> None:
     if pasos.exists():
         shutil.copytree(pasos, WEB_DIST / "pasos")
 
+    normativa_src = ROOT / "normativa"
+    if normativa_src.exists():
+        shutil.copytree(normativa_src, WEB_DIST / "normativa")
+
     # 2. Crear el paquete universal noutrora-installer.tar.gz
     tar_path = DOWNLOADS_DIR / "noutrora-installer.tar.gz"
     with tarfile.open(tar_path, "w:gz") as tf:
@@ -448,6 +452,7 @@ def deploy_to_nas() -> bool:
 
     for dirpath, dirnames, filenames in os.walk(WEB_DIST):
         rel = Path(dirpath).relative_to(WEB_DIST)
+        (target_dir / rel).mkdir(parents=True, exist_ok=True)
         for f in filenames:
             if f.startswith("_"):
                 continue
