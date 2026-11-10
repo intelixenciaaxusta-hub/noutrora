@@ -35,6 +35,7 @@ INCLUDED_PATHS = [
     "install-linux.sh",
     "config",
     "scripts",
+    "normativa",
 ]
 
 INSTALL_SH = """#!/usr/bin/env bash
