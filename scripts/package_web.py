@@ -174,15 +174,31 @@ echo "[2/3] Inyectando configuración de Noutrora, Bitácora y Puerto Base..."
 curl -fsSL "https://noutrora.es/downloads/noutrora-overlay-ready.zip" -o "$TMP_ZIP"
 unzip -oq "$TMP_ZIP" -d "$APP_DEST/Contents/Resources"
 
-# Re-firmar la aplicación con ad-hoc codesign para que macOS / Apple Silicon respete la integridad
+# 3. Crear lanzador con perfil illado independente para evitar colisións co Firefox do sistema
+MACOS_DIR="$APP_DEST/Contents/MacOS"
+if [ -f "$MACOS_DIR/firefox" ] && [ ! -f "$MACOS_DIR/firefox-bin" ]; then
+  mv "$MACOS_DIR/firefox" "$MACOS_DIR/firefox-bin"
+fi
+
+cat << 'LAUNCHER' > "$MACOS_DIR/firefox"
+#!/bin/bash
+DIR="$(cd "$(dirname "$0")" && pwd)"
+PROFILE_DIR="$HOME/Library/Application Support/Noutrora/profile"
+mkdir -p "$PROFILE_DIR"
+HOME_PAGE="$DIR/../Resources/noutrora-overlay/content/home.html"
+exec "$DIR/firefox-bin" -profile "$PROFILE_DIR" -no-remote "$HOME_PAGE" "$@"
+LAUNCHER
+chmod +x "$MACOS_DIR/firefox"
+
+# Re-firmar a aplicación con ad-hoc codesign para que macOS / Apple Silicon respete a integridade
 if command -v codesign >/dev/null 2>&1; then
-  echo "Aplicando firma de integridad local (codesign)..."
+  echo "Aplicando firma de integridade local (codesign)..."
   codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || true
 fi
 
-echo "[3/3] Listo en $APP_DEST. Abriendo Noutrora..."
+echo "[3/3] Listo en $APP_DEST. Abrindo Noutrora con perfil illado..."
 xattr -cr "$APP_DEST" 2>/dev/null || true
-open "$APP_DEST"
+open -n "$APP_DEST"
 """
 
 USR_BIN_NOUTRORA = """#!/usr/bin/env bash
