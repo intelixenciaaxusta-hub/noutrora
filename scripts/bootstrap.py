@@ -4,6 +4,7 @@ Instalador Ligero de Noutrora (Opción 1 — < 1 MB, 100% compatible con MPL 2.0
 Si no existe el motor base en base/firefox/, lo descarga automáticamente desde el servidor
 oficial de Mozilla para la plataforma actual y aplica la superposición de Noutrora.
 """
+import os
 import platform
 import shutil
 import subprocess
@@ -54,9 +55,30 @@ def download_and_extract_linux(os_tag: str) -> None:
             tmp_path.unlink()
 
 
+def is_engine_valid() -> bool:
+    if not BASE_FIREFOX.is_dir():
+        return False
+    sys_name = platform.system().lower()
+    if sys_name == "linux":
+        binary = BASE_FIREFOX / "firefox"
+        return binary.is_file() and os.access(binary, os.X_OK)
+    if sys_name == "darwin":
+        return (BASE_FIREFOX / "firefox").is_file() or (BASE_FIREFOX / "Firefox.app").exists()
+    if sys_name == "windows":
+        return (BASE_FIREFOX / "firefox.exe").is_file()
+    try:
+        return any(BASE_FIREFOX.iterdir())
+    except OSError:
+        return False
+
+
 def ensure_engine() -> None:
-    if BASE_FIREFOX.exists():
+    if is_engine_valid():
         return
+
+    if BASE_FIREFOX.exists():
+        print("⚠️  Motor base en base/firefox incompleto ou corrupto. Limpando para descarga limpa...")
+        shutil.rmtree(BASE_FIREFOX, ignore_errors=True)
 
     os_tag = detect_mozilla_os()
     if os_tag.startswith("linux"):
