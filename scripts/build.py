@@ -232,8 +232,6 @@ def build():
 
     cfg_text = (CONFIG_DIR / "noutrora.cfg").read_text(encoding="utf-8")
     replacements = {
-        "__NOUTRORA_HOME_URI__": home_uri,
-        "__NOUTRORA_SVG_BASE64__": b64_file(BRAND_DIR / "noutrora.svg"),
         "__NOUTRORA_WORDMARK_BASE64__": b64_file(BRAND_DIR / "noutrora-wordmark.svg"),
         "__NOUTRORA_WORDMARK_DARK_BASE64__": b64_file(BRAND_DIR / "noutrora-wordmark-dark.svg"),
         "__ICON_HOME_B64__": b64_file(icons_src_dir / "noutrora-home.svg"),
@@ -243,7 +241,6 @@ def build():
         "__ICON_ZEN_B64__": b64_file(icons_src_dir / "noutrora-zen.svg"),
         "__ICON_SHIELD_B64__": b64_file(icons_src_dir / "noutrora-shield.svg"),
         "__ICON_MOSAIC94_B64__": b64_file(icons_src_dir / "noutrora-mosaic94.svg"),
-        "__ICON_CONTAINERS_B64__": b64_file(icons_src_dir / "noutrora-containers.svg"),
     }
     for placeholder, b64_val in replacements.items():
         cfg_text = cfg_text.replace(placeholder, b64_val)
@@ -253,7 +250,7 @@ def build():
     print("✅ Noutrora compilado en modo Superposición 100% Externa (omni.ja intacto)")
     print("   - Identidad v2.0: Brújula en la 2.ª «o» (Modo Calma) + Paleta Océano Atlántico")
     print("   - Overlay de marca registrado vía noutrora-overlay/chrome.manifest")
-    print("   - Set de 8 iconos vectoriales UI (24x24 SVG) inyectados")
+    print("   - Set de 7 iconos vectoriales UI (24x24 SVG) inyectados")
     print(f"   - Marcadores inyectados: {len(bookmarks_data)}")
 
 
