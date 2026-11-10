@@ -310,9 +310,13 @@ def build_web_package() -> None:
         shutil.rmtree(WEB_DIST)
     DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 1. Copiar la Landing Page como index.html, el Catálogo Vivo (exploracion.json) y los iconos de favicon
-    landing_src = ROOT / "noutrora_landing_page_oficial.html"
+    # 1. Copiar index.html, style.css, app.js, o Catálogo Vivo e os iconos de marca
+    landing_src = ROOT / "index.html"
     shutil.copy2(landing_src, WEB_DIST / "index.html")
+    if (ROOT / "style.css").exists():
+        shutil.copy2(ROOT / "style.css", WEB_DIST / "style.css")
+    if (ROOT / "app.js").exists():
+        shutil.copy2(ROOT / "app.js", WEB_DIST / "app.js")
     shutil.copy2(ROOT / "config" / "exploracion.json", WEB_DIST / "exploracion.json")
     descargas_src = ROOT / "config" / "descargas.json"
     if descargas_src.exists():

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test de integridade editorial da Landing Page (noutrora_landing_page_oficial.html)."""
+"""Test de integridade editorial e modular da Landing Page (index.html, style.css, app.js)."""
 import unittest
 from pathlib import Path
 
@@ -8,9 +8,18 @@ ROOT = Path(__file__).resolve().parent.parent
 
 class TestLandingPage(unittest.TestCase):
     def setUp(self):
-        self.html_path = ROOT / "noutrora_landing_page_oficial.html"
-        self.assertTrue(self.html_path.exists(), "Falta noutrora_landing_page_oficial.html")
+        self.html_path = ROOT / "index.html"
+        self.assertTrue(self.html_path.exists(), "Falta index.html na raíz")
         self.text = self.html_path.read_text(encoding="utf-8")
+        self.style_path = ROOT / "style.css"
+        self.app_path = ROOT / "app.js"
+
+    def test_modular_assets_exist_and_linked(self):
+        """index.html debe ligar a style.css e app.js como módulos externos limpos."""
+        self.assertTrue(self.style_path.exists(), "Falta style.css")
+        self.assertTrue(self.app_path.exists(), "Falta app.js")
+        self.assertIn('href="style.css"', self.text, "Falta a ligazón a style.css en index.html")
+        self.assertIn('src="app.js"', self.text, "Falta o script app.js en index.html")
 
     def test_filosofia_and_decalogo_sections_exist(self):
         """A páxina oficial debe conter a sección de filosofía e o decálogo."""
@@ -70,9 +79,10 @@ class TestLandingPage(unittest.TestCase):
                 self.assertIn(lang, data["descargas"]["plataformas"][plat]["idiomas"])
 
     def test_language_selector_and_counters_in_landing(self):
-        """A páxina oficial debe conter o selector de 4 idiomas e os contadores de descargas."""
-        self.assertIn("descargas.json", self.text, "Falta a carga de descargas.json")
-        self.assertIn("selectInstallLanguage", self.text, "Falta a función de selección de idioma")
+        """A páxina oficial debe conter o selector de 4 idiomas e a lóxica en app.js."""
+        app_text = self.app_path.read_text(encoding="utf-8")
+        self.assertIn("descargas.json", app_text, "Falta a carga de descargas.json en app.js")
+        self.assertIn("selectInstallLanguage", app_text, "Falta a función selectInstallLanguage en app.js")
         self.assertIn("Galego", self.text)
         self.assertIn("Castelán", self.text)
         self.assertIn("Euskera", self.text)

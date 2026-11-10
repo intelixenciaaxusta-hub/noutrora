@@ -1,0 +1,59 @@
+/* ==========================================================================
+   Noutrora v2.1.0 — Estilos Personalizados e Animacións Atlánticas
+   ========================================================================== */
+
+/* Variables e transicións suaves para o cambio Calma Diurna / Noite Cometa '94 */
+body {
+    background-color: #F6F5F0;
+    color: #1E3240;
+    transition: background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1), color 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+}
+html.dark body {
+    background-color: #09161E;
+    color: #F6F5F0;
+}
+
+/* Fondo de constelación sutil para o modo Noite Cometa '94 (Guiño Netscape) */
+.constellation-bg {
+    background-image: radial-gradient(rgba(127, 161, 163, 0.22) 1px, transparent 1px),
+                      radial-gradient(rgba(246, 245, 240, 0.12) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: 0 0, 24px 24px;
+}
+
+/* Animación de rotación suave para a Marea (Recargar) e a agulla do compás */
+@keyframes waveReload {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+.animate-marea {
+    animation: waveReload 0.6s ease-in-out 2;
+}
+
+@keyframes cometShoot {
+    0% { transform: translate(-20px, 20px) scale(0.8); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translate(120px, -60px) scale(1.1); opacity: 0; }
+}
+.comet-trail {
+    animation: cometShoot 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scrollbar minimalista Atlántica */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #ECEAE2;
+}
+html.dark ::-webkit-scrollbar-track {
+    background: #0F232E;
+}
+::-webkit-scrollbar-thumb {
+    background: #7FA1A3;
+    border-radius: 9999px;
+}
+
