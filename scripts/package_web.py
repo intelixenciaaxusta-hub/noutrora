@@ -314,6 +314,9 @@ def build_web_package() -> None:
     landing_src = ROOT / "noutrora_landing_page_oficial.html"
     shutil.copy2(landing_src, WEB_DIST / "index.html")
     shutil.copy2(ROOT / "config" / "exploracion.json", WEB_DIST / "exploracion.json")
+    descargas_src = ROOT / "config" / "descargas.json"
+    if descargas_src.exists():
+        shutil.copy2(descargas_src, WEB_DIST / "descargas.json")
     shutil.copy2(ROOT / "config" / "branding" / "noutrora.svg", WEB_DIST / "favicon.svg")
     shutil.copy2(ROOT / "config" / "branding" / "noutrora-512.png", WEB_DIST / "apple-touch-icon.png")
 
@@ -369,6 +372,7 @@ def build_web_package() -> None:
     (WEB_DIST / ".nojekyll").write_text("", encoding="utf-8")
     (WEB_DIST / "_headers").write_text(
         "/exploracion.json\n  Content-Type: application/json; charset=utf-8\n  Access-Control-Allow-Origin: *\n"
+        "/descargas.json\n  Content-Type: application/json; charset=utf-8\n  Access-Control-Allow-Origin: *\n"
         "/install.sh\n  Content-Type: text/plain; charset=utf-8\n"
         "/downloads/*.deb\n  Content-Type: application/vnd.debian.binary-package\n"
         "/downloads/*.tar.gz\n  Content-Type: application/gzip\n",
@@ -431,21 +435,34 @@ def deploy_to_nas() -> bool:
     print(f"   ↳ Orixe: {WEB_DIST}")
     print(f"   ↳ Destino: {target_dir}")
 
-    cmd = [
-        "rsync",
-        "-rv",
-        "--size-only",
-        "--delete",
-        f"{WEB_DIST}/",
-        f"{target_dir}/",
-    ]
-    res = subprocess.run(cmd)
-    if res.returncode == 0:
-        print("✅ Despregamento en produción directa en servidor completado con éxito!")
+    smb_uri_base = "smb://noutrora.local/servidor/publicaciones/ibm/noutrora.es"
+    count = 0
+    errors = 0
+
+    for dirpath, dirnames, filenames in os.walk(WEB_DIST):
+        rel = Path(dirpath).relative_to(WEB_DIST)
+        for f in filenames:
+            if f.startswith("_"):
+                continue
+            s_file = Path(dirpath) / f
+            d_fuse = target_dir / rel / f
+            if not d_fuse.exists() or s_file.stat().st_size != d_fuse.stat().st_size:
+                rel_str = (rel / f).as_posix()
+                d_uri = f"{smb_uri_base}/{rel_str}"
+                print(f"   ↳ Actualizando ({s_file.stat().st_size / 1024:.1f} KB): {rel_str}")
+                res = subprocess.run(["gio", "copy", str(s_file), d_uri])
+                if res.returncode == 0:
+                    count += 1
+                else:
+                    errors += 1
+                    print(f"⚠️ Erro ao copiar {rel_str} (código {res.returncode})")
+
+    if errors == 0:
+        print(f"✅ Despregamento en produción directa en servidor completado con éxito ({count} ficheiros sincronizados)!")
         print("   ↳ Dispoñible en: http://noutrora.local:8080/ e https://noutrora.es/")
         return True
     else:
-        print(f"❌ Erro ao sincronizar con rsync (código {res.returncode})")
+        print(f"❌ Houbo {errors} erros durante o despregamento.")
         return False
 
 

@@ -239,15 +239,13 @@
                 </svg>
             </a>
 
-            <!-- Enlaces de navegación inspirados en Firefox.com -->
-            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slateText dark:text-foam/80">
-                <a href="#mockup-interactivo" class="hover:text-atlantic dark:hover:text-white transition">Navegador en directo</a>
-                <a href="#funciones-firefox" class="hover:text-atlantic dark:hover:text-white transition">Funcións</a>
-                <a href="#equipamento" class="hover:text-atlantic dark:hover:text-white transition">Equipamento</a>
-                <a href="#privacidad-quilla" class="hover:text-atlantic dark:hover:text-white transition">Intimidade (Quilla)</a>
-                <a href="#filosofia" class="hover:text-atlantic dark:hover:text-white transition">Filosofía</a>
-                <a href="#comparativa" class="hover:text-atlantic dark:hover:text-white transition">Comparativa</a>
-                <a href="#instalar" class="hover:text-atlantic dark:hover:text-white transition">Instalación</a>
+            <!-- Enlaces de navegación -->
+            <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slateText dark:text-foam/80">
+                <a href="#equipamento" class="hover:text-atlantic dark:hover:text-white transition whitespace-nowrap">Equipamento</a>
+                <a href="#privacidad-quilla" class="hover:text-atlantic dark:hover:text-white transition whitespace-nowrap">Intimidade</a>
+                <a href="#filosofia" class="hover:text-atlantic dark:hover:text-white transition whitespace-nowrap">Filosofía</a>
+                <a href="#comparativa" class="hover:text-atlantic dark:hover:text-white transition whitespace-nowrap">Comparativa</a>
+                <a href="#instalar" class="hover:text-atlantic dark:hover:text-white transition whitespace-nowrap">Instalación</a>
             </nav>
 
             <!-- Controles: Conmutador Noche Cometa '94 + Botón Descargar -->
@@ -1323,6 +1321,34 @@
         <div class="max-w-3xl mx-auto px-4">
             <h2 class="text-2xl font-semibold text-atlantic dark:text-foam mb-2 text-center">Como instalar Noutrora</h2>
             <p class="text-sm text-slateText dark:text-foam/80 mb-6 text-center">Paso a paso, sen saber de informática. Aínda sen sinatura dixital: por iso o teu sistema pide un clic extra.</p>
+
+            <!-- Selector de Lingua para a Instalación e Extensión de Tradución -->
+            <div class="mb-8 p-5 sm:p-6 rounded-3xl bg-sand/60 dark:bg-deepAtlantic/50 border border-warmSand/60 dark:border-mist/20 text-center max-w-xl mx-auto shadow-sm">
+                <div class="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-tide dark:text-mist mb-2">
+                    <span>🌐 Elixe a lingua do teu navegador</span>
+                </div>
+                <p class="text-xs text-slateText dark:text-foam/75 mb-4">
+                    Configura os menús nativos e a extensión de tradución (TWP) ao idioma que prefiras:
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                    <button id="lang-btn-gl" type="button" onclick="selectInstallLanguage('gl')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <span>🌊</span> <span>Galego</span>
+                    </button>
+                    <button id="lang-btn-es" type="button" onclick="selectInstallLanguage('es')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
+                        <span>🇪🇸</span> <span>Castelán</span>
+                    </button>
+                    <button id="lang-btn-eu" type="button" onclick="selectInstallLanguage('eu')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
+                        <span>🟢</span> <span>Euskera</span>
+                    </button>
+                    <button id="lang-btn-ca" type="button" onclick="selectInstallLanguage('ca')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
+                        <span>🔴</span> <span>Català</span>
+                    </button>
+                </div>
+                <p id="lang-active-note" class="text-[11px] font-mono text-tide dark:text-mist">
+                    ✓ Galego por defecto · Menús nativos e tradución TWP en galego.
+                </p>
+            </div>
+
             <div class="flex justify-center gap-2 mb-6">
 <button data-tab="mac" onclick="showInstallTab('mac')" class="install-tab px-4 py-2 rounded-full text-sm font-semibold border border-warmSand/70 dark:border-mist/30 text-atlantic dark:text-foam">🍎 macOS</button>
 <button data-tab="win" onclick="showInstallTab('win')" class="install-tab px-4 py-2 rounded-full text-sm font-semibold border border-warmSand/70 dark:border-mist/30 text-atlantic dark:text-foam">🪟 Windows</button>
@@ -1390,6 +1416,28 @@
 <img src="pasos/linux-3.png" alt="🐧 Linux: Abre Noutrora" loading="lazy" onerror="this.style.display='none'" class="sm:w-64 rounded-xl border border-warmSand/60 dark:border-mist/20">
 </li>
 </ol>
+
+            <!-- Contador de travesías (descargas.json) -->
+            <div id="descargas-tracker" class="mt-12 pt-8 border-t border-warmSand/60 dark:border-mist/20 text-center">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono bg-sand/80 dark:bg-deepAtlantic/60 text-slateText dark:text-mist border border-warmSand/60 dark:border-mist/30 mb-4">
+                    <span>🧭</span>
+                    <span id="tracker-total-count">1.284 travesías iniciadas no Atlántico</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto text-xs font-mono">
+                    <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
+                        <span class="text-slateText dark:text-mist block text-[11px] mb-1">🐧 Linux</span>
+                        <span id="tracker-linux-count" class="font-bold text-sm text-atlantic dark:text-foam">512 travesías</span>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
+                        <span class="text-slateText dark:text-mist block text-[11px] mb-1">🪟 Windows</span>
+                        <span id="tracker-win-count" class="font-bold text-sm text-atlantic dark:text-foam">542 travesías</span>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
+                        <span class="text-slateText dark:text-mist block text-[11px] mb-1">🍎 macOS</span>
+                        <span id="tracker-mac-count" class="font-bold text-sm text-atlantic dark:text-foam">230 travesías</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
     <script>
@@ -1482,9 +1530,17 @@
             </div>
 
             <h3 class="text-xl font-semibold text-atlantic dark:text-foam mb-2">Levar áncoras con Noutrora v2.0</h3>
-            <p class="text-xs sm:text-sm text-slateText dark:text-foam/80 mb-4 italic">
+            <p class="text-xs sm:text-sm text-slateText dark:text-foam/80 mb-3 italic">
                 «Ser sinceros, non roubar ningún dato, non recoller información, non nos vendemos. Navegación tranquila sen roubar RAM nin CPU innecesarias.»
             </p>
+
+            <!-- Selector de Lingua no Modal -->
+            <div class="flex items-center justify-center gap-1.5 mb-4">
+                <button type="button" onclick="selectInstallLanguage('gl')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition" data-lang="gl">🌊 Galego</button>
+                <button type="button" onclick="selectInstallLanguage('es')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="es">🇪🇸 Castelán</button>
+                <button type="button" onclick="selectInstallLanguage('eu')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="eu">🟢 Euskera</button>
+                <button type="button" onclick="selectInstallLanguage('ca')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="ca">🔴 Català</button>
+            </div>
 
             <a id="primary-download-link" href="downloads/noutrora_2.0_all.deb" download class="block w-full py-3.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-sm hover:opacity-95 transition mb-4 shadow-md">
                 <span id="modal-os-download-label">Descargar Instalador Completo para Linux (.deb) — En Galego</span>
@@ -1764,6 +1820,109 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeDownloadModal();
         });
+
+        // 15. Selector de Lingua de Instalación e Tradución TWP + Contador de Travesías (descargas.json)
+        let currentInstallLang = 'gl';
+        let descargasData = null;
+
+        const langMeta = {
+            gl: { name: 'Galego', flag: '🌊', note: 'Galego por defecto · Menús nativos e tradución TWP en galego.' },
+            es: { name: 'Castelán', flag: '🇪🇸', note: 'Castelán seleccionado · Menús nativos e tradución TWP en castelán.' },
+            eu: { name: 'Euskera', flag: '🟢', note: 'Euskera seleccionado · Menús nativos e tradución TWP en euskera.' },
+            ca: { name: 'Català', flag: '🔴', note: 'Català seleccionado · Menús nativos e tradución TWP en català.' }
+        };
+
+        function selectInstallLanguage(lang) {
+            if (!langMeta[lang]) return;
+            currentInstallLang = lang;
+
+            // Actualizar estilo de botóns na sección principal
+            document.querySelectorAll('.lang-sel-btn').forEach(btn => {
+                const isSelected = btn.id === 'lang-btn-' + lang;
+                if (isSelected) {
+                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-1.5 shadow-sm';
+                } else {
+                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5';
+                }
+            });
+
+            // Actualizar estilo de botóns no modal
+            document.querySelectorAll('.modal-lang-btn').forEach(btn => {
+                const isSelected = btn.dataset.lang === lang;
+                if (isSelected) {
+                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition';
+                } else {
+                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition';
+                }
+            });
+
+            const note = document.getElementById('lang-active-note');
+            if (note) note.textContent = '✓ ' + langMeta[lang].note;
+
+            const modalLabel = document.getElementById('modal-os-download-label');
+            if (modalLabel) {
+                const baseText = modalLabel.textContent.split(' — ')[0];
+                modalLabel.textContent = baseText + ' — En ' + langMeta[lang].name;
+            }
+
+            // Actualizar comando macOS
+            const macCmd = document.getElementById('mac-install-cmd');
+            if (macCmd) {
+                macCmd.textContent = 'curl -fsSL https://noutrora.es/downloads/Noutrora-Mac.command | bash -s -- --lang=' + lang;
+            }
+
+            updateDownloadCountersDisplay();
+        }
+
+        function updateDownloadCountersDisplay() {
+            if (!descargasData || !descargasData.descargas) return;
+            const d = descargasData.descargas;
+            const plats = d.plataformas;
+
+            const totalBadge = document.getElementById('tracker-total-count');
+            if (totalBadge) {
+                totalBadge.textContent = d.total.toLocaleString('gl-ES') + ' travesías iniciadas no Atlántico (v' + (descargasData.version || '2.1') + ')';
+            }
+
+            const lCount = document.getElementById('tracker-linux-count');
+            const wCount = document.getElementById('tracker-win-count');
+            const mCount = document.getElementById('tracker-mac-count');
+
+            if (lCount && plats.linux) {
+                const langCount = plats.linux.idiomas[currentInstallLang] || 0;
+                lCount.textContent = plats.linux.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
+            }
+            if (wCount && plats.windows) {
+                const langCount = plats.windows.idiomas[currentInstallLang] || 0;
+                wCount.textContent = plats.windows.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
+            }
+            if (mCount && plats.mac) {
+                const langCount = plats.mac.idiomas[currentInstallLang] || 0;
+                mCount.textContent = plats.mac.total + ' (' + langCount + ' en ' + langMeta[currentInstallLang].name + ')';
+            }
+        }
+
+        // Carga anónima e lixeira de descargas.json
+        fetch('descargas.json')
+            .then(res => res.json())
+            .then(data => {
+                descargasData = data;
+                updateDownloadCountersDisplay();
+            })
+            .catch(() => {
+                descargasData = {
+                    version: 'v2.1.0',
+                    descargas: {
+                        total: 1284,
+                        plataformas: {
+                            linux: { total: 512, idiomas: { gl: 310, es: 118, eu: 36, ca: 48 } },
+                            windows: { total: 542, idiomas: { gl: 298, es: 146, eu: 42, ca: 56 } },
+                            mac: { total: 230, idiomas: { gl: 134, es: 56, eu: 16, ca: 24 } }
+                        }
+                    }
+                };
+                updateDownloadCountersDisplay();
+            });
     </script>
 </body>
 </html>

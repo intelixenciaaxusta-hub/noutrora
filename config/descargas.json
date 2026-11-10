@@ -1,0 +1,37 @@
+{
+  "version": "v2.1.0",
+  "actualizado": "2026-11-10",
+  "descargas": {
+    "total": 1284,
+    "plataformas": {
+      "linux": {
+        "total": 512,
+        "idiomas": {
+          "gl": 310,
+          "es": 118,
+          "eu": 36,
+          "ca": 48
+        }
+      },
+      "windows": {
+        "total": 542,
+        "idiomas": {
+          "gl": 298,
+          "es": 146,
+          "eu": 42,
+          "ca": 56
+        }
+      },
+      "mac": {
+        "total": 230,
+        "idiomas": {
+          "gl": 134,
+          "es": 56,
+          "eu": 16,
+          "ca": 24
+        }
+      }
+    }
+  }
+}
+

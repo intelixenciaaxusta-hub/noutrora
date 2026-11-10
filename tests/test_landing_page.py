@@ -55,6 +55,29 @@ class TestLandingPage(unittest.TestCase):
         self.assertIn("Cory Doctorow", self.text)
         self.assertIn("aldeas irredutibles", self.text)
 
+    def test_descargas_json_structure(self):
+        """O ficheiro config/descargas.json debe ter a estrutura de plataformas e idiomas."""
+        import json
+        descargas_path = ROOT / "config" / "descargas.json"
+        self.assertTrue(descargas_path.exists(), "Falta config/descargas.json")
+        data = json.loads(descargas_path.read_text(encoding="utf-8"))
+        self.assertIn("descargas", data)
+        self.assertIn("plataformas", data["descargas"])
+        for plat in ("linux", "windows", "mac"):
+            self.assertIn(plat, data["descargas"]["plataformas"])
+            self.assertIn("idiomas", data["descargas"]["plataformas"][plat])
+            for lang in ("gl", "es", "eu", "ca"):
+                self.assertIn(lang, data["descargas"]["plataformas"][plat]["idiomas"])
+
+    def test_language_selector_and_counters_in_landing(self):
+        """A páxina oficial debe conter o selector de 4 idiomas e os contadores de descargas."""
+        self.assertIn("descargas.json", self.text, "Falta a carga de descargas.json")
+        self.assertIn("selectInstallLanguage", self.text, "Falta a función de selección de idioma")
+        self.assertIn("Galego", self.text)
+        self.assertIn("Castelán", self.text)
+        self.assertIn("Euskera", self.text)
+        self.assertIn("Català", self.text)
+
 
 if __name__ == "__main__":
     unittest.main()
