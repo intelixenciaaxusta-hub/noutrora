@@ -21,6 +21,9 @@
     "NoDefaultBookmarks": true,
     "DisplayBookmarksToolbar": "always",
     "DontCheckDefaultBrowser": true,
+    "SearchEngines": {
+      "Default": "DuckDuckGo"
+    },
     "FirefoxHome": {
       "Search": true,
       "TopSites": false,

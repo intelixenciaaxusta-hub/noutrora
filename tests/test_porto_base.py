@@ -41,5 +41,29 @@ class TestPortoBaseAndCatalog(unittest.TestCase):
         self.assertIn("Fondear", self.home_text, "Falta a carta 06 · Fondear")
 
 
+    def test_search_form_native_navigation(self):
+        """O formulario de busca debe permitir navegación nativa en contornas chrome:// e file://."""
+        self.assertIn(
+            'action="https://duckduckgo.com/"',
+            self.home_text,
+            "O formulario de busca debe ter action predeterminado cara ao buscador",
+        )
+        self.assertIn(
+            'method="GET"',
+            self.home_text,
+            "O formulario de busca debe usar method=GET para navegación web estándar",
+        )
+        self.assertIn(
+            'name="q"',
+            self.home_text,
+            "O input de busca debe ter name=q para envío estándar do termo de busca",
+        )
+        self.assertIn(
+            "navigateSafely",
+            self.home_text,
+            "home.html debe dispor de navigateSafely para evitar bloqueos de seguridade dende chrome://",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

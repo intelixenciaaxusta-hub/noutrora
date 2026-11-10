@@ -633,7 +633,7 @@
     </header>
 
     <!-- Buscador o entrada de URL -->
-    <form class="search-form" id="searchForm">
+    <form class="search-form" id="searchForm" action="https://duckduckgo.com/" method="GET" target="_self">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12.5" r="8.5" stroke="#1B3644" stroke-width="1.8"/>
         <line x1="12" y1="1.8" x2="12" y2="5.5" stroke="#1B3644" stroke-width="1.8" stroke-linecap="round"/>
@@ -646,6 +646,7 @@
       <input
         type="text"
         id="searchInput"
+        name="q"
         class="search-input"
         placeholder="Introduce un rumbo ou busca con calma..."
         autocomplete="off"
@@ -864,6 +865,21 @@
       return [...baseList, ...extraList];
     }
 
+    function navigateSafely(url) {
+      if (!url) return;
+      try {
+        const form = document.createElement("form");
+        form.method = "GET";
+        form.action = url;
+        form.target = "_self";
+        form.style.display = "none";
+        document.body.appendChild(form);
+        form.submit();
+      } catch (e) {
+        window.location.href = url;
+      }
+    }
+
     function launchRandomDestination(category) {
       const pool = getExplorePool(category);
       if (!pool.length) return;
@@ -873,7 +889,7 @@
       const chosen = candidates[Math.floor(Math.random() * candidates.length)];
       if (chosen && chosen.url) {
         lastVisitedUrl[category] = chosen.url;
-        window.location.href = chosen.url;
+        navigateSafely(chosen.url);
       }
     }
 
@@ -1357,17 +1373,23 @@
 
     // Barra de búsqueda superior
     document.getElementById("searchForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = document.getElementById("searchInput").value.trim();
-      if (!q) return;
+      const input = document.getElementById("searchInput");
+      const form = document.getElementById("searchForm");
+      const q = input.value.trim();
+      if (!q) {
+        e.preventDefault();
+        return;
+      }
       const isUrl =
         /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(q) ||
         (/^[^\s]+\.[^\s]{2,}$/.test(q) && !q.includes(" ")) ||
         /^\d{1,3}(\.\d{1,3}){3}(:\d+)?(\/.*)?$/.test(q);
       if (isUrl) {
-        window.location.href = normalizeUrl(q);
+        input.removeAttribute("name");
+        form.action = normalizeUrl(q);
       } else {
-        window.location.href = "https://duckduckgo.com/?q=" + encodeURIComponent(q);
+        input.setAttribute("name", "q");
+        form.action = "https://duckduckgo.com/";
       }
     });
 
