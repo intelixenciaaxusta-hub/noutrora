@@ -274,7 +274,31 @@ document.getElementById('download-modal')?.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDownloadModal();
+    if (e.key === 'Escape') {
+        closeDownloadModal();
+        closePrivacyModal();
+    }
+});
+
+// 15b. Modal de Privacidade e Aviso Legal (RGPD / LSSI-CE)
+function openPrivacyModal() {
+    const modal = document.getElementById('privacy-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
+
+function closePrivacyModal() {
+    const modal = document.getElementById('privacy-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+document.getElementById('privacy-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'privacy-modal') closePrivacyModal();
 });
 
 // 16. Selector de Lingua de Instalación e Tradución TWP + Contador de Travesías (descargas.json)

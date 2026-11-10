@@ -317,6 +317,8 @@ def build_web_package() -> None:
         shutil.copy2(ROOT / "style.css", WEB_DIST / "style.css")
     if (ROOT / "app.js").exists():
         shutil.copy2(ROOT / "app.js", WEB_DIST / "app.js")
+    if (ROOT / "tailwind.js").exists():
+        shutil.copy2(ROOT / "tailwind.js", WEB_DIST / "tailwind.js")
     shutil.copy2(ROOT / "config" / "exploracion.json", WEB_DIST / "exploracion.json")
     descargas_src = ROOT / "config" / "descargas.json"
     if descargas_src.exists():

@@ -93,6 +93,18 @@ class TestLandingPage(unittest.TestCase):
         self.assertIn("flag-estelada", self.text)
         self.assertIn("flag-castelan", self.text)
 
+    def test_privacy_and_zero_external_trackers(self):
+        """A páxina non debe chamar a CDNs externas nin Google Fonts, e debe incluír aviso legal."""
+        self.assertNotIn("fonts.googleapis.com", self.text, "index.html non debe chamar a Google Fonts")
+        self.assertNotIn("fonts.gstatic.com", self.text, "index.html non debe pre-conectar a gstatic")
+        self.assertNotIn("cdn.tailwindcss.com", self.text, "index.html non debe depender da CDN externa de Tailwind")
+        self.assertTrue((ROOT / "tailwind.js").exists(), "Falta o ficheiro tailwind.js local")
+        self.assertIn('src="tailwind.js"', self.text, "Falta a ligazón local a tailwind.js")
+        # Conformidade RGPD e LSSI-CE
+        self.assertIn("intelixenciaaxusta@gmail.com", self.text, "Falta o correo de contacto de titularidade (Art. 10 LSSI)")
+        self.assertIn('id="privacy-modal"', self.text, "Falta o modal de privacidade e aviso legal")
+        self.assertIn("openPrivacyModal", self.app_path.read_text(encoding="utf-8"), "Falta a función openPrivacyModal en app.js")
+
 
 if __name__ == "__main__":
     unittest.main()

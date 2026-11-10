@@ -7,11 +7,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Plus Jakarta Sans, Newsreader & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS autónomo e local (sen chamadas a CDNs externas nin filtración de IP) -->
+    <script src="tailwind.js"></script>
     
     <script>
         tailwind.config = {
@@ -31,9 +28,9 @@
                         coralAlert: '#B85D53'
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-                        serif: ['"Newsreader"', 'Georgia', 'serif'],
-                        mono: ['"JetBrains Mono"', 'monospace']
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+                        serif: ['"Newsreader"', 'Charter', '"Bitstream Charter"', 'Georgia', 'serif'],
+                        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
                     },
                     boxShadow: {
                         'calm': '0 20px 50px -15px rgba(30, 50, 64, 0.08)',
@@ -1487,13 +1484,17 @@
                         <li><button onclick="triggerCometEasterEgg()" class="hover:text-atlantic dark:hover:text-white text-left">Homenaxe a Netscape ’94</button></li>
                         <li><a href="#filosofia" class="hover:text-atlantic dark:hover:text-white">A Forma de Ser e Pensar</a></li>
                         <li><a href="#decalogo" class="hover:text-atlantic dark:hover:text-white">O Decálogo de Noutrora</a></li>
+                        <li><a href="#privacidade" onclick="openPrivacyModal()" class="hover:text-atlantic dark:hover:text-white font-semibold">Privacidade e Aviso Legal (RGPD)</a></li>
                         <li><a href="https://www.firefox.com/gl/" target="_blank" rel="noopener noreferrer" class="hover:text-atlantic dark:hover:text-white">Proxecto Mozilla Firefox ↗</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateText dark:text-mist">
-                <p>© 2026 Proxecto Noutrora · Baseado en código aberto de Firefox · Deseñado fronte ao Océano Atlántico.</p>
+                <div>
+                    <p>© 2026 Proxecto Noutrora · Baseado en código aberto de Firefox (MPL-2.0) · Deseñado fronte ao Océano Atlántico.</p>
+                    <p class="mt-1">Contacto e titularidade (Art. 10 LSSI): <a href="mailto:intelixenciaaxusta@gmail.com" class="hover:text-atlantic dark:hover:text-foam underline">intelixenciaaxusta@gmail.com</a> · <a href="#privacidade" onclick="openPrivacyModal()" class="underline hover:text-atlantic dark:hover:text-foam">Sen cookies nin rastreo</a></p>
+                </div>
                 <button onclick="triggerCometEasterEgg()" class="inline-flex items-center gap-1.5 font-mono hover:text-atlantic dark:hover:text-foam transition">
                     <svg class="w-4 h-4" viewBox="0 0 24 24"><use href="#icon-cometa94"></use></svg>
                     <span>43° 21′ N, 8° 24′ O · Cometa ’94</span>
@@ -1501,6 +1502,53 @@
             </div>
         </div>
     </footer>
+
+    <!-- ==========================================
+         MODAL DE PRIVACIDADE E AVISO LEGAL (RGPD / LSSI-CE)
+         ========================================== -->
+    <div id="privacy-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-nightSky/70 backdrop-blur-sm p-4">
+        <div class="relative w-full max-w-xl rounded-3xl bg-foam dark:bg-deepAtlantic p-6 sm:p-8 border border-warmSand dark:border-mist/40 shadow-2xl text-left max-h-[90vh] overflow-y-auto">
+            <button onclick="closePrivacyModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-sand dark:bg-nightSky text-slateText dark:text-foam flex items-center justify-center hover:opacity-80">✕</button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-sand dark:bg-nightSky flex items-center justify-center border border-warmSand/60 dark:border-mist/30">
+                    <svg class="w-6 h-6 text-atlantic dark:text-mist" viewBox="0 0 24 24"><use href="#icon-escudo-quilla"></use></svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-atlantic dark:text-foam">Aviso Legal e Privacidade</h3>
+                    <p class="text-xs text-slateText dark:text-mist">Conformidade estrita co RGPD (UE 2016/679) e a LSSI-CE (Lei 34/2002)</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs text-slateText dark:text-foam/80 leading-relaxed">
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam text-sm mb-1">1. Titularidade e Contacto (Art. 10 LSSI-CE)</h4>
+                    <p>O dominio <b>noutrora.es</b> e o proxecto <b>Noutrora</b> constitúen unha iniciativa aberta de software libre e cultura atlántica sen fins comerciais nin recolección de datos publicitarios. Enderezo de contacto directo e efectivo: <a href="mailto:intelixenciaaxusta@gmail.com" class="text-atlantic dark:text-mist underline font-medium">intelixenciaaxusta@gmail.com</a>.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam text-sm mb-1">2. Política de Privacidade e Cero Telemetría (RGPD / LOPD-GDD)</h4>
+                    <p>Esta web cumpre estritamente co principio de <b>minimización de datos</b> (Art. 5.1.c RGPD). Non solicitamos, non rexistramos nin procesamos ningún dato de carácter persoal dos visitantes. As consultas e descargas son 100 % anónimas. O noso servidor non garda enderezos IP nin crea perfís de comportamento.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam text-sm mb-1">3. Política de Cookies (Art. 22.2 LSSI-CE)</h4>
+                    <p><b>Non utilizamos cookies de ningún tipo:</b> nin cookies propias de sesión, nin cookies de rastrexo, nin cookies analíticas nin de terceiros. A navegación é completamente silenciosa, local e privada.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-atlantic dark:text-foam text-sm mb-1">4. Licenza de Código Aberto (MPL-2.0)</h4>
+                    <p>Noutrora Browser baséase no código aberto de Mozilla Firefox e distribúese baixo a licenza libre <b>Mozilla Public License 2.0 (MPL-2.0)</b>. As modificacións e a superposición de Noutrora comparten o espírito da economía do don e do hipertexto libre.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-warmSand/60 dark:border-mist/20 text-center">
+                <button onclick="closePrivacyModal()" class="px-6 py-2 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky text-xs font-semibold hover:opacity-90 transition">
+                    Entendido e pechar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ==========================================
          MODAL DE DESCARGA PERSONALIZADO (SIN USAR ALERT)
