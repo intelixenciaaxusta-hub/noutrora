@@ -77,6 +77,11 @@ class TestLandingPage(unittest.TestCase):
         self.assertIn("Castelán", self.text)
         self.assertIn("Euskera", self.text)
         self.assertIn("Català", self.text)
+        # Símbolos vectoriais circulares das bandeiras
+        self.assertIn("flag-estreleira", self.text)
+        self.assertIn("flag-ikurrina", self.text)
+        self.assertIn("flag-estelada", self.text)
+        self.assertIn("flag-castelan", self.text)
 
 
 if __name__ == "__main__":

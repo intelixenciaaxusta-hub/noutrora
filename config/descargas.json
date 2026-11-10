@@ -2,36 +2,35 @@
   "version": "v2.1.0",
   "actualizado": "2026-11-10",
   "descargas": {
-    "total": 1284,
+    "total": 0,
     "plataformas": {
       "linux": {
-        "total": 512,
+        "total": 0,
         "idiomas": {
-          "gl": 310,
-          "es": 118,
-          "eu": 36,
-          "ca": 48
+          "gl": 0,
+          "es": 0,
+          "eu": 0,
+          "ca": 0
         }
       },
       "windows": {
-        "total": 542,
+        "total": 0,
         "idiomas": {
-          "gl": 298,
-          "es": 146,
-          "eu": 42,
-          "ca": 56
+          "gl": 0,
+          "es": 0,
+          "eu": 0,
+          "ca": 0
         }
       },
       "mac": {
-        "total": 230,
+        "total": 0,
         "idiomas": {
-          "gl": 134,
-          "es": 56,
-          "eu": 16,
-          "ca": 24
+          "gl": 0,
+          "es": 0,
+          "eu": 0,
+          "ca": 0
         }
       }
     }
   }
 }
-

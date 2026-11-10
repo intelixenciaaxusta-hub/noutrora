@@ -204,6 +204,56 @@
                 <rect x="3.5" y="13.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
                 <circle cx="17" cy="17" r="3.5" fill="none" stroke="currentColor" stroke-width="1.75"/>
             </g>
+
+            <!-- Bandeiras Circulares para Selector de Idioma -->
+            <!-- 1. Galego: Estreleira Nacionalista -->
+            <g id="flag-estreleira">
+                <clipPath id="circle-clip-estreleira"><circle cx="16" cy="16" r="16"/></clipPath>
+                <g clip-path="url(#circle-clip-estreleira)">
+                    <rect width="32" height="32" fill="#FFFFFF"/>
+                    <polygon points="0,0 9,0 32,23 32,32 23,32 0,9" fill="#0099FF"/>
+                    <polygon points="16,10.2 17.8,14.4 22.4,14.6 18.8,17.6 20,22 16,19.3 12,22 13.2,17.6 9.6,14.6 14.2,14.4" fill="#DA121A"/>
+                </g>
+                <circle cx="16" cy="16" r="15.2" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.25"/>
+            </g>
+
+            <!-- 2. Euskera: Ikurriña -->
+            <g id="flag-ikurrina">
+                <clipPath id="circle-clip-ikurrina"><circle cx="16" cy="16" r="16"/></clipPath>
+                <g clip-path="url(#circle-clip-ikurrina)">
+                    <rect width="32" height="32" fill="#D52B1E"/>
+                    <line x1="0" y1="0" x2="32" y2="32" stroke="#009543" stroke-width="5.5"/>
+                    <line x1="0" y1="32" x2="32" y2="0" stroke="#009543" stroke-width="5.5"/>
+                    <line x1="16" y1="0" x2="16" y2="32" stroke="#FFFFFF" stroke-width="5.5"/>
+                    <line x1="0" y1="16" x2="32" y2="16" stroke="#FFFFFF" stroke-width="5.5"/>
+                </g>
+                <circle cx="16" cy="16" r="15.2" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.25"/>
+            </g>
+
+            <!-- 3. Català: Estelada -->
+            <g id="flag-estelada">
+                <clipPath id="circle-clip-estelada"><circle cx="16" cy="16" r="16"/></clipPath>
+                <g clip-path="url(#circle-clip-estelada)">
+                    <rect width="32" height="3.56" y="0" fill="#FCD116"/>
+                    <rect width="32" height="3.56" y="3.56" fill="#D52B1E"/>
+                    <rect width="32" height="3.56" y="7.11" fill="#FCD116"/>
+                    <rect width="32" height="3.56" y="10.67" fill="#D52B1E"/>
+                    <rect width="32" height="3.56" y="14.22" fill="#FCD116"/>
+                    <rect width="32" height="3.56" y="17.78" fill="#D52B1E"/>
+                    <rect width="32" height="3.56" y="21.33" fill="#FCD116"/>
+                    <rect width="32" height="3.56" y="24.89" fill="#D52B1E"/>
+                    <rect width="32" height="3.56" y="28.44" fill="#FCD116"/>
+                    <polygon points="0,0 18,16 0,32" fill="#0055A5"/>
+                    <polygon points="6.5,11.5 7.7,14.8 11.2,15 8.4,17.2 9.3,20.5 6.5,18.5 3.7,20.5 4.6,17.2 1.8,15 5.3,14.8" fill="#FFFFFF"/>
+                </g>
+                <circle cx="16" cy="16" r="15.2" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.25"/>
+            </g>
+
+            <!-- 4. Castelán: Círculo Vermello sen bandeira -->
+            <g id="flag-castelan">
+                <circle cx="16" cy="16" r="16" fill="#DC2626"/>
+                <circle cx="16" cy="16" r="15.2" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.25"/>
+            </g>
         </defs>
     </svg>
 
@@ -1331,17 +1381,21 @@
                     Configura os menús nativos e a extensión de tradución (TWP) ao idioma que prefiras:
                 </p>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
-                    <button id="lang-btn-gl" type="button" onclick="selectInstallLanguage('gl')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-1.5 shadow-sm">
-                        <span>🌊</span> <span>Galego</span>
+                    <button id="lang-btn-gl" type="button" onclick="selectInstallLanguage('gl')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-2 shadow-sm">
+                        <svg class="w-4 h-4 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-estreleira"></use></svg>
+                        <span>Galego</span>
                     </button>
-                    <button id="lang-btn-es" type="button" onclick="selectInstallLanguage('es')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
-                        <span>🇪🇸</span> <span>Castelán</span>
+                    <button id="lang-btn-eu" type="button" onclick="selectInstallLanguage('eu')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-ikurrina"></use></svg>
+                        <span>Euskera</span>
                     </button>
-                    <button id="lang-btn-eu" type="button" onclick="selectInstallLanguage('eu')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
-                        <span>🟢</span> <span>Euskera</span>
+                    <button id="lang-btn-ca" type="button" onclick="selectInstallLanguage('ca')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-estelada"></use></svg>
+                        <span>Català</span>
                     </button>
-                    <button id="lang-btn-ca" type="button" onclick="selectInstallLanguage('ca')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5">
-                        <span>🔴</span> <span>Català</span>
+                    <button id="lang-btn-es" type="button" onclick="selectInstallLanguage('es')" class="lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-castelan"></use></svg>
+                        <span>Castelán</span>
                     </button>
                 </div>
                 <p id="lang-active-note" class="text-[11px] font-mono text-tide dark:text-mist">
@@ -1421,20 +1475,20 @@
             <div id="descargas-tracker" class="mt-12 pt-8 border-t border-warmSand/60 dark:border-mist/20 text-center">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono bg-sand/80 dark:bg-deepAtlantic/60 text-slateText dark:text-mist border border-warmSand/60 dark:border-mist/30 mb-4">
                     <span>🧭</span>
-                    <span id="tracker-total-count">1.284 travesías iniciadas no Atlántico</span>
+                    <span id="tracker-total-count">0 travesías iniciadas no Atlántico (v2.1.0)</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto text-xs font-mono">
                     <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
                         <span class="text-slateText dark:text-mist block text-[11px] mb-1">🐧 Linux</span>
-                        <span id="tracker-linux-count" class="font-bold text-sm text-atlantic dark:text-foam">512 travesías</span>
+                        <span id="tracker-linux-count" class="font-bold text-sm text-atlantic dark:text-foam">0 travesías</span>
                     </div>
                     <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
                         <span class="text-slateText dark:text-mist block text-[11px] mb-1">🪟 Windows</span>
-                        <span id="tracker-win-count" class="font-bold text-sm text-atlantic dark:text-foam">542 travesías</span>
+                        <span id="tracker-win-count" class="font-bold text-sm text-atlantic dark:text-foam">0 travesías</span>
                     </div>
                     <div class="p-3.5 rounded-2xl bg-sand/60 dark:bg-deepAtlantic border border-warmSand/40 dark:border-mist/20 text-center">
                         <span class="text-slateText dark:text-mist block text-[11px] mb-1">🍎 macOS</span>
-                        <span id="tracker-mac-count" class="font-bold text-sm text-atlantic dark:text-foam">230 travesías</span>
+                        <span id="tracker-mac-count" class="font-bold text-sm text-atlantic dark:text-foam">0 travesías</span>
                     </div>
                 </div>
             </div>
@@ -1536,10 +1590,22 @@
 
             <!-- Selector de Lingua no Modal -->
             <div class="flex items-center justify-center gap-1.5 mb-4">
-                <button type="button" onclick="selectInstallLanguage('gl')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition" data-lang="gl">🌊 Galego</button>
-                <button type="button" onclick="selectInstallLanguage('es')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="es">🇪🇸 Castelán</button>
-                <button type="button" onclick="selectInstallLanguage('eu')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="eu">🟢 Euskera</button>
-                <button type="button" onclick="selectInstallLanguage('ca')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition" data-lang="ca">🔴 Català</button>
+                <button type="button" onclick="selectInstallLanguage('gl')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition flex items-center gap-1.5" data-lang="gl">
+                    <svg class="w-3.5 h-3.5 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-estreleira"></use></svg>
+                    <span>Galego</span>
+                </button>
+                <button type="button" onclick="selectInstallLanguage('eu')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition flex items-center gap-1.5" data-lang="eu">
+                    <svg class="w-3.5 h-3.5 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-ikurrina"></use></svg>
+                    <span>Euskera</span>
+                </button>
+                <button type="button" onclick="selectInstallLanguage('ca')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition flex items-center gap-1.5" data-lang="ca">
+                    <svg class="w-3.5 h-3.5 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-estelada"></use></svg>
+                    <span>Català</span>
+                </button>
+                <button type="button" onclick="selectInstallLanguage('es')" class="modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition flex items-center gap-1.5" data-lang="es">
+                    <svg class="w-3.5 h-3.5 rounded-full shrink-0" viewBox="0 0 32 32"><use href="#flag-castelan"></use></svg>
+                    <span>Castelán</span>
+                </button>
             </div>
 
             <a id="primary-download-link" href="downloads/noutrora_2.0_all.deb" download class="block w-full py-3.5 rounded-full bg-atlantic dark:bg-mist text-foam dark:text-nightSky font-semibold text-sm hover:opacity-95 transition mb-4 shadow-md">
@@ -1826,10 +1892,10 @@
         let descargasData = null;
 
         const langMeta = {
-            gl: { name: 'Galego', flag: '🌊', note: 'Galego por defecto · Menús nativos e tradución TWP en galego.' },
-            es: { name: 'Castelán', flag: '🇪🇸', note: 'Castelán seleccionado · Menús nativos e tradución TWP en castelán.' },
-            eu: { name: 'Euskera', flag: '🟢', note: 'Euskera seleccionado · Menús nativos e tradución TWP en euskera.' },
-            ca: { name: 'Català', flag: '🔴', note: 'Català seleccionado · Menús nativos e tradución TWP en català.' }
+            gl: { name: 'Galego', flagId: 'flag-estreleira', note: 'Galego por defecto · Menús nativos e tradución TWP en galego.' },
+            eu: { name: 'Euskera', flagId: 'flag-ikurrina', note: 'Euskera seleccionado · Menús nativos e tradución TWP en euskera.' },
+            ca: { name: 'Català', flagId: 'flag-estelada', note: 'Català seleccionado · Menús nativos e tradución TWP en català.' },
+            es: { name: 'Castelán', flagId: 'flag-castelan', note: 'Castelán seleccionado · Menús nativos e tradución TWP en castelán.' }
         };
 
         function selectInstallLanguage(lang) {
@@ -1840,9 +1906,9 @@
             document.querySelectorAll('.lang-sel-btn').forEach(btn => {
                 const isSelected = btn.id === 'lang-btn-' + lang;
                 if (isSelected) {
-                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-1.5 shadow-sm';
+                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky border border-atlantic transition flex items-center justify-center gap-2 shadow-sm';
                 } else {
-                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-1.5';
+                    btn.className = 'lang-sel-btn px-3 py-2 rounded-xl text-xs font-medium bg-foam dark:bg-nightSky text-atlantic dark:text-foam border border-warmSand/70 dark:border-mist/30 hover:border-mist transition flex items-center justify-center gap-2';
                 }
             });
 
@@ -1850,9 +1916,9 @@
             document.querySelectorAll('.modal-lang-btn').forEach(btn => {
                 const isSelected = btn.dataset.lang === lang;
                 if (isSelected) {
-                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition';
+                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-atlantic text-foam dark:bg-mist dark:text-nightSky transition flex items-center gap-1.5';
                 } else {
-                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition';
+                    btn.className = 'modal-lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium bg-sand dark:bg-nightSky text-atlantic dark:text-foam transition flex items-center gap-1.5';
                 }
             });
 
@@ -1881,7 +1947,8 @@
 
             const totalBadge = document.getElementById('tracker-total-count');
             if (totalBadge) {
-                totalBadge.textContent = d.total.toLocaleString('gl-ES') + ' travesías iniciadas no Atlántico (v' + (descargasData.version || '2.1') + ')';
+                const ver = (descargasData.version || 'v2.1.0').replace(/^v+/, 'v');
+                totalBadge.textContent = d.total.toLocaleString('gl-ES') + ' travesías iniciadas no Atlántico (' + ver + ')';
             }
 
             const lCount = document.getElementById('tracker-linux-count');
@@ -1913,11 +1980,11 @@
                 descargasData = {
                     version: 'v2.1.0',
                     descargas: {
-                        total: 1284,
+                        total: 0,
                         plataformas: {
-                            linux: { total: 512, idiomas: { gl: 310, es: 118, eu: 36, ca: 48 } },
-                            windows: { total: 542, idiomas: { gl: 298, es: 146, eu: 42, ca: 56 } },
-                            mac: { total: 230, idiomas: { gl: 134, es: 56, eu: 16, ca: 24 } }
+                            linux: { total: 0, idiomas: { gl: 0, es: 0, eu: 0, ca: 0 } },
+                            windows: { total: 0, idiomas: { gl: 0, es: 0, eu: 0, ca: 0 } },
+                            mac: { total: 0, idiomas: { gl: 0, es: 0, eu: 0, ca: 0 } }
                         }
                     }
                 };
