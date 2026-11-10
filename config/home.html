@@ -736,8 +736,13 @@
     } catch (e) {}
 
     let catalog = BASE_EXPLORACION;
-    let activeEditMode = null; // "fondeadero" | "perder_el_rumbo" | "mundo_nuevo"
-    let lastVisitedUrl = { perder_el_rumbo: "", mundo_nuevo: "" };
+    let activeEditMode = null; // "fondeadero" | "perder_o_norte" | "terra_a_vista"
+    let lastVisitedUrl = {
+      perder_o_norte: "",
+      terra_a_vista: "",
+      perder_el_rumbo: "",
+      mundo_nuevo: ""
+    };
 
     // Índices activos del día (y modificables al pulsar el botón aleatorio/navegación)
     let currentMovieIndex = 0;
@@ -862,7 +867,8 @@
     function launchRandomDestination(category) {
       const pool = getExplorePool(category);
       if (!pool.length) return;
-      let candidates = pool.filter((item) => item && item.url && item.url !== lastVisitedUrl[category]);
+      const last = lastVisitedUrl[category] || "";
+      let candidates = pool.filter((item) => item && item.url && item.url !== last);
       if (!candidates.length) candidates = pool;
       const chosen = candidates[Math.floor(Math.random() * candidates.length)];
       if (chosen && chosen.url) {
