@@ -2,6 +2,11 @@
 *.md
 normativa/*.md
 
+# Configuración e credenciais privadas locais
+.nas.env
+*.env
+
+
 # Motores pesados e perfís de proba locais (prohibidos en Git)
 base/
 dist/

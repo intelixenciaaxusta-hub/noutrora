@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Prepara la carpeta dist/noutrora.es/ lista para su despliegue hacia el servidor central servidor (noutrora.es):
+Prepara la carpeta dist/noutrora.es/ lista para su despliegue hacia el servidor central (noutrora.es):
 - index.html (Landing page oficial noutrora.es)
 - exploracion.json (Catálogo Cultural y Marinero Vivo)
 - downloads/noutrora_2.0_all.deb (Instalador nativo de doble clic para Linux Ubuntu/Mint/Debian)
@@ -28,7 +28,6 @@ INCLUDED_PATHS = [
     "SPEC.md",
     "CATALOGO.md",
     "README.md",
-    "AGENTS.md",
     "decalogo.txt",
     "formadeserepensar.txt",
     "run.sh",
@@ -404,49 +403,76 @@ def build_web_package() -> None:
                 zf.write(full, arcname=rel)
 
     deb_kb = deb_path.stat().st_size / 1024
-    print("✅ Paquete Web Noutrora v2.0 listo para despliegue en servidor central servidor (noutrora.es):")
-    print(f"   - Carpeta local generada: dist/noutrora.es/")
-    print(f"   - Destino buzón SMB: /srv/servidor/publicaciones/ibm/noutrora.es/")
-    print(f"   - Instalador nativo Linux (.deb doble clic): downloads/noutrora_2.0_all.deb ({deb_kb:.1f} KB)")
-    print(f"   - Catálogo Cultural Vivo incluido: exploracion.json")
+    print("✅ Paquete Web Noutrora v2.0 listo para o seu despregamento:")
+    print(f"   - Carpeta local xerada: dist/noutrora.es/")
+    print(f"   - Instalador nativo Linux (.deb dobre clic): downloads/noutrora_2.0_all.deb ({deb_kb:.1f} KB)")
+    print(f"   - Catálogo Cultural Vivo incluído: exploracion.json")
 
 
-def find_nas_gvfs_path() -> Path:
+def get_nas_config() -> tuple[str, str, str, str]:
+    """Obtén os parámetros do servidor central dende .nas.env ou variables de contorno locais."""
+    env_file = ROOT / ".nas.env"
+    env_vars: dict[str, str] = {}
+    if env_file.exists():
+        try:
+            for line in env_file.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    env_vars[k.strip()] = v.strip().strip('"').strip("'")
+        except Exception:
+            pass
+
+    host = os.environ.get("NOUTRORA_NAS_HOST") or env_vars.get("NOUTRORA_NAS_HOST", "")
+    share = os.environ.get("NOUTRORA_NAS_SHARE") or env_vars.get("NOUTRORA_NAS_SHARE", "servidor")
+    path = os.environ.get("NOUTRORA_NAS_PATH") or env_vars.get("NOUTRORA_NAS_PATH", "publicaciones/ibm/noutrora.es")
+    port = os.environ.get("NOUTRORA_NAS_PORT") or env_vars.get("NOUTRORA_NAS_PORT", "8080")
+    return host, share, path, port
+
+
+def find_nas_gvfs_path(host: str, share: str) -> Path:
     uid = os.getuid()
-    standard = Path(f"/run/user/{uid}/gvfs/smb-share:server=noutrora.local,share=servidor")
+    standard = Path(f"/run/user/{uid}/gvfs/smb-share:server={host},share={share}")
     if standard.exists():
         return standard
-    for p in Path("/run/user").glob("*/gvfs/smb-share:server=noutrora.local,share=servidor"):
+    for p in Path("/run/user").glob(f"*/gvfs/smb-share:server={host},share={share}"):
         if p.exists():
             return p
     return standard
 
 
-def ensure_nas_mounted() -> Path:
-    nas_base = find_nas_gvfs_path()
+def ensure_nas_mounted(host: str, share: str) -> Path:
+    nas_base = find_nas_gvfs_path(host, share)
     if not nas_base.exists():
-        print("🧭 Montando recurso do servidor servidor (smb://noutrora.local/servidor)...")
+        print(f"🧭 Montando recurso do servidor central (smb://{host}/{share})...")
         try:
-            subprocess.run(["gio", "mount", "smb://noutrora.local/servidor"], check=True, timeout=10)
+            subprocess.run(["gio", "mount", f"smb://{host}/{share}"], check=True, timeout=10)
         except Exception as e:
             print(f"⚠️ Non se puido montar automaticamente con gio: {e}")
-    return find_nas_gvfs_path()
+    return find_nas_gvfs_path(host, share)
 
 
 def deploy_to_nas() -> bool:
-    nas_base = ensure_nas_mounted()
-    target_dir = nas_base / "publicaciones" / "ibm" / "noutrora.es"
+    host, share, subpath, port = get_nas_config()
+    if not host:
+        print("❌ Non se configurou ningún host para o servidor central.")
+        print("   Para publicar no servidor privado, crea o ficheiro local .nas.env ou define:")
+        print("   export NOUTRORA_NAS_HOST='o.teu.servidor.local'")
+        return False
+
+    nas_base = ensure_nas_mounted(host, share)
+    target_dir = nas_base / subpath
     if not nas_base.exists():
-        print(f"❌ O recurso do NAS non está accesible en {nas_base}.")
-        print("   Comproba a conexión de rede e executa: gio mount smb://noutrora.local/servidor")
+        print(f"❌ O recurso do servidor central non está accesible en {nas_base}.")
+        print(f"   Comproba a conexión de rede e executa: gio mount smb://{host}/{share}")
         return False
 
     target_dir.mkdir(parents=True, exist_ok=True)
-    print("🚀 Sincronizando paquete web con produción directa en servidor:")
+    print("🚀 Sincronizando paquete web co servidor central:")
     print(f"   ↳ Orixe: {WEB_DIST}")
     print(f"   ↳ Destino: {target_dir}")
 
-    smb_uri_base = "smb://noutrora.local/servidor/publicaciones/ibm/noutrora.es"
+    smb_uri_base = f"smb://{host}/{share}/{subpath}"
     count = 0
     errors = 0
 
@@ -470,8 +496,8 @@ def deploy_to_nas() -> bool:
                     print(f"⚠️ Erro ao copiar {rel_str} (código {res.returncode})")
 
     if errors == 0:
-        print(f"✅ Despregamento en produción directa en servidor completado con éxito ({count} ficheiros sincronizados)!")
-        print("   ↳ Dispoñible en: http://noutrora.local:8080/ e https://noutrora.es/")
+        print(f"✅ Despregamento no servidor central completado con éxito ({count} ficheiros sincronizados)!")
+        print(f"   ↳ Dispoñible en rede local en: http://{host}:{port}/ e https://noutrora.es/")
         return True
     else:
         print(f"❌ Houbo {errors} erros durante o despregamento.")
@@ -483,6 +509,6 @@ if __name__ == "__main__":
     if any(arg in sys.argv[1:] for arg in ("--deploy", "--publicar", "-d")):
         deploy_to_nas()
     else:
-        print("\n💡 Para publicar directamente no servidor servidor executa:")
+        print("\n💡 Para publicar directamente no servidor central executa:")
         print("   python3 scripts/package_web.py --deploy")
 

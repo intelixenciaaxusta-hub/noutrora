@@ -54,6 +54,15 @@ class TestPoliciesAndPrivacy(unittest.TestCase):
             "browser.startup.firstrunSkipsHomepage debe estar en false en noutrora.cfg",
         )
 
+    def test_zero_infrastructure_ip_leak(self):
+        """Os scripts de despregamento e modelos non deben conter IPs privadas nin nomes de host locais gravados en código."""
+        package_web = (ROOT / "scripts" / "package_web.py").read_text(encoding="utf-8")
+        self.assertNotIn("noutrora.local", package_web, "package_web.py non debe ter a IP do servidor gravada en código")
+        self.assertNotIn("servidor", package_web, "package_web.py non debe ter servidor gravado en código")
+        self.assertNotIn("noutrora.local", self.cfg_text, "noutrora.cfg non debe conter a IP do servidor")
+        self.assertNotIn("noutrora.local", self.template_path.read_text(encoding="utf-8"), "policies.template.json non debe conter a IP do servidor")
+
+
 
 if __name__ == "__main__":
     unittest.main()
