@@ -1,12 +1,30 @@
+# Motores pesados e perfís de proba locais (prohibidos en Git)
 base/
 dist/
+upstream/
 profile-test/
 profile-lab/
-upstream/
+Cambiospendentes/
+
+# Paquetes e binarios xerados localmente
 *.tar.xz
+*.tar.gz
 *.dmg
 *.zip
 *.exe
-Cambiospendentes/
+*.deb
+
+# Arquivos temporais de Python e caché
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Arquivos do sistema operativo e editores
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
