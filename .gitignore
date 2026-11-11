@@ -1,7 +1,3 @@
-# Documentación privada e instrucións do axente (privado en local, fóra de Git)
-*.md
-normativa/*.md
-
 # Configuración e variables locais
 *.env
 
