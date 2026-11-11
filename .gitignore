@@ -2,10 +2,8 @@
 *.md
 normativa/*.md
 
-# Configuración e credenciais privadas locais
-.nas.env
+# Configuración e variables locais
 *.env
-scripts/deploy_nas.py
 
 
 # Motores pesados e perfís de proba locais (prohibidos en Git)

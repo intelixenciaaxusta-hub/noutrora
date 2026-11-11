@@ -2,7 +2,7 @@
 """Genera Noutrora.dmg para macOS (solo se ejecuta en un Mac: usa hdiutil y codesign).
 
 Descarga el Firefox oficial (universal, vale para Intel y M1), le inyecta el overlay
-precompilado (dist/nas/noutrora-overlay-ready.zip) en Contents/Resources, lo firma
+precompilado (dist/releases/noutrora-overlay-ready.zip) en Contents/Resources, lo firma
 ad-hoc (sin cuenta Apple Developer) y crea un .dmg de arrastrar a Aplicaciones.
 """
 import shutil
@@ -13,8 +13,8 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OVERLAY_ZIP = ROOT / "dist" / "nas" / "noutrora-overlay-ready.zip"
-OUT_DMG = ROOT / "dist" / "nas" / "Noutrora.dmg"
+OVERLAY_ZIP = ROOT / "dist" / "releases" / "noutrora-overlay-ready.zip"
+OUT_DMG = ROOT / "dist" / "releases" / "Noutrora.dmg"
 URL = "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=gl"
 
 

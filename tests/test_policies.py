@@ -61,6 +61,7 @@ class TestPoliciesAndPrivacy(unittest.TestCase):
         self.assertNotIn("servidor", package_web, "package_web.py non debe ter servidor gravado en código")
         self.assertNotIn("smb://", package_web, "package_web.py non debe ter chamadas a smb://")
         self.assertNotIn("deploy_to_nas", package_web, "package_web.py non debe conter rutinas de despregamento no NAS privado")
+        self.assertNotIn("dist/nas", package_web, "package_web.py non debe facer referencia a dist/nas")
         self.assertNotIn("noutrora.local", self.cfg_text, "noutrora.cfg non debe conter a IP do servidor")
         self.assertNotIn("noutrora.local", self.template_path.read_text(encoding="utf-8"), "policies.template.json non debe conter a IP do servidor")
 

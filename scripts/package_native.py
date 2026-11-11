@@ -5,7 +5,7 @@ Genera los paquetes de instalación de una sola vez para Linux, Windows y macOS:
    autoconfig.js, policies.json, noutrora-overlay/ y el icono nativo noutrora.ico,
    para que Windows y macOS NO necesiten tener Python instalado.
 2. Genera el paquete .deb COMPLETO (con el motor Gecko ya incluido dentro, ~85 MB)
-   en dist/nas/noutrora_2.0_amd64.deb para alojar en el NAS o en Raiola.
+   en dist/releases/noutrora_2.0_amd64.deb para distribución en GitHub Releases.
 """
 import shutil
 import struct
@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BASE_FIREFOX = ROOT / "base" / "firefox"
-DIST_NAS = ROOT / "dist" / "nas"
+DIST_RELEASES = ROOT / "dist" / "releases"
 WEB_DOWNLOADS = ROOT / "dist" / "noutrora.es" / "downloads"
 
 
@@ -169,16 +169,16 @@ if __name__ == "__main__":
     subprocess.run(["python3", str(ROOT / "scripts" / "build.py")], check=True)
 
     # 2. Crear noutrora-overlay-ready.zip precompilado (sin necesidad de Python en Mac/Windows)
-    DIST_NAS.mkdir(parents=True, exist_ok=True)
-    overlay_zip = DIST_NAS / "noutrora-overlay-ready.zip"
+    DIST_RELEASES.mkdir(parents=True, exist_ok=True)
+    overlay_zip = DIST_RELEASES / "noutrora-overlay-ready.zip"
     build_precompiled_overlay_zip(overlay_zip)
 
-    # 3. Construir el instalador .deb completo con motor incluido (~85 MB) para el NAS/Raiola
-    full_deb = DIST_NAS / "noutrora_2.0_amd64.deb"
+    # 3. Construir el instalador .deb completo con motor incluido (~85 MB) para GitHub Releases
+    full_deb = DIST_RELEASES / "noutrora_2.0_amd64.deb"
     print("📦 Construyendo instalador .deb completo con el motor incluido (puede tardar 15 s)...")
     build_full_linux_deb(full_deb)
     deb_mb = full_deb.stat().st_size / (1024 * 1024)
-    print(f"✅ Paquete Linux completo creado: dist/nas/noutrora_2.0_amd64.deb ({deb_mb:.1f} MB)")
+    print(f"✅ Paquete Linux completo creado: dist/releases/noutrora_2.0_amd64.deb ({deb_mb:.1f} MB)")
 
     if WEB_DOWNLOADS.exists():
         shutil.copy2(overlay_zip, WEB_DOWNLOADS / "noutrora-overlay-ready.zip")

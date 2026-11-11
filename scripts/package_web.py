@@ -347,7 +347,7 @@ def build_web_package() -> None:
             return None
         if "__pycache__" in ti.name or ti.name.endswith((".pyc", ".env")):
             return None
-        if "AGENTS.md" in ti.name or "deploy_nas.py" in ti.name:
+        if "AGENTS.md" in ti.name:
             return None
         # Normalizar metadatos para privacidade estrita (cero filtración de UID/GID nin usuario)
         ti.uid = 0
@@ -384,7 +384,7 @@ def build_web_package() -> None:
     mac_path.chmod(0o755)
 
     # Sincronizar el deb con motor amd64 de package_native si existe
-    native_deb_src = ROOT / "dist" / "nas" / "noutrora_2.0_amd64.deb"
+    native_deb_src = ROOT / "dist" / "releases" / "noutrora_2.0_amd64.deb"
     if native_deb_src.exists():
         shutil.copy2(native_deb_src, DOWNLOADS_DIR / "noutrora_2.0_amd64.deb")
 
