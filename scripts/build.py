@@ -192,8 +192,8 @@ def build():
         if bootstrap_script.exists():
             print("ℹ️  Motor base non atopado en base/firefox/. Descargando motor Gecko oficial en galego...")
             subprocess.run(["python3", str(bootstrap_script)], check=True)
-            return
-        raise SystemExit(f"Non se atopou o motor base en {BASE_FIREFOX}")
+        else:
+            raise SystemExit(f"Non se atopou o motor base en {BASE_FIREFOX}")
 
     # 0. Garantizar que omni.ja esté 100% original (Superposición pura)
     restore_original_omni_if_needed()

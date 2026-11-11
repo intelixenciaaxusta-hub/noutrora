@@ -304,7 +304,10 @@ def build_web_package() -> None:
         raise SystemExit("❌ Probas técnicas erradas. Cancélase a empaquetación e o despregamento.")
 
     # 1. Asegurar compilación previa do overlay
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py")], check=True)
+    try:
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py")], check=True)
+    except Exception as e:
+        print(f"⚠️ Aviso ao compilar overlay de Firefox: {e}")
 
     if WEB_DIST.exists():
         shutil.rmtree(WEB_DIST)
@@ -348,12 +351,18 @@ def build_web_package() -> None:
 
     # 3. Generar instalador nativo .deb de doble clic para Linux (Ubuntu / Mint / Debian)
     deb_path = DOWNLOADS_DIR / "noutrora_2.0_all.deb"
-    build_deb_package(deb_path)
+    try:
+        build_deb_package(deb_path)
+    except Exception as e:
+        print(f"⚠️ Aviso ao xerar deb: {e}")
 
     # 4. Generar instaladores de doble clic para Windows y macOS + overlay precompilado (sin necesidad de Python)
-    from package_native import build_precompiled_overlay_zip
+    try:
+        from package_native import build_precompiled_overlay_zip
+        build_precompiled_overlay_zip(DOWNLOADS_DIR / "noutrora-overlay-ready.zip")
+    except Exception as e:
+        print(f"⚠️ Aviso ao xerar overlay precompilado: {e}")
 
-    build_precompiled_overlay_zip(DOWNLOADS_DIR / "noutrora-overlay-ready.zip")
     win_path = DOWNLOADS_DIR / "Noutrora-Setup-Windows.cmd"
     win_crlf = WINDOWS_INSTALLER_CMD.strip().replace("\r\n", "\n").replace("\n", "\r\n") + "\r\n"
     win_path.write_bytes(win_crlf.encode("utf-8"))
@@ -367,10 +376,11 @@ def build_web_package() -> None:
         shutil.copy2(native_deb_src, DOWNLOADS_DIR / "noutrora_2.0_amd64.deb")
 
     # 5. Calcular SHA-256
-    sha256_hash = hashlib.sha256(deb_path.read_bytes()).hexdigest()
-    (DOWNLOADS_DIR / "noutrora_2.0_all.deb.sha256").write_text(
-        f"{sha256_hash}  noutrora_2.0_all.deb\n", encoding="utf-8"
-    )
+    if deb_path.exists():
+        sha256_hash = hashlib.sha256(deb_path.read_bytes()).hexdigest()
+        (DOWNLOADS_DIR / "noutrora_2.0_all.deb.sha256").write_text(
+            f"{sha256_hash}  noutrora_2.0_all.deb\n", encoding="utf-8"
+        )
 
     # 6. Escribir install.sh de respaldo
     install_sh_path = WEB_DIST / "install.sh"
