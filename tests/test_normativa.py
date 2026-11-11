@@ -21,6 +21,8 @@ class TestNormativa(unittest.TestCase):
 
     def test_normativa_directory_and_documents_exist(self):
         """A carpeta normativa/ debe existir e conter os 3 documentos reguladores."""
+        if not self.normativa_dir.is_dir() or not self.lopd_doc.is_file():
+            self.skipTest("Documentación normativa mantida en privado en local (fóra de Git)")
         self.assertTrue(self.normativa_dir.is_dir(), "Falta a carpeta normativa/")
         self.assertTrue(self.lopd_doc.is_file(), "Falta normativa/LOPD_GDD_RGPD.md")
         self.assertTrue(self.licenzas_doc.is_file(), "Falta normativa/LICENZAS_FIREFOX_MPL.md")
@@ -28,6 +30,8 @@ class TestNormativa(unittest.TestCase):
 
     def test_lopd_document_content(self):
         """O documento de protección de datos debe acreditar a condición veciñal sen ánimo de lucro."""
+        if not self.lopd_doc.is_file():
+            self.skipTest("Documento LOPD mantido en privado en local (fóra de Git)")
         text = self.lopd_doc.read_text(encoding="utf-8")
         self.assertIn("RGPD", text)
         self.assertIn("LOPD-GDD", text)
@@ -38,6 +42,8 @@ class TestNormativa(unittest.TestCase):
 
     def test_licenzas_document_content(self):
         """O documento de licenzas debe respectar a MPL-2.0 e a política de marcas de Mozilla."""
+        if not self.licenzas_doc.is_file():
+            self.skipTest("Documento de licenzas mantido en privado en local (fóra de Git)")
         text = self.licenzas_doc.read_text(encoding="utf-8")
         self.assertIn("MPL-2.0", text)
         self.assertIn("Mozilla Public License", text)

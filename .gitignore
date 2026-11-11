@@ -1,3 +1,7 @@
+# Documentación privada e instrucións do axente (privado en local, fóra de Git)
+*.md
+normativa/*.md
+
 # Motores pesados e perfís de proba locais (prohibidos en Git)
 base/
 dist/
