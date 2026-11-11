@@ -59,8 +59,18 @@ class TestPoliciesAndPrivacy(unittest.TestCase):
         package_web = (ROOT / "scripts" / "package_web.py").read_text(encoding="utf-8")
         self.assertNotIn("noutrora.local", package_web, "package_web.py non debe ter a IP do servidor gravada en código")
         self.assertNotIn("servidor", package_web, "package_web.py non debe ter servidor gravado en código")
+        self.assertNotIn("smb://", package_web, "package_web.py non debe ter chamadas a smb://")
+        self.assertNotIn("deploy_to_nas", package_web, "package_web.py non debe conter rutinas de despregamento no NAS privado")
         self.assertNotIn("noutrora.local", self.cfg_text, "noutrora.cfg non debe conter a IP do servidor")
         self.assertNotIn("noutrora.local", self.template_path.read_text(encoding="utf-8"), "policies.template.json non debe conter a IP do servidor")
+
+    def test_package_web_tar_filter_privacy(self):
+        """O filtro de empaquetado debe excluír estritamente ficheiros de contorna, instrucións privadas e normalizar UIDs."""
+        import tarfile
+        package_web = (ROOT / "scripts" / "package_web.py").read_text(encoding="utf-8")
+        self.assertIn("tar_filter", package_web, "package_web.py debe implementar tar_filter")
+        self.assertIn("AGENTS.md", package_web, "tar_filter debe excluír explicitamente AGENTS.md")
+        self.assertIn("ti.uid = 0", package_web, "tar_filter debe normalizar UID a 0")
 
 
 

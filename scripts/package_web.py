@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Prepara la carpeta dist/noutrora.es/ lista para su despliegue hacia el servidor central (noutrora.es):
+Prepara a carpeta dist/noutrora.es/ para a súa publicación pública en GitHub Pages e noutrora.es:
 - index.html (Landing page oficial noutrora.es)
-- exploracion.json (Catálogo Cultural y Marinero Vivo)
-- downloads/noutrora_2.0_all.deb (Instalador nativo de doble clic para Linux Ubuntu/Mint/Debian)
-- downloads/Noutrora-Setup-Windows.cmd (Instalador de doble clic para Windows 10/11)
-- downloads/Noutrora-Mac.command (Instalador de doble clic para macOS)
-- downloads/noutrora-installer.tar.gz (Paquete universal)
+- exploracion.json (Catálogo Cultural e Mariñeiro Vivo)
+- downloads/noutrora_2.0_all.deb (Instalador nativo de dobre clic para Linux Ubuntu/Mint/Debian)
+- downloads/Noutrora-Setup-Windows.cmd (Instalador de dobre clic para Windows 10/11)
+- downloads/Noutrora-Mac.command (Instalador de dobre clic para macOS)
+- downloads/noutrora-installer.tar.gz (Paquete universal limpo e reproducible)
 """
 import hashlib
 import os
@@ -337,17 +337,30 @@ def build_web_package() -> None:
     if normativa_src.exists():
         shutil.copytree(normativa_src, WEB_DIST / "normativa")
 
-    # 2. Crear el paquete universal noutrora-installer.tar.gz
+    # 2. Crear o paquete universal noutrora-installer.tar.gz
     tar_path = DOWNLOADS_DIR / "noutrora-installer.tar.gz"
+
+    def tar_filter(ti: tarfile.TarInfo) -> tarfile.TarInfo | None:
+        p = Path(ti.name)
+        # Ocultar calquera ficheiro oculto, de configuración privada, caches ou instrucións internas
+        if any(part.startswith(".") for part in p.parts):
+            return None
+        if "__pycache__" in ti.name or ti.name.endswith((".pyc", ".env")):
+            return None
+        if "AGENTS.md" in ti.name or "deploy_nas.py" in ti.name:
+            return None
+        # Normalizar metadatos para privacidade estrita (cero filtración de UID/GID nin usuario)
+        ti.uid = 0
+        ti.gid = 0
+        ti.uname = ""
+        ti.gname = ""
+        return ti
+
     with tarfile.open(tar_path, "w:gz") as tf:
         for rel in INCLUDED_PATHS:
             p = ROOT / rel
             if p.exists():
-                tf.add(
-                    p,
-                    arcname=f"Noutrora/{rel}",
-                    filter=lambda ti: None if "__pycache__" in ti.name or ti.name.endswith(".pyc") else ti,
-                )
+                tf.add(p, arcname=f"Noutrora/{rel}", filter=tar_filter)
 
     # 3. Generar instalador nativo .deb de doble clic para Linux (Ubuntu / Mint / Debian)
     deb_path = DOWNLOADS_DIR / "noutrora_2.0_all.deb"
@@ -413,112 +426,12 @@ def build_web_package() -> None:
                 zf.write(full, arcname=rel)
 
     deb_kb = deb_path.stat().st_size / 1024
-    print("✅ Paquete Web Noutrora v2.0 listo para o seu despregamento:")
+    print("✅ Paquete Web Noutrora v2.0 listo para a súa publicación pública:")
     print(f"   - Carpeta local xerada: dist/noutrora.es/")
     print(f"   - Instalador nativo Linux (.deb dobre clic): downloads/noutrora_2.0_all.deb ({deb_kb:.1f} KB)")
     print(f"   - Catálogo Cultural Vivo incluído: exploracion.json")
 
 
-def get_nas_config() -> tuple[str, str, str, str]:
-    """Obtén os parámetros do servidor central dende .nas.env ou variables de contorno locais."""
-    env_file = ROOT / ".nas.env"
-    env_vars: dict[str, str] = {}
-    if env_file.exists():
-        try:
-            for line in env_file.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    env_vars[k.strip()] = v.strip().strip('"').strip("'")
-        except Exception:
-            pass
-
-    host = os.environ.get("NOUTRORA_NAS_HOST") or env_vars.get("NOUTRORA_NAS_HOST", "")
-    share = os.environ.get("NOUTRORA_NAS_SHARE") or env_vars.get("NOUTRORA_NAS_SHARE", "servidor")
-    path = os.environ.get("NOUTRORA_NAS_PATH") or env_vars.get("NOUTRORA_NAS_PATH", "publicaciones/ibm/noutrora.es")
-    port = os.environ.get("NOUTRORA_NAS_PORT") or env_vars.get("NOUTRORA_NAS_PORT", "8080")
-    return host, share, path, port
-
-
-def find_nas_gvfs_path(host: str, share: str) -> Path:
-    uid = os.getuid()
-    standard = Path(f"/run/user/{uid}/gvfs/smb-share:server={host},share={share}")
-    if standard.exists():
-        return standard
-    for p in Path("/run/user").glob(f"*/gvfs/smb-share:server={host},share={share}"):
-        if p.exists():
-            return p
-    return standard
-
-
-def ensure_nas_mounted(host: str, share: str) -> Path:
-    nas_base = find_nas_gvfs_path(host, share)
-    if not nas_base.exists():
-        print(f"🧭 Montando recurso do servidor central (smb://{host}/{share})...")
-        try:
-            subprocess.run(["gio", "mount", f"smb://{host}/{share}"], check=True, timeout=10)
-        except Exception as e:
-            print(f"⚠️ Non se puido montar automaticamente con gio: {e}")
-    return find_nas_gvfs_path(host, share)
-
-
-def deploy_to_nas() -> bool:
-    host, share, subpath, port = get_nas_config()
-    if not host:
-        print("❌ Non se configurou ningún host para o servidor central.")
-        print("   Para publicar no servidor privado, crea o ficheiro local .nas.env ou define:")
-        print("   export NOUTRORA_NAS_HOST='o.teu.servidor.local'")
-        return False
-
-    nas_base = ensure_nas_mounted(host, share)
-    target_dir = nas_base / subpath
-    if not nas_base.exists():
-        print(f"❌ O recurso do servidor central non está accesible en {nas_base}.")
-        print(f"   Comproba a conexión de rede e executa: gio mount smb://{host}/{share}")
-        return False
-
-    target_dir.mkdir(parents=True, exist_ok=True)
-    print("🚀 Sincronizando paquete web co servidor central:")
-    print(f"   ↳ Orixe: {WEB_DIST}")
-    print(f"   ↳ Destino: {target_dir}")
-
-    smb_uri_base = f"smb://{host}/{share}/{subpath}"
-    count = 0
-    errors = 0
-
-    for dirpath, dirnames, filenames in os.walk(WEB_DIST):
-        rel = Path(dirpath).relative_to(WEB_DIST)
-        (target_dir / rel).mkdir(parents=True, exist_ok=True)
-        for f in filenames:
-            if f.startswith("_"):
-                continue
-            s_file = Path(dirpath) / f
-            d_fuse = target_dir / rel / f
-            if not d_fuse.exists() or s_file.stat().st_size != d_fuse.stat().st_size:
-                rel_str = (rel / f).as_posix()
-                d_uri = f"{smb_uri_base}/{rel_str}"
-                print(f"   ↳ Actualizando ({s_file.stat().st_size / 1024:.1f} KB): {rel_str}")
-                res = subprocess.run(["gio", "copy", str(s_file), d_uri])
-                if res.returncode == 0:
-                    count += 1
-                else:
-                    errors += 1
-                    print(f"⚠️ Erro ao copiar {rel_str} (código {res.returncode})")
-
-    if errors == 0:
-        print(f"✅ Despregamento no servidor central completado con éxito ({count} ficheiros sincronizados)!")
-        print(f"   ↳ Dispoñible en rede local en: http://{host}:{port}/ e https://noutrora.es/")
-        return True
-    else:
-        print(f"❌ Houbo {errors} erros durante o despregamento.")
-        return False
-
-
 if __name__ == "__main__":
     build_web_package()
-    if any(arg in sys.argv[1:] for arg in ("--deploy", "--publicar", "-d")):
-        deploy_to_nas()
-    else:
-        print("\n💡 Para publicar directamente no servidor central executa:")
-        print("   python3 scripts/package_web.py --deploy")
 
